@@ -64,24 +64,32 @@ int main (void)
         // single word commands
         if (word_count == 1)
         {
-            // "exit" and only "exit" was entered, so quit
             if (strcmp(input_buffer, "exit\n") == 0)
             {
-                printf("\n");
-                printf("goodbye <3\n");
-                printf("\n");
+                printf("\ngoodbye <3\n\n");
 
                 free(input_buffer);
                 return 0;
+            }
+            else if (strcmp(input_buffer, "info\n") == 0)
+            {
+                printf("\033[1;34m");
+                printf("                         --  Info --\n");
+                printf("\033[1;33m"); 
+                printf("            wizsh! Created by Leithen Crider in 2022\n");
+                printf("\033[0m");
+                printf("Written in C, this was a final project for the Harvard CS50 course.\n");
+                printf("  This project was built to gain a better understanding of the C\n");
+                printf("programming language and how shells like bash and zsh might work.\n");
             }
             else 
             {
                 printf("%s", input_buffer);
             }
         }
-        printf("%i chars\n", char_count);
-        printf("%i words\n", word_count);
-        printf("%s", input_buffer);
+        // printf("%i chars\n", char_count);
+        // printf("%i words\n", word_count);
+        // printf("%s", input_buffer);
     }
 }                            
             
