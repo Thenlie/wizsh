@@ -3,15 +3,15 @@ void print_logo(void)
     /*
         * Print opening screen and ASCII art
         * [0;33m] = yellow
-        * [0;31m] = red
+        * [0;35m] = purple
         * [0;34m] = blue
     */
-    printf("\033[0;33m");
+    printf("\033[0;34m");
     printf("                        Welcome to WIZSH!\n");
     printf("                   A simple shell written in C\n");
     printf("                     Created by Thenlie 2022\n");
     printf("\n");
-    printf("\033[0;31m");
+    printf("\033[0;35m");
     printf("                     88                      88           \n");
     printf("                     \"\"                      88           \n");
     printf("                                             88           \n");

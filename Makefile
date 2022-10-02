@@ -9,5 +9,5 @@ DEPS = main.h
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-wizsh: main.c
+wizsh: main.c utils.c
 	$(CC) -o wizsh main.c
