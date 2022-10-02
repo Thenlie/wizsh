@@ -40,7 +40,7 @@ int main (void)
     //     // lowercase the entire input
     //     for (int i = 0; input_buffer[i]; i++)
     //     {
-    //         input_buffer[i] = tolower(input_buffer[i]);
+    //         input_buffer[i] = (input_buffer[i]);
     //         printf("%c", input_buffer[i]);
     //         cmd_count++;
     //     }
@@ -51,6 +51,8 @@ int main (void)
     // }
 
     // printf("%i", input);
+
+    // int input = scanf("%[^\n]%256c", input_buffer);
 
 
     while (1)

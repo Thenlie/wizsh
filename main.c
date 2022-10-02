@@ -5,6 +5,8 @@
 
 const int MAX_INPUT = 256;
 
+int get_input(char *buffer);
+
 int main (void)
 {
     /*
@@ -30,31 +32,66 @@ int main (void)
     printf("\033[0m"); 
     // https://ascii.co.uk/
 
-    printf("(~) ");
-
-    // accept user input
     char *input_buffer = malloc(sizeof(char) * 256);
-    int char_count = 0;
-    // int input = scanf("%[^\n]%256c", input_buffer);
 
-    fgets(input_buffer, MAX_INPUT, stdin);
-
-    if (input_buffer[0] != '\n')
+    /*
+        * Main shell loop
+    */
+    while (1)
     {
-        for (int i = 0; input_buffer[i]; i++)
-        {
-            printf("%i, ", input_buffer[i]);
-            // printf("hit\n");
-            char_count++;
-        }
-        printf("Done\n");
-    }
-    printf("%i", char_count);
-    printf("\n");
-    printf("goodbye <3\n");
-    printf("\n");
+        printf("(~) ");
 
-    free(input_buffer);
-    return 0;
+        // accept user input
+        int char_count = 0;
+        int word_count = 1;
+        get_input(input_buffer);
+
+        // loop through input buffer if it has characters
+        if (input_buffer[0] != '\n')
+        {
+            for (int i = 0; input_buffer[i]; i++)
+            {
+                printf("%i, ", input_buffer[i]);
+                char_count++;
+                if (input_buffer[i] == ' ')
+                {
+                    word_count++;
+                }
+            }
+            printf("Done\n");
+        } 
+        // nothing was entered
+        else 
+        {
+            word_count = 0;
+        }
+
+        // single word commands
+        if (word_count == 1)
+        {
+            // "exit" and only "exit" was entered, so quit
+            if (strcmp(input_buffer, "exit\n") == 0)
+            {
+                printf("\n");
+                printf("goodbye <3\n");
+                printf("\n");
+
+                free(input_buffer);
+                return 0;
+            }
+            else 
+            {
+                printf("%s", input_buffer);
+            }
+        }
+        printf("%i chars\n", char_count);
+        printf("%i words\n", word_count);
+        printf("%s", input_buffer);
+    }
 }                            
             
+int get_input(char *buffer)
+{
+    fgets(buffer, MAX_INPUT, stdin);
+    return 0;
+}
