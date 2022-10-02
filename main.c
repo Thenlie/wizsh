@@ -1,9 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-
-const int MAX_INPUT = 256;
+#include "main.h"
 
 int get_input(char *buffer);
 
