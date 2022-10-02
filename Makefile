@@ -1,13 +1,8 @@
 # https://www.cs.colby.edu/maxwell/courses/tutorials/maketutor/
-# wizsh: main.c main.h
-# 	clang -o wizsh main.c
-
-COMPILER=clang
-CFLAGS=-I.
+COMPILER = clang
+CFLAGS = -g -Wall -I
 DEPS = main.h
+SRC = src/
 
-%.o: %.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
-
-wizsh: main.c utils.c
-	$(CC) -o wizsh main.c
+wizsh: ${SRC}main.c ${SRC}utils.c
+	$(CC) -o bin/wizsh ${SRC}main.c

@@ -3,7 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <unistd.h>
-#include "utils.c"
+#include "./src/utils.c"
 
 #define MAX_INPUT 256
 
