@@ -1,4 +1,5 @@
 #include "../main.h"
+#include <dirent.h>
 
 int get_input(char *buffer);
 
@@ -91,6 +92,27 @@ int main (void) {
                     } else {
                         perror("Error while getting dir! 256 char limit.");
                     }
+                // list files in current directory
+                } else if (strcmp(input_buffer, "ls\n") == 0) {
+                        struct dirent *dir_entry; // Pointer for directory entry
+                        DIR *directory = opendir("."); // opendir() returns a pointer of DIR type. 
+
+                        if (directory == NULL) 
+                        {
+                            printf("Could not open current directory" );
+                            continue;
+                        }
+                    
+                        while ((dir_entry = readdir(directory)) != NULL) {
+                            if (dir_entry->d_type == 4) {
+                                printf("\033[0;34m");
+                            }
+                            printf("%s\n", dir_entry->d_name);
+                            printf("\033[0m");
+                        }
+                    
+                        closedir(directory);    
+                        // https://www.geeksforgeeks.org/c-program-list-files-sub-directories-directory/
                 } else {
                     printf("%s", input_buffer);
                 }
