@@ -79,25 +79,9 @@ int main (void) {
             } else if (word_count == 2) {
                 // change directories
                 if (tolower(input_buffer[0]) == 'c' && tolower(input_buffer[1]) == 'd') {
-                    char *path;
-                    path = malloc(256);
-                    int path_count = 0;
-                    for (int i = 3; i < char_count - 1; i++) {
-                        path[path_count] = input_buffer[i];
-                        path_count++;
-                    }
-                    // path[path_count] = '\0';
-                    if (chdir(path) == -1) {
-                        perror("Error while changing directories!");
-                    } else {
-                        char cwd[MAX_INPUT];
-                        if (getcwd(cwd, sizeof(cwd)) != NULL) {
-                            printf("%s\n", cwd);
-                        } else {
-                            perror("Error while getting dir! 256 char limit.");
-                        }
-                    }
-                    free(path);
+                    change_dir(input_buffer, char_count);
+                } else if (tolower(input_buffer[0]) == 'm' && tolower(input_buffer[1]) == 'k') {
+                    create_file(input_buffer, char_count);
                 }
             }
         }

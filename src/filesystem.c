@@ -1,5 +1,6 @@
 #include "filesystem.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <dirent.h>
 
@@ -66,4 +67,55 @@ void list_current_dir(void) {
     closedir(directory);    
     return;
     // https://www.geeksforgeeks.org/c-program-list-files-sub-directories-directory/
+}
+
+void change_dir(char *input_buffer, int char_count) {
+    char *path;
+    path = malloc(256);
+    int path_count = 0;
+    for (int i = 3; i < char_count - 1; i++) {
+        path[path_count] = input_buffer[i];
+        path_count++;
+    }
+    // path[path_count] = '\0';
+    if (chdir(path) == -1) {
+        perror("Error while changing directories!");
+    } else {
+        char cwd[256];
+        if (getcwd(cwd, sizeof(cwd)) != NULL) {
+            printf("%s\n", cwd);
+        } else {
+            perror("Error while getting dir! 256 char limit.");
+        }
+    }
+    free(path);
+    return;
+}
+
+int create_file(char *input_buffer, int char_count) {
+    FILE *f;
+    char *file_name = malloc(char_count - 4);
+    int file_count = 0;
+
+    printf("%i\n", char_count);
+    printf("%s\n", input_buffer);
+
+    for (int i = 3; i < char_count - 1; i++) {
+        file_name[file_count] = input_buffer[i];
+        printf("%i\n", file_name[file_count]);
+        file_count++;
+    }
+
+    printf("%s", file_name);
+
+    f = fopen(file_name, "w");
+    if (f == NULL) {
+        perror("Unable to create file!");
+        fclose(f);
+        free(file_name);
+        return 1;
+    }
+    fclose(f);
+    free(file_name);
+    return 0; 
 }
