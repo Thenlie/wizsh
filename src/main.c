@@ -1,5 +1,15 @@
-#include "../main.h"
-#include <dirent.h>
+// #include "../main.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <unistd.h>
+#include "printutility.h"
+
+#define MAX_INPUT 256
+
+#include "filesystem.h"
 
 int get_input(char *buffer);
 
@@ -73,46 +83,13 @@ int main (void) {
                     return 0;
                 // list project info
                 } else if (strcmp(input_buffer, "info\n") == 0) {
-                    printf("\033[1;34m");
-                    printf("                         --  Info --\n");
-                    printf("\033[1;33m"); 
-                    printf("            wizsh! Created by Leithen Crider in 2022\n");
-                    printf("\033[0m");
-                    printf("Written in C, this was a final project for the Harvard CS50 course.\n");
-                    printf("  This project was built to gain a better understanding of the C\n");
-                    printf("programming language and how shells like bash and zsh might work.\n");
+                    print_info();
                 // print current directory
                 } else if (strcmp(input_buffer, "dir\n") == 0) {
-                    char cwd[MAX_INPUT];
-                    if (getcwd(cwd, sizeof(cwd)) != NULL) {
-                        printf("\033[1;34m");
-                        printf("Current dir: ");
-                        printf("\033[0m");
-                        printf("%s\n", cwd);
-                    } else {
-                        perror("Error while getting dir! 256 char limit.");
-                    }
+                    print_current_dir_long();
                 // list files in current directory
                 } else if (strcmp(input_buffer, "ls\n") == 0) {
-                        struct dirent *dir_entry; // Pointer for directory entry
-                        DIR *directory = opendir("."); // opendir() returns a pointer of DIR type. 
-
-                        if (directory == NULL) 
-                        {
-                            printf("Could not open current directory" );
-                            continue;
-                        }
-                    
-                        while ((dir_entry = readdir(directory)) != NULL) {
-                            if (dir_entry->d_type == 4) {
-                                printf("\033[0;34m");
-                            }
-                            printf("%s\n", dir_entry->d_name);
-                            printf("\033[0m");
-                        }
-                    
-                        closedir(directory);    
-                        // https://www.geeksforgeeks.org/c-program-list-files-sub-directories-directory/
+                    list_current_dir();
                 } else {
                     printf("%s", input_buffer);
                 }

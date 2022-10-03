@@ -1,3 +1,6 @@
+#include "printutility.h"
+#include <stdio.h>
+
 void print_logo(void)
 {
     /*
@@ -23,4 +26,15 @@ void print_logo(void)
     printf("\n");
     printf("\033[0m"); 
     // https://ascii.co.uk/
+}
+
+void print_info(void) {
+    printf("\033[1;34m");
+    printf("                         --  Info --\n");
+    printf("\033[1;33m"); 
+    printf("            wizsh! Created by Leithen Crider in 2022\n");
+    printf("\033[0m");
+    printf("Written in C, this was a final project for the Harvard CS50 course.\n");
+    printf("  This project was built to gain a better understanding of the C\n");
+    printf("programming language and how shells like bash and zsh might work.\n");
 }
