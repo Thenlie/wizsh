@@ -1,38 +1,26 @@
-# https://www.cs.colby.edu/maxwell/courses/tutorials/maketutor/
-# COMPILER = clang
-# CFLAGS = -g -Wall
-# DEPS = main.h
+# https://www.gnu.org/software/make/manual/html_node/Simple-Makefile.html#Simple-Makefile
 SRC = src/
-
-# wizsh: ${SRC}*.c
-# 	$(CC) -o bin/wizsh ${SRC}main.c
-
-# clean:
-# 	$(RM) -r bin/*
-
-
-
-
+OBJ = obj/
 
 CC = clang
-CFLAGS = -Wall
+CFLAGS = -Wall -g
 LDFLAGS =
-OBJFILES = main.o filesystem.o printutility.o
-TARGET = wizsh
+OBJFILES = $(OBJ)main.o $(OBJ)filesystem.o $(OBJ)printutility.o
+TARGET = bin/wizsh
 
 all: $(TARGET)
 
 $(TARGET): $(OBJFILES)
 	$(CC) $(CFLAGS) -o $(TARGET) $(OBJFILES) $(LDFLAGS)
 
-main.o: ${SRC}main.c
-	$(CC) -c ${SRC}main.c
+$(OBJ)main.o: $(SRC)main.c
+	$(CC) -c $(SRC)main.c -o $(OBJ)main.o
 
-filesystem.o: ${SRC}filesystem.c
-	$(CC) -c ${SRC}filesystem.c
+$(OBJ)filesystem.o: $(SRC)filesystem.c
+	$(CC) -c $(SRC)filesystem.c -o $(OBJ)filesystem.o
 
-printutility.o: ${SRC}printutility.c
-	$(CC) -c ${SRC}printutility.c
+$(OBJ)printutility.o: $(SRC)printutility.c
+	$(CC) -c $(SRC)printutility.c -o $(OBJ)printutility.o
 
 clean:
 	rm -f $(OBJFILES) $(TARGET) *~
