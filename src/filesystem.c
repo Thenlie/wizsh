@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <dirent.h>
 
-void print_current_dir_long(void) {
+void print_current_dir_path(void) {
     char cwd[256];
     if (getcwd(cwd, sizeof(cwd)) != NULL) {
         printf("\033[1;34m"); // blue
@@ -14,6 +14,32 @@ void print_current_dir_long(void) {
         perror("Error while getting dir! 256 char limit.");
     }
     return;
+}
+
+void print_current_dir(void) {
+    char cwd[256];
+    char cur_dir[256];
+    int count = 0;
+    if (getcwd(cwd, sizeof(cwd)) != NULL) {
+        for (int i = 0; cwd[i]; i++) {
+            // printf("%c", cwd[i]);
+            if (cwd[i] == 47) {
+                count = 0;
+            } else {
+                if (count == 0) {
+                    for (int j = 0; j < i; j++) {
+                        cur_dir[j] = 0;
+                    }
+                }
+                cur_dir[count] = cwd[i];
+                count++;
+            }
+        }
+        printf(" %s ", cur_dir);
+        return;
+    } else {
+        perror("Error while getting dir! 256 char limit.");
+    }
 }
 
 void list_current_dir(void) {

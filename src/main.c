@@ -1,15 +1,14 @@
-// #include "../main.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <unistd.h>
+
 #include "printutility.h"
+#include "filesystem.h"
 
 #define MAX_INPUT 256
 
-#include "filesystem.h"
 
 int get_input(char *buffer);
 
@@ -22,31 +21,11 @@ int main (void) {
         * Main shell loop
     */
     while (1) {
-        // print current directory only
-        char cwd[MAX_INPUT];
-        char cur_dir[MAX_INPUT];
-        int count = 0;
-        if (getcwd(cwd, sizeof(cwd)) != NULL) {
-            for (int i = 0; cwd[i]; i++) {
-                // printf("%c", cwd[i]);
-                if (cwd[i] == 47) {
-                    count = 0;
-                } else {
-                    if (count == 0) {
-                        for (int j = 0; j < i; j++) {
-                            cur_dir[j] = 0;
-                        }
-                    }
-                    cur_dir[count] = cwd[i];
-                    count++;
-                }
-            }
-            printf("\033[1;105m");
-            printf(" %s ~> ", cur_dir);
-            printf("\033[0m ");
-        } else {
-            perror("Error while getting dir! 256 char limit.");
-        }
+        // print start of line marking
+        printf("\033[1;105m");
+        print_current_dir();
+        printf("~> ");
+        printf("\033[0m ");
 
         // accept user input
         int char_count = 0;
@@ -57,7 +36,6 @@ int main (void) {
             // loop through input buffer if it has characters
             if (input_buffer[0] != '\n') {
                 for (int i = 0; input_buffer[i]; i++) {
-                    // printf("%i, ", input_buffer[i]);
                     char_count++;
                     if (input_buffer[i] == ' ') {
                         word_count++;
@@ -86,12 +64,16 @@ int main (void) {
                     print_info();
                 // print current directory
                 } else if (strcmp(input_buffer, "dir\n") == 0) {
-                    print_current_dir_long();
+                    print_current_dir_path();
                 // list files in current directory
                 } else if (strcmp(input_buffer, "ls\n") == 0) {
                     list_current_dir();
                 } else {
+                    printf("\033[0;31m");
+                    printf("Invalid command! ");
+                    printf("\033[4;37m");
                     printf("%s", input_buffer);
+                    printf("\033[0m");
                 }
             // multi-word commands
             } else if (word_count == 2) {
@@ -118,9 +100,6 @@ int main (void) {
                     free(path);
                 }
             }
-            // printf("%i chars\n", char_count);
-            // printf("%i words\n", word_count);
-            // printf("%s", input_buffer);
         }
     }
 }                            
