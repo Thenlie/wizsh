@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 void print_current_dir_path(void) {
     char cwd[256];
@@ -118,4 +120,25 @@ int create_file(char *input, int char_count) {
     fclose(f);
     free(file_name);
     return 0; 
+}
+
+int create_dir(char *input, int char_count) {
+    char *dir_name = malloc(char_count - 4);
+    int dir_count = 0;
+
+    // get string after 'cd' from input
+    for (int i = 5; i < char_count; i++) {
+        dir_name[dir_count] = input[i];
+        printf("%i\n", dir_name[dir_count]);
+        dir_count++;
+    }
+
+    if (mkdir(dir_name, 0777) == -1) {
+        perror("Error while creating dir!");
+        return 1;
+    }
+
+    free(dir_name);
+
+    return 0;
 }

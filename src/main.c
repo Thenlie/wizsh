@@ -93,6 +93,8 @@ int main (void) {
                 // change directories
                 if (tolower(clean_input[0]) == 'c' && tolower(clean_input[1]) == 'd') {
                     change_dir(clean_input, char_count);
+                } else if (tolower(clean_input[0]) == 'm' && tolower(clean_input[1]) == 'k' &&  tolower(clean_input[2]) == 'd' && tolower(clean_input[3]) == 'i' && tolower(clean_input[4]) == 'r') {
+                    create_dir(clean_input, char_count);
                 } else if (tolower(clean_input[0]) == 'm' && tolower(clean_input[1]) == 'k') {
                     create_file(clean_input, char_count);
                 } else {
