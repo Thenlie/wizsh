@@ -105,7 +105,6 @@ int create_file(char *input, int char_count) {
     // get string after 'cd' from input
     for (int i = 3; i < char_count; i++) {
         file_name[file_count] = input[i];
-        printf("%i\n", file_name[file_count]);
         file_count++;
     }
 
@@ -129,7 +128,6 @@ int create_dir(char *input, int char_count) {
     // get string after 'cd' from input
     for (int i = 5; i < char_count; i++) {
         dir_name[dir_count] = input[i];
-        printf("%i\n", dir_name[dir_count]);
         dir_count++;
     }
 

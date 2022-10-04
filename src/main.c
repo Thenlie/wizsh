@@ -90,16 +90,31 @@ int main (void) {
                 }
             // multi-word commands
             } else if (word_count == 2) {
+
+                // get first word in command
+                char *first_cmd = malloc(256);
+                for (int i = 0; clean_input[i] != ' '; i++) {
+                    first_cmd[i] = tolower(clean_input[i]);
+                    if (clean_input[i+1] == ' ') {
+                        first_cmd[i+1] = '\0';
+                    }
+                }
+
                 // change directories
-                if (tolower(clean_input[0]) == 'c' && tolower(clean_input[1]) == 'd') {
+                if (tolower(strcmp(first_cmd, "cd") == 0)) {
                     change_dir(clean_input, char_count);
-                } else if (tolower(clean_input[0]) == 'm' && tolower(clean_input[1]) == 'k' &&  tolower(clean_input[2]) == 'd' && tolower(clean_input[3]) == 'i' && tolower(clean_input[4]) == 'r') {
+                // create file
+                } else if (tolower(strcmp(first_cmd, "mkdir") == 0)) {
                     create_dir(clean_input, char_count);
-                } else if (tolower(clean_input[0]) == 'm' && tolower(clean_input[1]) == 'k') {
+                // create folder
+                } else if (tolower(strcmp(first_cmd, "mk") == 0)) {
                     create_file(clean_input, char_count);
                 } else {
                     print_invalid_cmd(input_buffer);
                 }
+
+                free(first_cmd);
+
             } else {
                 print_invalid_cmd(input_buffer);
             }
