@@ -16,7 +16,7 @@ int main (void) {
 
     print_logo();
     char *input_buffer = malloc(sizeof(char) * 256);
-
+    char *clean_input = malloc(sizeof(char) * 256);
     /*
         * Main shell loop
     */
@@ -30,16 +30,33 @@ int main (void) {
         // accept user input
         int char_count = 0;
         int word_count = 1;
+        char prev_char;
+        int clean_count = 0;
         if (get_input(input_buffer) == 1) {
             continue;
         } else {
             // loop through input buffer if it has characters
             if (input_buffer[0] != '\n') {
                 for (int i = 0; input_buffer[i]; i++) {
-                    char_count++;
-                    if (input_buffer[i] == ' ') {
+                    if (i == 0 && input_buffer[i] == ' ') {
+                        prev_char = ' ';
+                        continue;
+                    }
+                    if (input_buffer[i] == ' ' && prev_char != ' ') {
                         word_count++;
                     }
+                    if (!(input_buffer[i] == ' ' && prev_char == ' ') && input_buffer[i] != '\n') {
+                        char_count++;
+                        clean_input[clean_count] = input_buffer[i];
+                        clean_count++;
+                    }
+                    if (input_buffer[i] != '\n') {
+                        prev_char = input_buffer[i];
+                    }
+                }
+                if (prev_char == ' ') {
+                    word_count--;
+                    clean_input[clean_count-1] = 0;
                 }
             } else {
             // nothing was entered
@@ -50,40 +67,45 @@ int main (void) {
             // single word commands
             if (word_count == 1) {
                 // lowercase the entire input
-                for (int i = 0; input_buffer[i]; i++) {
-                    input_buffer[i] = tolower(input_buffer[i]);
+                for (int i = 0; clean_input[i]; i++) {
+                    clean_input[i] = tolower(clean_input[i]);
                 }
                 // exit
-                if (strcmp(input_buffer, "exit\n") == 0) {
+                if (strcmp(clean_input, "exit") == 0) {
                     printf("\ngoodbye <3\n\n");
-
                     free(input_buffer);
+                    free(clean_input);
                     return 0;
                 // list project info
-                } else if (strcmp(input_buffer, "info\n") == 0) {
+                } else if (strcmp(clean_input, "info") == 0) {
                     print_info();
                 // print current directory
-                } else if (strcmp(input_buffer, "dir\n") == 0) {
+                } else if (strcmp(clean_input, "dir") == 0) {
                     print_current_dir_path();
                 // list files in current directory
-                } else if (strcmp(input_buffer, "ls\n") == 0) {
+                } else if (strcmp(clean_input, "ls") == 0) {
                     list_current_dir();
                 } else {
-                    printf("\033[0;31m");
-                    printf("Invalid command! ");
-                    printf("\033[4;37m");
-                    printf("%s", input_buffer);
-                    printf("\033[0m");
+                    print_invalid_cmd(input_buffer);
                 }
             // multi-word commands
             } else if (word_count == 2) {
                 // change directories
-                if (tolower(input_buffer[0]) == 'c' && tolower(input_buffer[1]) == 'd') {
-                    change_dir(input_buffer, char_count);
-                } else if (tolower(input_buffer[0]) == 'm' && tolower(input_buffer[1]) == 'k') {
-                    create_file(input_buffer, char_count);
+                if (tolower(clean_input[0]) == 'c' && tolower(clean_input[1]) == 'd') {
+                    change_dir(clean_input, char_count);
+                } else if (tolower(clean_input[0]) == 'm' && tolower(clean_input[1]) == 'k') {
+                    create_file(clean_input, char_count);
+                } else {
+                    print_invalid_cmd(input_buffer);
                 }
+            } else {
+                print_invalid_cmd(input_buffer);
             }
+        }
+
+        // clear out clean input in prep for next input
+        for (int i = 0; input_buffer[i]; i++) {
+            clean_input[i] = 0;
         }
     }
 }                            

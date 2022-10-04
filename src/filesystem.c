@@ -69,15 +69,18 @@ void list_current_dir(void) {
     // https://www.geeksforgeeks.org/c-program-list-files-sub-directories-directory/
 }
 
-void change_dir(char *input_buffer, int char_count) {
+void change_dir(char *input, int char_count) {
     char *path;
     path = malloc(256);
     int path_count = 0;
-    for (int i = 3; i < char_count - 1; i++) {
-        path[path_count] = input_buffer[i];
+
+    // get string after 'cd' from input
+    for (int i = 3; i < char_count; i++) {
+        path[path_count] = input[i];
         path_count++;
     }
-    // path[path_count] = '\0';
+
+    // change dir if possible
     if (chdir(path) == -1) {
         perror("Error while changing directories!");
     } else {
@@ -92,22 +95,19 @@ void change_dir(char *input_buffer, int char_count) {
     return;
 }
 
-int create_file(char *input_buffer, int char_count) {
+int create_file(char *input, int char_count) {
     FILE *f;
     char *file_name = malloc(char_count - 4);
     int file_count = 0;
 
-    printf("%i\n", char_count);
-    printf("%s\n", input_buffer);
-
-    for (int i = 3; i < char_count - 1; i++) {
-        file_name[file_count] = input_buffer[i];
+    // get string after 'cd' from input
+    for (int i = 3; i < char_count; i++) {
+        file_name[file_count] = input[i];
         printf("%i\n", file_name[file_count]);
         file_count++;
     }
 
-    printf("%s", file_name);
-
+    // create file if it does not exist
     f = fopen(file_name, "w");
     if (f == NULL) {
         perror("Unable to create file!");

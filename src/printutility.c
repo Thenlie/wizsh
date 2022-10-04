@@ -38,3 +38,11 @@ void print_info(void) {
     printf("  This project was built to gain a better understanding of the C\n");
     printf("programming language and how shells like bash and zsh might work.\n");
 }
+
+void print_invalid_cmd(char *cmd) {
+    printf("\033[0;31m");
+    printf("Invalid command! ");
+    printf("\033[4;37m");
+    printf("%s", cmd);
+    printf("\033[0m");
+}
