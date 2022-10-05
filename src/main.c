@@ -101,14 +101,16 @@ int main (void) {
                 }
 
                 // change directories
-                if (tolower(strcmp(first_cmd, "cd") == 0)) {
+                if (strcmp(first_cmd, "cd") == 0) {
                     change_dir(clean_input, char_count);
                 // create file
-                } else if (tolower(strcmp(first_cmd, "mkdir") == 0)) {
+                } else if (strcmp(first_cmd, "mkdir") == 0) {
                     create_dir(clean_input, char_count);
                 // create folder
-                } else if (tolower(strcmp(first_cmd, "mk") == 0)) {
+                } else if (strcmp(first_cmd, "mk") == 0) {
                     create_file(clean_input, char_count);
+                } else if (strcmp(first_cmd, "rmf" )== 0) {
+                    remove_file(clean_input, char_count);
                 } else {
                     print_invalid_cmd(input_buffer);
                 }

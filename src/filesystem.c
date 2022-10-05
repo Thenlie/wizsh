@@ -51,9 +51,7 @@ void list_current_dir(void) {
 
     if (directory == NULL) 
     {
-        printf("\033[1;31m"); // red
-        printf("Could not open current directory" );
-        printf("\033[0m");
+        perror("Unable to open current directory" );
         return;
     }
 
@@ -84,7 +82,7 @@ void change_dir(char *input, int char_count) {
 
     // change dir if possible
     if (chdir(path) == -1) {
-        perror("Error while changing directories!");
+        perror("Unable to change directories!");
     } else {
         char cwd[256];
         if (getcwd(cwd, sizeof(cwd)) != NULL) {
@@ -102,7 +100,7 @@ int create_file(char *input, int char_count) {
     char *file_name = malloc(char_count - 4);
     int file_count = 0;
 
-    // get string after 'cd' from input
+    // get string after 'mk' from input
     for (int i = 3; i < char_count; i++) {
         file_name[file_count] = input[i];
         file_count++;
@@ -125,18 +123,38 @@ int create_dir(char *input, int char_count) {
     char *dir_name = malloc(char_count - 4);
     int dir_count = 0;
 
-    // get string after 'cd' from input
-    for (int i = 5; i < char_count; i++) {
+    // get string after 'mkdir' from input
+    for (int i = 6; i < char_count; i++) {
         dir_name[dir_count] = input[i];
         dir_count++;
     }
 
     if (mkdir(dir_name, 0777) == -1) {
-        perror("Error while creating dir!");
+        perror("Unable to create dir!");
         return 1;
     }
 
     free(dir_name);
+
+    return 0;
+}
+
+int remove_file(char *input, int char_count) {
+    char *file_name = malloc(char_count - 4);
+    int file_count = 0;
+
+    // get string after 'rmf' from input
+    for (int i = 4; i < char_count; i++) {
+        file_name[file_count] = input[i];
+        file_count++;
+    }
+
+    if (remove(file_name) == -1) {
+        perror("Unable to remove file!");
+        return 1;
+    }
+
+    free(file_name);
 
     return 0;
 }
