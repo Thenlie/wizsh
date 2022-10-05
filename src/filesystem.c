@@ -130,7 +130,7 @@ int create_dir(char *input, int char_count) {
     }
 
     if (mkdir(dir_name, 0777) == -1) {
-        perror("Unable to create dir!");
+        perror("Unable to create directory!");
         return 1;
     }
 
@@ -151,6 +151,26 @@ int remove_file(char *input, int char_count) {
 
     if (remove(file_name) == -1) {
         perror("Unable to remove file!");
+        return 1;
+    }
+
+    free(file_name);
+
+    return 0;
+}
+
+int remove_dir(char *input, int char_count) {
+    char *file_name = malloc(char_count - 4);
+    int file_count = 0;
+
+    // get string after 'rmdir' from input
+    for (int i = 6; i < char_count; i++) {
+        file_name[file_count] = input[i];
+        file_count++;
+    }
+
+    if (rmdir(file_name) == -1) {
+        perror("Unable to remove directory!");
         return 1;
     }
 

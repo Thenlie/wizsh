@@ -109,8 +109,10 @@ int main (void) {
                 // create folder
                 } else if (strcmp(first_cmd, "mk") == 0) {
                     create_file(clean_input, char_count);
-                } else if (strcmp(first_cmd, "rmf" )== 0) {
+                } else if (strcmp(first_cmd, "rmf")== 0) {
                     remove_file(clean_input, char_count);
+                } else if (strcmp(first_cmd, "rmdir") == 0) {
+                    remove_dir(clean_input, char_count);
                 } else {
                     print_invalid_cmd(input_buffer);
                 }
