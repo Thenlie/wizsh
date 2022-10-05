@@ -11,6 +11,7 @@
 
 
 int get_input(char *buffer);
+void parse_input(char *input, char** input_array);
 
 int main (void) {
 
@@ -35,7 +36,11 @@ int main (void) {
         if (get_input(input_buffer) == 1) {
             continue;
         } else {
-            // loop through input buffer if it has characters
+            /*
+                * loop through input buffer if it has characters
+                * ignore trailing and leading whitespace
+                * ignore consecutive spaces
+            */
             if (input_buffer[0] != '\n') {
                 for (int i = 0; input_buffer[i]; i++) {
                     if (i == 0 && input_buffer[i] == ' ') {
@@ -62,6 +67,19 @@ int main (void) {
             // nothing was entered
                 word_count = 0;
                 continue;
+            }
+
+
+            char* input_array[word_count];
+            for (int i = 0; i < word_count; i++) {
+                input_array[i] = malloc(64);
+            }
+            parse_input(clean_input, input_array);
+
+            printf("%i", word_count);
+
+            for (int i = 0; i < word_count; i++) {
+                printf("Parse: %s\n", input_array[i]);
             }
 
             // single word commands
@@ -92,7 +110,7 @@ int main (void) {
             } else if (word_count == 2) {
 
                 // get first word in command
-                char *first_cmd = malloc(256);
+                char* first_cmd = malloc(128);
                 for (int i = 0; clean_input[i] != ' '; i++) {
                     first_cmd[i] = tolower(clean_input[i]);
                     if (clean_input[i+1] == ' ') {
@@ -109,8 +127,10 @@ int main (void) {
                 // create folder
                 } else if (strcmp(first_cmd, "mk") == 0) {
                     create_file(clean_input, char_count);
+                // remove file
                 } else if (strcmp(first_cmd, "rmf")== 0) {
                     remove_file(clean_input, char_count);
+                // remove folder
                 } else if (strcmp(first_cmd, "rmdir") == 0) {
                     remove_dir(clean_input, char_count);
                 } else {
@@ -121,6 +141,10 @@ int main (void) {
 
             } else {
                 print_invalid_cmd(input_buffer);
+            }
+            // free input array
+            for (int i = 0; i < word_count; i++) {
+                free(input_array[i]);
             }
         }
 
@@ -139,4 +163,31 @@ int get_input(char *buffer) {
         perror("Error while reading input! 256 char limit.");
         return 1;
     }
+}
+
+void parse_input(char *input, char** input_array) {
+    int str_count = 0;
+    int arr_count = 0;
+    char* string_buffer = malloc(128);
+    for (int i = 0; input[i]; i++) {
+        if (input[i] == ' ') {
+            // finish string, push to array
+            string_buffer[str_count] = '\0';
+            strcpy(input_array[arr_count], string_buffer);
+            // reset string buffer
+            for (int j = 0; j < str_count+1; j++) {
+                string_buffer[j] = 0;
+            }
+            str_count = 0;
+            arr_count++;
+        } else {
+            // push to string buffer, increase count
+            string_buffer[str_count] = input[i];
+            str_count++;
+        }
+    }
+    // finish string, push to array
+    string_buffer[str_count] = '\0';
+    strcpy(input_array[arr_count], string_buffer);
+    free(string_buffer);
 }
