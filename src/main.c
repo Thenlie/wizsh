@@ -76,68 +76,64 @@ int main (void) {
             }
             parse_input(clean_input, input_array);
 
-            printf("%i", word_count);
+            printf("Words: %i\n", word_count);
 
             for (int i = 0; i < word_count; i++) {
                 printf("Parse: %s\n", input_array[i]);
             }
 
-            // single word commands
-            if (word_count == 1) {
-                // lowercase the entire input
-                for (int i = 0; clean_input[i]; i++) {
-                    clean_input[i] = tolower(clean_input[i]);
+            if (word_count > 0) {
+                // lowercase the first cmd 
+                for (int i = 0; input_array[0][i]; i++) {
+                    input_array[0][i] = tolower(input_array[0][i]);
                 }
+
                 // exit
-                if (strcmp(clean_input, "exit") == 0) {
+                if (strcmp(input_array[0], "exit") == 0) {
                     printf("\ngoodbye <3\n\n");
                     free(input_buffer);
                     free(clean_input);
-                    return 0;
-                // list project info
-                } else if (strcmp(clean_input, "info") == 0) {
-                    print_info();
-                // print current directory
-                } else if (strcmp(clean_input, "dir") == 0) {
-                    print_current_dir_path();
-                // list files in current directory
-                } else if (strcmp(clean_input, "ls") == 0) {
-                    list_current_dir();
-                } else {
-                    print_invalid_cmd(input_buffer);
-                }
-            // multi-word commands
-            } else if (word_count == 2) {
-
-                // get first word in command
-                char* first_cmd = malloc(128);
-                for (int i = 0; clean_input[i] != ' '; i++) {
-                    first_cmd[i] = tolower(clean_input[i]);
-                    if (clean_input[i+1] == ' ') {
-                        first_cmd[i+1] = '\0';
+                    // free input array
+                    for (int i = 0; i < word_count; i++) {
+                        free(input_array[i]);
                     }
-                }
-
+                    return 0;
+                } 
+                // list project info
+                else if (strcmp(input_array[0], "info") == 0) {
+                    print_info();
+                } 
+                // print current directory
+                else if (strcmp(input_array[0], "dir") == 0) {
+                    print_current_dir_path();
+                } 
+                // list files in current directory
+                else if (strcmp(input_array[0], "ls") == 0) {
+                    list_current_dir();
+                } 
                 // change directories
-                if (strcmp(first_cmd, "cd") == 0) {
-                    change_dir(clean_input, char_count);
+                else if (strcmp(input_array[0], "cd") == 0) {
+                    change_dir(input_array);
+                } 
                 // create file
-                } else if (strcmp(first_cmd, "mkdir") == 0) {
-                    create_dir(clean_input, char_count);
+                else if (strcmp(input_array[0], "mkdir") == 0) {
+                    create_dir(input_array);
+                } 
                 // create folder
-                } else if (strcmp(first_cmd, "mk") == 0) {
-                    create_file(clean_input, char_count);
+                else if (strcmp(input_array[0], "mk") == 0) {
+                    create_file(input_array);
+                } 
                 // remove file
-                } else if (strcmp(first_cmd, "rmf")== 0) {
-                    remove_file(clean_input, char_count);
+                else if (strcmp(input_array[0], "rmf")== 0) {
+                    remove_file(input_array);
+                } 
                 // remove folder
-                } else if (strcmp(first_cmd, "rmdir") == 0) {
-                    remove_dir(clean_input, char_count);
-                } else {
+                else if (strcmp(input_array[0], "rmdir") == 0) {
+                    remove_dir(input_array);
+                } 
+                else {
                     print_invalid_cmd(input_buffer);
                 }
-
-                free(first_cmd);
 
             } else {
                 print_invalid_cmd(input_buffer);

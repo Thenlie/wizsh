@@ -69,16 +69,8 @@ void list_current_dir(void) {
     // https://www.geeksforgeeks.org/c-program-list-files-sub-directories-directory/
 }
 
-void change_dir(char *input, int char_count) {
-    char *path;
-    path = malloc(256);
-    int path_count = 0;
-
-    // get string after 'cd' from input
-    for (int i = 3; i < char_count; i++) {
-        path[path_count] = input[i];
-        path_count++;
-    }
+void change_dir(char **input) {
+    char *path = input[1];
 
     // change dir if possible
     if (chdir(path) == -1) {
@@ -91,20 +83,12 @@ void change_dir(char *input, int char_count) {
             perror("Error while getting dir! 256 char limit.");
         }
     }
-    free(path);
     return;
 }
 
-int create_file(char *input, int char_count) {
+int create_file(char **input) {
     FILE *f;
-    char *file_name = malloc(char_count - 4);
-    int file_count = 0;
-
-    // get string after 'mk' from input
-    for (int i = 3; i < char_count; i++) {
-        file_name[file_count] = input[i];
-        file_count++;
-    }
+    char *file_name = input[1];
 
     // create file if it does not exist
     f = fopen(file_name, "w");
@@ -115,66 +99,35 @@ int create_file(char *input, int char_count) {
         return 1;
     }
     fclose(f);
-    free(file_name);
     return 0; 
 }
 
-int create_dir(char *input, int char_count) {
-    char *dir_name = malloc(char_count - 4);
-    int dir_count = 0;
-
-    // get string after 'mkdir' from input
-    for (int i = 6; i < char_count; i++) {
-        dir_name[dir_count] = input[i];
-        dir_count++;
-    }
-
+int create_dir(char **input) {
+    char *dir_name = input[1];
     if (mkdir(dir_name, 0777) == -1) {
         perror("Unable to create directory!");
         return 1;
     }
 
-    free(dir_name);
-
     return 0;
 }
 
-int remove_file(char *input, int char_count) {
-    char *file_name = malloc(char_count - 4);
-    int file_count = 0;
-
-    // get string after 'rmf' from input
-    for (int i = 4; i < char_count; i++) {
-        file_name[file_count] = input[i];
-        file_count++;
-    }
-
+int remove_file(char **input) {
+    char *file_name = input[1];
     if (remove(file_name) == -1) {
         perror("Unable to remove file!");
         return 1;
     }
 
-    free(file_name);
-
     return 0;
 }
 
-int remove_dir(char *input, int char_count) {
-    char *file_name = malloc(char_count - 4);
-    int file_count = 0;
-
-    // get string after 'rmdir' from input
-    for (int i = 6; i < char_count; i++) {
-        file_name[file_count] = input[i];
-        file_count++;
-    }
-
+int remove_dir(char **input) {
+    char *file_name = input[1];
     if (rmdir(file_name) == -1) {
         perror("Unable to remove directory!");
         return 1;
     }
-
-    free(file_name);
 
     return 0;
 }
