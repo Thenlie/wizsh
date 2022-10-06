@@ -11,6 +11,7 @@
 
 
 int get_input(char *buffer);
+void parse_input(char *input, char** input_array);
 
 int main (void) {
 
@@ -35,7 +36,11 @@ int main (void) {
         if (get_input(input_buffer) == 1) {
             continue;
         } else {
-            // loop through input buffer if it has characters
+            /*
+                * loop through input buffer if it has characters
+                * ignore trailing and leading whitespace
+                * ignore consecutive spaces
+            */
             if (input_buffer[0] != '\n') {
                 for (int i = 0; input_buffer[i]; i++) {
                     if (i == 0 && input_buffer[i] == ' ') {
@@ -64,63 +69,78 @@ int main (void) {
                 continue;
             }
 
-            // single word commands
-            if (word_count == 1) {
-                // lowercase the entire input
-                for (int i = 0; clean_input[i]; i++) {
-                    clean_input[i] = tolower(clean_input[i]);
+
+            char* input_array[word_count];
+            for (int i = 0; i < word_count; i++) {
+                input_array[i] = malloc(64);
+            }
+            parse_input(clean_input, input_array);
+
+            // printf("Words: %i\n", word_count);
+
+            // for (int i = 0; i < word_count; i++) {
+            //     printf("Parse: %s\n", input_array[i]);
+            // }
+
+            if (word_count > 0) {
+                // lowercase the first cmd 
+                for (int i = 0; input_array[0][i]; i++) {
+                    input_array[0][i] = tolower(input_array[0][i]);
                 }
+
                 // exit
-                if (strcmp(clean_input, "exit") == 0) {
+                if (strcmp(input_array[0], "exit") == 0 && word_count == 1) {
                     printf("\ngoodbye <3\n\n");
                     free(input_buffer);
                     free(clean_input);
-                    return 0;
-                // list project info
-                } else if (strcmp(clean_input, "info") == 0) {
-                    print_info();
-                // print current directory
-                } else if (strcmp(clean_input, "dir") == 0) {
-                    print_current_dir_path();
-                // list files in current directory
-                } else if (strcmp(clean_input, "ls") == 0) {
-                    list_current_dir();
-                } else {
-                    print_invalid_cmd(input_buffer);
-                }
-            // multi-word commands
-            } else if (word_count == 2) {
-
-                // get first word in command
-                char *first_cmd = malloc(256);
-                for (int i = 0; clean_input[i] != ' '; i++) {
-                    first_cmd[i] = tolower(clean_input[i]);
-                    if (clean_input[i+1] == ' ') {
-                        first_cmd[i+1] = '\0';
+                    // free input array
+                    for (int i = 0; i < word_count; i++) {
+                        free(input_array[i]);
                     }
-                }
-
+                    return 0;
+                } 
+                // list project info
+                else if (strcmp(input_array[0], "info") == 0 && word_count <= 2) {
+                    print_info(input_array, word_count);
+                } 
+                // print current directory
+                else if (strcmp(input_array[0], "dir") == 0 && word_count <= 2) {
+                    print_current_dir_path(input_array, word_count);
+                } 
+                // list files in current directory
+                else if (strcmp(input_array[0], "ls") == 0 && word_count <= 2) {
+                    list_current_dir(input_array, word_count);
+                } 
                 // change directories
-                if (strcmp(first_cmd, "cd") == 0) {
-                    change_dir(clean_input, char_count);
+                else if (strcmp(input_array[0], "cd") == 0 && word_count <= 2) {
+                    change_dir(input_array, word_count);
+                } 
                 // create file
-                } else if (strcmp(first_cmd, "mkdir") == 0) {
-                    create_dir(clean_input, char_count);
+                else if (strcmp(input_array[0], "mkdir") == 0 && word_count <= 2) {
+                    create_dir(input_array, word_count);
+                } 
                 // create folder
-                } else if (strcmp(first_cmd, "mk") == 0) {
-                    create_file(clean_input, char_count);
-                } else if (strcmp(first_cmd, "rmf")== 0) {
-                    remove_file(clean_input, char_count);
-                } else if (strcmp(first_cmd, "rmdir") == 0) {
-                    remove_dir(clean_input, char_count);
-                } else {
+                else if (strcmp(input_array[0], "mk") == 0 && word_count <= 2) {
+                    create_file(input_array, word_count);
+                } 
+                // remove file
+                else if (strcmp(input_array[0], "rmf")== 0 && word_count <= 2) {
+                    remove_file(input_array, word_count);
+                } 
+                // remove folder
+                else if (strcmp(input_array[0], "rmdir") == 0 && word_count <= 2) {
+                    remove_dir(input_array, word_count);
+                } 
+                else {
                     print_invalid_cmd(input_buffer);
                 }
-
-                free(first_cmd);
 
             } else {
                 print_invalid_cmd(input_buffer);
+            }
+            // free input array
+            for (int i = 0; i < word_count; i++) {
+                free(input_array[i]);
             }
         }
 
@@ -139,4 +159,31 @@ int get_input(char *buffer) {
         perror("Error while reading input! 256 char limit.");
         return 1;
     }
+}
+
+void parse_input(char *input, char** input_array) {
+    int str_count = 0;
+    int arr_count = 0;
+    char* string_buffer = malloc(128);
+    for (int i = 0; input[i]; i++) {
+        if (input[i] == ' ') {
+            // finish string, push to array
+            string_buffer[str_count] = '\0';
+            strcpy(input_array[arr_count], string_buffer);
+            // reset string buffer
+            for (int j = 0; j < str_count+1; j++) {
+                string_buffer[j] = 0;
+            }
+            str_count = 0;
+            arr_count++;
+        } else {
+            // push to string buffer, increase count
+            string_buffer[str_count] = input[i];
+            str_count++;
+        }
+    }
+    // finish string, push to array
+    string_buffer[str_count] = '\0';
+    strcpy(input_array[arr_count], string_buffer);
+    free(string_buffer);
 }
