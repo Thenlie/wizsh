@@ -103,6 +103,10 @@ int main (void) {
                 else if (strcmp(input_array[0], "info") == 0 && word_count <= 2) {
                     print_info(input_array, word_count);
                 } 
+                // clear terminal
+                else if (strcmp(input_array[0], "clear") == 0 && word_count <= 2) {
+                    clear_term(input_array, word_count);
+                } 
                 // print current directory
                 else if (strcmp(input_array[0], "dir") == 0 && word_count <= 2) {
                     print_current_dir_path(input_array, word_count);

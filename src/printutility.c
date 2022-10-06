@@ -67,3 +67,18 @@ void print_invalid_use_cmd(char *cmd) {
     printf("\033[0m");
     printf("Use %s --help or -h for help using this command.\n", cmd);
 }
+
+void clear_term(char** input, int word_count) {
+    if (word_count == 1) {
+        printf("\e[1;1H\e[2J");
+    } else if (word_count == 2 && (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0)) {
+        printf("\033[1;34m                                  -- %s --\n\n", input[0]); // <- first command
+        printf("\033[0mThe \033[1;33mclear\033[0m command is used to clear the terminal of all input.\n\n");
+        printf("\033[1;35m                                   Usage\n\n"); 
+        printf("\033[0m ~> \033[1;33mclear        \033[0m| The main usage of the command\n");
+        printf("\033[0m ~> \033[1;33mclear -h     \033[0m| Help with the command\n");
+        printf("\033[0m ~> \033[1;33mclear --help \033[0m| Help with the command\n\n");
+    } else {
+        print_invalid_use_cmd("clear");
+    }
+}
