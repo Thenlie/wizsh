@@ -4,10 +4,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 
-void print_current_dir_path(int word_count) {
+void print_current_dir_path(char **input, int word_count) {
     if (word_count == 1) {
         char cwd[256];
         if (getcwd(cwd, sizeof(cwd)) != NULL) {
@@ -18,6 +19,11 @@ void print_current_dir_path(int word_count) {
         } else {
             perror("Error while getting dir! 256 char limit.");
         }
+        return;
+    } else if (word_count == 2 && (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0)) {
+        printf("%s", input[0]); // <- first command
+    } else {
+        print_invalid_use_cmd("dir");
         return;
     }
 }
@@ -48,7 +54,7 @@ void print_current_dir(void) {
     }
 }
 
-void list_current_dir(int word_count) {
+void list_current_dir(char** input, int word_count) {
     if (word_count == 1) {
         struct dirent *dir_entry; // Pointer for directory entry
         DIR *directory = opendir("."); // opendir() returns a pointer of DIR type. 
@@ -69,76 +75,120 @@ void list_current_dir(int word_count) {
         }
         closedir(directory);    
         return;
-    }
     // https://www.geeksforgeeks.org/c-program-list-files-sub-directories-directory/
+    } else if (word_count == 2 && (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0)) {
+        printf("%s", input[0]); // <- first command
+    } else {
+        print_invalid_use_cmd("ls");
+        return;
+    }
 }
 
 void change_dir(char **input, int word_count) {
     if (word_count == 2) {
-        char *path = input[1];
-
-        // change dir if possible
-        if (chdir(path) == -1) {
-            perror("Unable to change directories!");
+        if (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0) {
+            printf("%s", input[0]); // <- first command
         } else {
-            char cwd[256];
-            if (getcwd(cwd, sizeof(cwd)) != NULL) {
-                printf("%s\n", cwd);
+            char *path = input[1];
+
+            // change dir if possible
+            if (chdir(path) == -1) {
+                perror("Unable to change directories!");
             } else {
-                perror("Error while getting dir! 256 char limit.");
+                char cwd[256];
+                if (getcwd(cwd, sizeof(cwd)) != NULL) {
+                    printf("%s\n", cwd);
+                } else {
+                    perror("Error while getting dir! 256 char limit.");
+                }
             }
+            return;
         }
+    } else {
+        print_invalid_use_cmd(input[0]);
         return;
     }
 }
 
 int create_file(char **input, int word_count) {
     if (word_count == 2) {
-        FILE *f;
-        char *file_name = input[1];
+        if (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0) {
+            printf("%s", input[0]); // <- first command
+            return 0;
+        } else {
+            FILE *f;
+            char *file_name = input[1];
 
-        // create file if it does not exist
-        f = fopen(file_name, "w");
-        if (f == NULL) {
-            perror("Unable to create file!");
+            // create file if it does not exist
+            f = fopen(file_name, "w");
+            if (f == NULL) {
+                perror("Unable to create file!");
+                fclose(f);
+                free(file_name);
+                return 1;
+            }
             fclose(f);
-            free(file_name);
-            return 1;
+            return 0; 
         }
-        fclose(f);
-        return 0; 
+    } else {
+        print_invalid_use_cmd(input[0]);
+        return 1;
     }
 }
 
 int create_dir(char **input, int word_count) {
     if (word_count == 2) {
-        char *dir_name = input[1];
-        if (mkdir(dir_name, 0777) == -1) {
-            perror("Unable to create directory!");
-            return 1;
+        if (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0) {
+            printf("%s", input[0]); // <- first command
+            return 0;
+        } else {
+            char *dir_name = input[1];
+            if (mkdir(dir_name, 0777) == -1) {
+                perror("Unable to create directory!");
+                return 1;
+            }
+            return 0;
         }
-        return 0;
+    } else {
+        print_invalid_use_cmd(input[0]);
+        return 1;
     }
 }
 
 int remove_file(char **input, int word_count) {
     if (word_count == 2) {
-        char *file_name = input[1];
-        if (remove(file_name) == -1) {
-            perror("Unable to remove file!");
-            return 1;
+        if (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0) {
+            printf("%s", input[0]); // <- first command
+            return 0;
+        } else {
+            char *file_name = input[1];
+            if (remove(file_name) == -1) {
+                perror("Unable to remove file!");
+                return 1;
+            }
+            return 0;
         }
-        return 0;
+    } else {
+        print_invalid_use_cmd(input[0]);
+        return 1;
     }
 }
 
 int remove_dir(char **input, int word_count) {
     if (word_count == 2) {
-        char *file_name = input[1];
-        if (rmdir(file_name) == -1) {
-            perror("Unable to remove directory!");
-            return 1;
+        if (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0) {
+            printf("%s", input[0]); // <- first command
+            return 0;
+        } else {
+            char *file_name = input[1];
+            if (rmdir(file_name) == -1) {
+                perror("Unable to remove directory!");
+                return 1;
+            }
+            return 0;
         }
-        return 0;
+    } else {
+        print_invalid_use_cmd(input[0]);
+        return 1;
     }
 }

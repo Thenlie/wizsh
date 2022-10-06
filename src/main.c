@@ -100,35 +100,35 @@ int main (void) {
                     return 0;
                 } 
                 // list project info
-                else if (strcmp(input_array[0], "info") == 0) {
-                    print_info(word_count);
+                else if (strcmp(input_array[0], "info") == 0 && word_count <= 2) {
+                    print_info(input_array, word_count);
                 } 
                 // print current directory
-                else if (strcmp(input_array[0], "dir") == 0) {
-                    print_current_dir_path(word_count);
+                else if (strcmp(input_array[0], "dir") == 0 && word_count <= 2) {
+                    print_current_dir_path(input_array, word_count);
                 } 
                 // list files in current directory
-                else if (strcmp(input_array[0], "ls") == 0) {
-                    list_current_dir(word_count);
+                else if (strcmp(input_array[0], "ls") == 0 && word_count <= 2) {
+                    list_current_dir(input_array, word_count);
                 } 
                 // change directories
-                else if (strcmp(input_array[0], "cd") == 0) {
+                else if (strcmp(input_array[0], "cd") == 0 && word_count <= 2) {
                     change_dir(input_array, word_count);
                 } 
                 // create file
-                else if (strcmp(input_array[0], "mkdir") == 0) {
+                else if (strcmp(input_array[0], "mkdir") == 0 && word_count <= 2) {
                     create_dir(input_array, word_count);
                 } 
                 // create folder
-                else if (strcmp(input_array[0], "mk") == 0) {
+                else if (strcmp(input_array[0], "mk") == 0 && word_count <= 2) {
                     create_file(input_array, word_count);
                 } 
                 // remove file
-                else if (strcmp(input_array[0], "rmf")== 0) {
+                else if (strcmp(input_array[0], "rmf")== 0 && word_count <= 2) {
                     remove_file(input_array, word_count);
                 } 
                 // remove folder
-                else if (strcmp(input_array[0], "rmdir") == 0) {
+                else if (strcmp(input_array[0], "rmdir") == 0 && word_count <= 2) {
                     remove_dir(input_array, word_count);
                 } 
                 else {
