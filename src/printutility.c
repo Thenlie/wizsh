@@ -28,7 +28,7 @@ void print_logo(void)
     // https://ascii.co.uk/
 }
 
-void print_info(void) {
+void print_info(int word_count) {
     printf("\033[1;34m");
     printf("                         --  Info --\n");
     printf("\033[1;33m"); 

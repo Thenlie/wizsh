@@ -2,7 +2,7 @@
 #define PRINTUTILITY_H_
 
 void print_logo(void);
-void print_info(void);
+void print_info(int word_count);
 void print_invalid_cmd(char *cmd);
 
 #endif

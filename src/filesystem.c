@@ -1,4 +1,5 @@
 #include "filesystem.h"
+#include "printutility.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -6,17 +7,19 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-void print_current_dir_path(void) {
-    char cwd[256];
-    if (getcwd(cwd, sizeof(cwd)) != NULL) {
-        printf("\033[1;34m"); // blue
-        printf("Current dir: ");
-        printf("\033[0m");
-        printf("%s\n", cwd);
-    } else {
-        perror("Error while getting dir! 256 char limit.");
+void print_current_dir_path(int word_count) {
+    if (word_count == 1) {
+        char cwd[256];
+        if (getcwd(cwd, sizeof(cwd)) != NULL) {
+            printf("\033[1;34m"); // blue
+            printf("Current dir: ");
+            printf("\033[0m");
+            printf("%s\n", cwd);
+        } else {
+            perror("Error while getting dir! 256 char limit.");
+        }
+        return;
     }
-    return;
 }
 
 void print_current_dir(void) {
@@ -45,89 +48,97 @@ void print_current_dir(void) {
     }
 }
 
-void list_current_dir(void) {
-    struct dirent *dir_entry; // Pointer for directory entry
-    DIR *directory = opendir("."); // opendir() returns a pointer of DIR type. 
+void list_current_dir(int word_count) {
+    if (word_count == 1) {
+        struct dirent *dir_entry; // Pointer for directory entry
+        DIR *directory = opendir("."); // opendir() returns a pointer of DIR type. 
 
-    if (directory == NULL) 
-    {
-        perror("Unable to open current directory" );
+        if (directory == NULL) 
+        {
+            perror("Unable to open current directory" );
+            return;
+        }
+
+        while ((dir_entry = readdir(directory)) != NULL) {
+            // check if entry is a folder
+            if (dir_entry->d_type == 4) {
+                printf("\033[0;34m"); // blue
+            }
+            printf("%s\n", dir_entry->d_name);
+            printf("\033[0m");
+        }
+        closedir(directory);    
         return;
     }
-
-    while ((dir_entry = readdir(directory)) != NULL) {
-        // check if entry is a folder
-        if (dir_entry->d_type == 4) {
-            printf("\033[0;34m"); // blue
-        }
-        printf("%s\n", dir_entry->d_name);
-        printf("\033[0m");
-    }
-
-    closedir(directory);    
-    return;
     // https://www.geeksforgeeks.org/c-program-list-files-sub-directories-directory/
 }
 
-void change_dir(char **input) {
-    char *path = input[1];
+void change_dir(char **input, int word_count) {
+    if (word_count == 2) {
+        char *path = input[1];
 
-    // change dir if possible
-    if (chdir(path) == -1) {
-        perror("Unable to change directories!");
-    } else {
-        char cwd[256];
-        if (getcwd(cwd, sizeof(cwd)) != NULL) {
-            printf("%s\n", cwd);
+        // change dir if possible
+        if (chdir(path) == -1) {
+            perror("Unable to change directories!");
         } else {
-            perror("Error while getting dir! 256 char limit.");
+            char cwd[256];
+            if (getcwd(cwd, sizeof(cwd)) != NULL) {
+                printf("%s\n", cwd);
+            } else {
+                perror("Error while getting dir! 256 char limit.");
+            }
         }
+        return;
     }
-    return;
 }
 
-int create_file(char **input) {
-    FILE *f;
-    char *file_name = input[1];
+int create_file(char **input, int word_count) {
+    if (word_count == 2) {
+        FILE *f;
+        char *file_name = input[1];
 
-    // create file if it does not exist
-    f = fopen(file_name, "w");
-    if (f == NULL) {
-        perror("Unable to create file!");
+        // create file if it does not exist
+        f = fopen(file_name, "w");
+        if (f == NULL) {
+            perror("Unable to create file!");
+            fclose(f);
+            free(file_name);
+            return 1;
+        }
         fclose(f);
-        free(file_name);
-        return 1;
+        return 0; 
     }
-    fclose(f);
-    return 0; 
 }
 
-int create_dir(char **input) {
-    char *dir_name = input[1];
-    if (mkdir(dir_name, 0777) == -1) {
-        perror("Unable to create directory!");
-        return 1;
+int create_dir(char **input, int word_count) {
+    if (word_count == 2) {
+        char *dir_name = input[1];
+        if (mkdir(dir_name, 0777) == -1) {
+            perror("Unable to create directory!");
+            return 1;
+        }
+        return 0;
     }
-
-    return 0;
 }
 
-int remove_file(char **input) {
-    char *file_name = input[1];
-    if (remove(file_name) == -1) {
-        perror("Unable to remove file!");
-        return 1;
+int remove_file(char **input, int word_count) {
+    if (word_count == 2) {
+        char *file_name = input[1];
+        if (remove(file_name) == -1) {
+            perror("Unable to remove file!");
+            return 1;
+        }
+        return 0;
     }
-
-    return 0;
 }
 
-int remove_dir(char **input) {
-    char *file_name = input[1];
-    if (rmdir(file_name) == -1) {
-        perror("Unable to remove directory!");
-        return 1;
+int remove_dir(char **input, int word_count) {
+    if (word_count == 2) {
+        char *file_name = input[1];
+        if (rmdir(file_name) == -1) {
+            perror("Unable to remove directory!");
+            return 1;
+        }
+        return 0;
     }
-
-    return 0;
 }

@@ -89,7 +89,7 @@ int main (void) {
                 }
 
                 // exit
-                if (strcmp(input_array[0], "exit") == 0) {
+                if (strcmp(input_array[0], "exit") == 0 && word_count == 1) {
                     printf("\ngoodbye <3\n\n");
                     free(input_buffer);
                     free(clean_input);
@@ -101,35 +101,35 @@ int main (void) {
                 } 
                 // list project info
                 else if (strcmp(input_array[0], "info") == 0) {
-                    print_info();
+                    print_info(word_count);
                 } 
                 // print current directory
                 else if (strcmp(input_array[0], "dir") == 0) {
-                    print_current_dir_path();
+                    print_current_dir_path(word_count);
                 } 
                 // list files in current directory
                 else if (strcmp(input_array[0], "ls") == 0) {
-                    list_current_dir();
+                    list_current_dir(word_count);
                 } 
                 // change directories
                 else if (strcmp(input_array[0], "cd") == 0) {
-                    change_dir(input_array);
+                    change_dir(input_array, word_count);
                 } 
                 // create file
                 else if (strcmp(input_array[0], "mkdir") == 0) {
-                    create_dir(input_array);
+                    create_dir(input_array, word_count);
                 } 
                 // create folder
                 else if (strcmp(input_array[0], "mk") == 0) {
-                    create_file(input_array);
+                    create_file(input_array, word_count);
                 } 
                 // remove file
                 else if (strcmp(input_array[0], "rmf")== 0) {
-                    remove_file(input_array);
+                    remove_file(input_array, word_count);
                 } 
                 // remove folder
                 else if (strcmp(input_array[0], "rmdir") == 0) {
-                    remove_dir(input_array);
+                    remove_dir(input_array, word_count);
                 } 
                 else {
                     print_invalid_cmd(input_buffer);
