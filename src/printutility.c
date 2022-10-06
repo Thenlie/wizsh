@@ -40,9 +40,12 @@ void print_info(char** input, int word_count) {
         printf("  This project was built to gain a better understanding of the C\n");
         printf("programming language and how shells like bash and zsh might work.\n");
     } else if (word_count == 2 && (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0)) {
-        // printf("\033[1;34m");
-        printf("\033[1;34m                                    -- %s --\n\n", input[0]); // <- first command
-        printf("\033[0m The info command is used to display info about this shell and its contributors.\n");
+        printf("\033[1;34m                                  -- %s --\n\n", input[0]); // <- first command
+        printf("\033[0mThe \033[1;33minfo\033[0m command is used to display info about this shell and its contributors.\n\n");
+        printf("\033[1;35m                                   Usage\n\n"); 
+        printf("\033[0m ~> \033[1;33minfo        \033[0m| The main usage of the command\n");
+        printf("\033[0m ~> \033[1;33minfo -h     \033[0m| Help with the command\n");
+        printf("\033[0m ~> \033[1;33minfo --help \033[0m| Help with the command\n\n");
     } else {
         print_invalid_use_cmd("info");
     }
@@ -62,5 +65,5 @@ void print_invalid_use_cmd(char *cmd) {
     printf("\033[4;37m");
     printf("%s\n", cmd);
     printf("\033[0m");
-    printf("Use %s --help for help using this command.\n", cmd);
+    printf("Use %s --help or -h for help using this command.\n", cmd);
 }

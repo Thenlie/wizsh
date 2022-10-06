@@ -76,11 +76,11 @@ int main (void) {
             }
             parse_input(clean_input, input_array);
 
-            printf("Words: %i\n", word_count);
+            // printf("Words: %i\n", word_count);
 
-            for (int i = 0; i < word_count; i++) {
-                printf("Parse: %s\n", input_array[i]);
-            }
+            // for (int i = 0; i < word_count; i++) {
+            //     printf("Parse: %s\n", input_array[i]);
+            // }
 
             if (word_count > 0) {
                 // lowercase the first cmd 
