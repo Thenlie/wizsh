@@ -82,3 +82,17 @@ void clear_term(char** input, int word_count) {
         print_invalid_use_cmd("clear");
     }
 }
+
+void print_commands(void) {
+    printf("\033[1;34m                - Commands --\n\n");
+    printf("\033[0m ~> \033[1;33mhelp  \033[0m| The main usage of the command\n");
+    printf("\033[0m ~> \033[1;33minfo  \033[0m| Help with the command\n");
+    printf("\033[0m ~> \033[1;33mclear \033[0m| Help with the command\n");
+    printf("\033[0m ~> \033[1;33mdir   \033[0m| Help with the command\n");
+    printf("\033[0m ~> \033[1;33mls    \033[0m| Help with the command\n");
+    printf("\033[0m ~> \033[1;33mcd    \033[0m| Help with the command\n");
+    printf("\033[0m ~> \033[1;33mmkdir \033[0m| Help with the command\n");
+    printf("\033[0m ~> \033[1;33mmk    \033[0m| Help with the command\n");
+    printf("\033[0m ~> \033[1;33mread  \033[0m| Help with the command\n");
+    printf("\033[0m ~> \033[1;33mwrite \033[0m| Help with the command\n\n");
+}
