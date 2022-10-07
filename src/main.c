@@ -7,9 +7,6 @@
 #include "printutility.h"
 #include "filesystem.h"
 
-#define MAX_INPUT 256
-
-
 int get_input(char *buffer);
 void parse_input(char *input, char** input_array);
 
@@ -135,6 +132,10 @@ int main (void) {
                 else if (strcmp(input_array[0], "rmdir") == 0 && word_count <= 2) {
                     remove_dir(input_array, word_count);
                 } 
+                // write to file
+                else if (strcmp(input_array[0], "write") == 0) {
+                    write_to_file(input_array, word_count);
+                } 
                 else {
                     print_invalid_cmd(input_buffer);
                 }
@@ -156,7 +157,7 @@ int main (void) {
 }                            
             
 int get_input(char *buffer) {
-    if (fgets(buffer, MAX_INPUT, stdin) != NULL)
+    if (fgets(buffer, 256, stdin) != NULL)
     {
         return 0;
     } else {

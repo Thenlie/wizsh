@@ -227,3 +227,47 @@ int remove_dir(char **input, int word_count) {
         return 1;
     }
 }
+
+int write_to_file(char **input, int word_count) {
+    if (word_count > 2) {
+        FILE *f;
+        int i = 2;
+        // open in append mode
+        if (strcmp(input[2], "-a") == 0 || strcmp(input[2], "--append") == 0) {
+            f = fopen(input[1], "a");
+            i++;
+        // open in write mode
+        } else if (strcmp(input[2], "-o") == 0 || strcmp(input[2], "--overwrite") == 0) {
+            f = fopen(input[1], "w");
+            i++;
+        // DEFAULT: open in write mode
+        } else {
+            f = fopen(input[1], "w");
+        }
+
+        if (f == NULL) {
+            perror("Unable to open file for writing!");
+            return 1;
+        } 
+
+        for (int j = i; j < word_count; j++) {
+            fprintf(f, "%s", input[j]);
+            fprintf(f, " ");
+        }
+
+        fclose(f);
+
+        return 0;
+    } else if (word_count == 2) {
+        if (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0) {
+            printf("help under construction\n");
+            return 0;
+        } else {
+            print_invalid_use_cmd(input[0]);
+            return 1;
+        }
+    } else {
+        print_invalid_use_cmd(input[0]);
+        return 1;
+    }
+}
