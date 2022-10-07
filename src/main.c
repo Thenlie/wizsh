@@ -136,6 +136,10 @@ int main (void) {
                 else if (strcmp(input_array[0], "write") == 0) {
                     write_to_file(input_array, word_count);
                 } 
+                // read file
+                else if (strcmp(input_array[0], "read") == 0 && word_count <= 2) {
+                    read_file(input_array, word_count);
+                }
                 else {
                     print_invalid_cmd(input_buffer);
                 }

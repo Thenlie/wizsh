@@ -261,7 +261,7 @@ int write_to_file(char **input, int word_count) {
     } else if (word_count == 2) {
         if (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0) {
             printf("\033[1;34m                                  -- %s --\n\n", input[0]); // <- first command
-            printf("\033[0mThe \033[1;33m%s\033[0m command is used to write to a file. When provided a file name and a string of text, the string of text will be written to the file. If the file does not already exist, the file will be created.\nBy default, the command is set to \033[1;33moverwrite\033[0m mode. You can change this with the \033[1;33m--append\033[0m or \033[1;33m-a\033[0m flag.\n\n", input[0]);
+            printf("\033[0mThe \033[1;33m%s\033[0m command is used to write to a file. When provided a file name as a second argument and a string of text, the string of text will be written to the file. If the file does not already exist, the file will be created.\nBy default, the command is set to \033[1;33moverwrite\033[0m mode. You can change this with the \033[1;33m--append\033[0m or \033[1;33m-a\033[0m flag.\n\n", input[0]);
             printf("\033[1;35m                                   Usage\n\n"); 
             printf("\033[0m ~> \033[1;33m%s <file_name> <input>              \033[0m| The main usage of the command. Write \033[1;33m<input>\033[0m to \033[1;33m<file_name>\033[0m\n", input[0]);
             printf("\033[0m ~> \033[1;33m%s <file_name> -a <input>           \033[0m| Write \033[1;33m<input>\033[0m to \033[1;33m<file_name>\033[0m in append mode.\n", input[0]);
@@ -274,6 +274,47 @@ int write_to_file(char **input, int word_count) {
         } else {
             print_invalid_use_cmd(input[0]);
             return 1;
+        }
+    } else {
+        print_invalid_use_cmd(input[0]);
+        return 1;
+    }
+}
+
+int read_file(char **input, int word_count) {
+    if (word_count == 2) {
+      if (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0) {
+            printf("\033[1;34m                                  -- %s --\n\n", input[0]); // <- first command
+            printf("\033[0mThe \033[1;33m%s\033[0m command is used to read a file. When provided with a file name as a second argument, the command will print the file to the standard output.\n\n", input[0]);
+            printf("\033[1;35m                                   Usage\n\n"); 
+            printf("\033[0m ~> \033[1;33m%s <file_name> \033[0m| The main usage of the command. Read a file called \033[1;33<file_name>\033[0m.\n", input[0]);
+            printf("\033[0m ~> \033[1;33m%s -h          \033[0m| Help with the command\n", input[0]);
+            printf("\033[0m ~> \033[1;33m%s --help      \033[0m| Help with the command\n\n", input[0]);
+            return 0;
+        } else {
+            FILE *f;
+
+            f = fopen(input[1], "r");
+            if (f == NULL) {
+                perror("Unable to create file!");
+                fclose(f);
+                return 1;
+            }
+
+            while(1) {
+                int c = fgetc(f);
+                if (feof(f)) {
+                    printf("\n");
+                    break;
+                } else if (ferror(f)) {
+                    perror("Error reading file!");
+                    break;
+                }
+                printf("%c", c);
+            }
+
+            fclose(f);
+            return 0; 
         }
     } else {
         print_invalid_use_cmd(input[0]);

@@ -10,5 +10,6 @@ int create_dir(char **input, int word_count);
 int remove_file(char **input, int word_count);
 int remove_dir(char **input, int word_count);
 int write_to_file(char **input, int word_count);
+int read_file(char **input, int word_count);
 
 #endif
