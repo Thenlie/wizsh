@@ -260,7 +260,16 @@ int write_to_file(char **input, int word_count) {
         return 0;
     } else if (word_count == 2) {
         if (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0) {
-            printf("help under construction\n");
+            printf("\033[1;34m                                  -- %s --\n\n", input[0]); // <- first command
+            printf("\033[0mThe \033[1;33m%s\033[0m command is used to write to a file. When provided a file name and a string of text, the string of text will be written to the file. If the file does not already exist, the file will be created.\nBy default, the command is set to \033[1;33moverwrite\033[0m mode. You can change this with the \033[1;33m--append\033[0m or \033[1;33m-a\033[0m flag.\n\n", input[0]);
+            printf("\033[1;35m                                   Usage\n\n"); 
+            printf("\033[0m ~> \033[1;33m%s <file_name> <input>              \033[0m| The main usage of the command. Write \033[1;33m<input>\033[0m to \033[1;33m<file_name>\033[0m\n", input[0]);
+            printf("\033[0m ~> \033[1;33m%s <file_name> -a <input>           \033[0m| Write \033[1;33m<input>\033[0m to \033[1;33m<file_name>\033[0m in append mode.\n", input[0]);
+            printf("\033[0m ~> \033[1;33m%s <file_name> --append <input>     \033[0m| Write \033[1;33m<input>\033[0m to \033[1;33m<file_name>\033[0m in append mode.\n", input[0]);
+            printf("\033[0m ~> \033[1;33m%s <file_name> -o <input>           \033[0m| Write \033[1;33m<input>\033[0m to \033[1;33m<file_name>\033[0m in overwrite mode.\n", input[0]);
+            printf("\033[0m ~> \033[1;33m%s <file_name> -- overwrite <input> \033[0m| Write \033[1;33m<input>\033[0m to \033[1;33m<file_name>\033[0m in overwrite mode.\n", input[0]);
+            printf("\033[0m ~> \033[1;33m%s -h                               \033[0m| Help with the command\n", input[0]);
+            printf("\033[0m ~> \033[1;33m%s --help                           \033[0m| Help with the command\n\n", input[0]);
             return 0;
         } else {
             print_invalid_use_cmd(input[0]);
