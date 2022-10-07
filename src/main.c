@@ -100,6 +100,10 @@ int main (void) {
                 else if (strcmp(input_array[0], "help") == 0 && word_count == 1) {
                     print_commands();
                 }
+                // print cheech wizard
+                else if (strcmp(input_array[0], "wizard") == 0 && word_count == 1) {
+                    print_wizard();
+                } 
                 // list project info
                 else if (strcmp(input_array[0], "info") == 0 && word_count <= 2) {
                     print_info(input_array, word_count);
