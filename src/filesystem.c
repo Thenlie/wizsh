@@ -366,11 +366,11 @@ int open_file_with_vim(char **input, int word_count) {
         // check for help flag
         if (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0) {
             printf("\033[1;34m                                  -- %s --\n\n", input[0]); // <- first command
-            printf("\033[0mThe \033[1;33m%s\033[0m command is used to move a file. When provided with a file path as a second argument and a new file path as a third argument, the command will move the file to the new file path. This does not remove the contents of the file.\n\n", input[0]);
+            printf("\033[0mThe \033[1;33m%s\033[0m command is used to open a file in Vim, the ubiquitous text editor. When provided with a file path as a second argument, that file will be opened with vim in a child process of the shell.\n\n", input[0]);
             printf("\033[1;35m                                   Usage\n\n"); 
-            printf("\033[0m ~> \033[1;33m%s <old_path> <new_path> \033[0m| The main usage of the command. move a file called \033[1;33<old_path>\033[0m to \033[1;33<new_path>\033[0m.\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s -h                    \033[0m| Help with the command\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s --help                \033[0m| Help with the command\n\n", input[0]);
+            printf("\033[0m ~> \033[1;33m%s <file_path> \033[0m| The main usage of the command. Open \033[1;33m<file_name>\033[0m with Vim.\n", input[0]);
+            printf("\033[0m ~> \033[1;33m%s -h          \033[0m| Help with the command\n", input[0]);
+            printf("\033[0m ~> \033[1;33m%s --help      \033[0m| Help with the command\n\n", input[0]);
             return 0;
         } else {
             // create a fork of the current process
@@ -402,6 +402,7 @@ int open_file_with_vim(char **input, int word_count) {
                 // parent process
                 wait(NULL);
             }
+            // https://www.section.io/engineering-education/fork-in-c-programming-language/
             return 0;
         } 
     } else {
@@ -409,5 +410,3 @@ int open_file_with_vim(char **input, int word_count) {
         return 1;
     }
 }
-
-// https://www.section.io/engineering-education/fork-in-c-programming-language/

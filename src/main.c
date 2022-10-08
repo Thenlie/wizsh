@@ -157,7 +157,9 @@ int main (void) {
                 // read file
                 else if ((strcmp(input_array[0], "read") == 0 || strcmp(input_array[0], "r") == 0) && word_count <= 2) {
                     read_file(input_array, word_count);
-                } else if (strcmp(input_array[0], "vim") == 0) {
+                }
+                // open file with Vim 
+                else if ((strcmp(input_array[0], "vim") == 0 || strcmp(input_array[0], "v") == 0) && word_count <= 2) {
                     open_file_with_vim(input_array, word_count);
                 }
                 else {
