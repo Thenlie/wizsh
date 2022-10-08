@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define VERSION_NUMBER "0.0.0"
+
 void print_logo(void)
 {
     /*
@@ -12,7 +14,7 @@ void print_logo(void)
     */
     printf("\033[0;34m");
     printf("                        Welcome to WIZSH!\n");
-    printf("                   A simple shell written in C\n");
+    printf("                         version %s\n", VERSION_NUMBER);
     printf("                     Created by Thenlie 2022\n");
     printf("\n");
     printf("\033[0;35m");
