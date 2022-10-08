@@ -88,7 +88,7 @@ int main (void) {
                 }
 
                 // exit
-                if (strcmp(input_array[0], "exit") == 0 && word_count == 1) {
+                if ((strcmp(input_array[0], "exit") == 0 || strcmp(input_array[0], "e") == 0) && word_count == 1) {
                     printf("\ngoodbye <3\n\n");
                     free(input_buffer);
                     free(clean_input);
@@ -99,7 +99,7 @@ int main (void) {
                     return 0;
                 } 
                 // list of commands
-                else if (strcmp(input_array[0], "help") == 0 && word_count == 1) {
+                else if ((strcmp(input_array[0], "help") == 0 || strcmp(input_array[0], "h") == 0) && word_count == 1) {
                     print_commands();
                 }
                 // print cheech wizard
@@ -107,11 +107,11 @@ int main (void) {
                     print_wizard();
                 } 
                 // list project info
-                else if (strcmp(input_array[0], "info") == 0 && word_count <= 2) {
+                else if ((strcmp(input_array[0], "info") == 0 || strcmp(input_array[0], "i") == 0) && word_count <= 2) {
                     print_info(input_array, word_count);
                 } 
                 // clear terminal
-                else if (strcmp(input_array[0], "clear") == 0 && word_count <= 2) {
+                else if ((strcmp(input_array[0], "clear") == 0 || strcmp(input_array[0], "c") == 0) && word_count <= 2) {
                     clear_term(input_array, word_count);
                 } 
                 // get request
@@ -147,11 +147,11 @@ int main (void) {
                     remove_dir(input_array, word_count);
                 } 
                 // write to file
-                else if (strcmp(input_array[0], "write") == 0) {
+                else if ((strcmp(input_array[0], "write") == 0 || strcmp(input_array[0], "w") == 0)) {
                     write_to_file(input_array, word_count);
                 } 
                 // read file
-                else if (strcmp(input_array[0], "read") == 0 && word_count <= 2) {
+                else if ((strcmp(input_array[0], "read") == 0 || strcmp(input_array[0], "r") == 0) && word_count <= 2) {
                     read_file(input_array, word_count);
                 }
                 // move a file
