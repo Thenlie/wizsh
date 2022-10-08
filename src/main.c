@@ -9,17 +9,17 @@
 #include "requests.h"
 
 int get_input(char *buffer);
-void parse_input(char *input, char** input_array);
+void parse_input(char *input, char** input_array, int char_count);
 
 int main (void) {
 
     print_logo();
-    char *input_buffer = malloc(sizeof(char) * 256);
-    char *clean_input = malloc(sizeof(char) * 256);
     /*
         * Main shell loop
     */
     while (1) {
+        char *input_buffer = malloc(256);
+        char *clean_input = malloc(256);
         // print start of line marking
         printf("\033[1;105m");
         print_current_dir();
@@ -72,9 +72,10 @@ int main (void) {
             for (int i = 0; i < word_count; i++) {
                 input_array[i] = malloc(64);
             }
-            parse_input(clean_input, input_array);
+            parse_input(clean_input, input_array, char_count);
 
             // printf("Words: %i\n", word_count);
+            // printf("Chars: %i\n", char_count);
 
             // for (int i = 0; i < word_count; i++) {
             //     printf("Parse: %s\n", input_array[i]);
@@ -169,11 +170,8 @@ int main (void) {
                 free(input_array[i]);
             }
         }
-
-        // clear out clean input in prep for next input
-        for (int i = 0; input_buffer[i]; i++) {
-            clean_input[i] = 0;
-        }
+        free(clean_input);
+        free(input_buffer);
     }
 }                            
             
@@ -187,11 +185,16 @@ int get_input(char *buffer) {
     }
 }
 
-void parse_input(char *input, char** input_array) {
+void parse_input(char *input, char** input_array, int char_count) {
     int str_count = 0;
     int arr_count = 0;
+    int chr_count = 0;
     char* string_buffer = malloc(128);
     for (int i = 0; input[i]; i++) {
+        chr_count++;
+        if (chr_count > char_count) {
+            break;
+        }
         if (input[i] == ' ') {
             // finish string, push to array
             string_buffer[str_count] = '\0';
@@ -202,6 +205,8 @@ void parse_input(char *input, char** input_array) {
             }
             str_count = 0;
             arr_count++;
+        } else if (input[i] == '\n') {
+            break;
         } else {
             // push to string buffer, increase count
             string_buffer[str_count] = input[i];
