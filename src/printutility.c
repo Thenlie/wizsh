@@ -87,16 +87,18 @@ void clear_term(char** input, int word_count) {
 
 void print_commands(void) {
     printf("\033[1;34m                - Commands --\n\n");
-    printf("\033[0m ~> \033[1;33mhelp  \033[0m| The main usage of the command\n");
-    printf("\033[0m ~> \033[1;33minfo  \033[0m| Help with the command\n");
-    printf("\033[0m ~> \033[1;33mclear \033[0m| Help with the command\n");
-    printf("\033[0m ~> \033[1;33mdir   \033[0m| Help with the command\n");
-    printf("\033[0m ~> \033[1;33mls    \033[0m| Help with the command\n");
-    printf("\033[0m ~> \033[1;33mcd    \033[0m| Help with the command\n");
-    printf("\033[0m ~> \033[1;33mmkdir \033[0m| Help with the command\n");
-    printf("\033[0m ~> \033[1;33mmk    \033[0m| Help with the command\n");
-    printf("\033[0m ~> \033[1;33mread  \033[0m| Help with the command\n");
-    printf("\033[0m ~> \033[1;33mwrite \033[0m| Help with the command\n\n");
+    printf("\033[0m ~> \033[1;33mhelp, h  \033[0m| List of available commands\n");
+    printf("\033[0m ~> \033[1;33minfo, i  \033[0m| Information about the wizsh project\n");
+    printf("\033[0m ~> \033[1;33mclear, c \033[0m| Clear the terminal\n");
+    printf("\033[0m ~> \033[1;33mdir      \033[0m| Print the current directory\n");
+    printf("\033[0m ~> \033[1;33mls       \033[0m| List the contents of the current directory\n");
+    printf("\033[0m ~> \033[1;33mcd       \033[0m| Change the current directory\n");
+    printf("\033[0m ~> \033[1;33mmkdir    \033[0m| Make a directory\n");
+    printf("\033[0m ~> \033[1;33mmk       \033[0m| Make a file\n");
+    printf("\033[0m ~> \033[1;33mmove, mv \033[0m| Move/rename a file\n");
+    printf("\033[0m ~> \033[1;33mread, r  \033[0m| Read a file\n");
+    printf("\033[0m ~> \033[1;33mwrite, w \033[0m| Write to a file\n");
+    printf("\033[0m ~> \033[1;33mfetch, f \033[0m| Execute a simple HTTP GET request\n");
 }
 
 void print_wizard(void) {

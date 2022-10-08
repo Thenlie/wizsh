@@ -115,7 +115,7 @@ int main (void) {
                     clear_term(input_array, word_count);
                 } 
                 // get request
-                else if (strcmp(input_array[0], "fetch") == 0 && word_count <= 2) {
+                else if ((strcmp(input_array[0], "fetch") == 0 || strcmp(input_array[0], "f") == 0) && word_count <= 2) {
                     fetch(input_array, word_count);
                 }
                 // print current directory
@@ -138,6 +138,10 @@ int main (void) {
                 else if (strcmp(input_array[0], "mk") == 0 && word_count <= 2) {
                     create_file(input_array, word_count);
                 } 
+                // move a file
+                else if ((strcmp(input_array[0], "move") == 0 || strcmp(input_array[0], "mv") == 0) && word_count <= 3) {
+                    move_file(input_array, word_count);
+                }
                 // remove file
                 else if (strcmp(input_array[0], "rmf")== 0 && word_count <= 2) {
                     remove_file(input_array, word_count);
@@ -153,10 +157,8 @@ int main (void) {
                 // read file
                 else if ((strcmp(input_array[0], "read") == 0 || strcmp(input_array[0], "r") == 0) && word_count <= 2) {
                     read_file(input_array, word_count);
-                }
-                // move a file
-                else if (strcmp(input_array[0], "mv") == 0 && word_count <= 3) {
-                    move_file(input_array, word_count);
+                } else if (strcmp(input_array[0], "vim") == 0) {
+                    open_file_with_vim(input_array, word_count);
                 }
                 else {
                     print_invalid_cmd(input_buffer);

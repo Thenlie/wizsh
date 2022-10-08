@@ -12,5 +12,6 @@ int remove_dir(char **input, int word_count);
 int write_to_file(char **input, int word_count);
 int read_file(char **input, int word_count);
 int move_file(char **input, int word_count);
+int open_file_with_vim(char **input, int word_count);
 
 #endif
