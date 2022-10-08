@@ -6,6 +6,7 @@
 
 #include "printutility.h"
 #include "filesystem.h"
+#include "requests.h"
 
 int get_input(char *buffer);
 void parse_input(char *input, char** input_array);
@@ -112,6 +113,10 @@ int main (void) {
                 else if (strcmp(input_array[0], "clear") == 0 && word_count <= 2) {
                     clear_term(input_array, word_count);
                 } 
+                // get request
+                else if (strcmp(input_array[0], "fetch") == 0 && word_count <= 2) {
+                    fetch(input_array, word_count);
+                }
                 // print current directory
                 else if (strcmp(input_array[0], "dir") == 0 && word_count <= 2) {
                     print_current_dir_path(input_array, word_count);
