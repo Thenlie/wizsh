@@ -29,7 +29,7 @@ Command cmd_arr[] = {
         "r",
         "The \033[1;33mread\033[0m command is used to read a file. When provided with a file name as a second argument, the command will print the file to the standard output.",
         {
-            "\033[0m ~> \033[1;33mread <file_name> \033[0m| The main usage of the command. Read a file called \033[1;33<file_name>\033[0m.\n",
+            "\033[0m ~> \033[1;33mread <file_name> \033[0m| The main usage of the command. Read a file called \033[1;33m<file_name>\033[0m.\n",
             "\033[0m ~> \033[1;33mread -h          \033[0m| Help with the command\n",
             "\033[0m ~> \033[1;33mread --help      \033[0m| Help with the command\n\n",
         },
@@ -56,6 +56,16 @@ int command_handler(char **input, int word_count) {
         // check if command matches first string of user input
         if (strcmp(cmd_arr[i].name_verbose, input[0]) == 0 || strcmp(cmd_arr[i].name_short, input[0]) == 0) {
             printf("Found!\n");
+            if (word_count > 1) {
+                // check for HELP flag
+                if (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0) {
+                    // print help usage strings
+                    for (int j = 0; cmd_arr[i].usage_list[j]; j++) {
+                        printf("%s", cmd_arr[i].usage_list[j]);
+                    }
+                    return 0;
+                }
+            }
             cmd_arr[i].run(input, word_count);
             return 0;
         }
