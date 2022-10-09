@@ -8,5 +8,6 @@ void print_invalid_use_cmd(char *cmd);
 int clear_term(char** input, int word_count);
 int print_commands(char** input, int word_count);
 int print_wizard(char **input, int word_count);
+void print_command_help(char *name, char *description, char **usage_list);
 
 #endif
