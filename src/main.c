@@ -82,8 +82,6 @@ int main (void) {
             //     printf("Parse: %s\n", input_array[i]);
             // }
 
-            // COMMAND REFACTOR CHECK
-            command_handler(input_array, word_count);
             
 
             if (word_count > 0) {
@@ -92,8 +90,11 @@ int main (void) {
                     input_array[0][i] = tolower(input_array[0][i]);
                 }
 
-                // exit
-                if ((strcmp(input_array[0], "exit") == 0 || strcmp(input_array[0], "e") == 0) && word_count == 1) {
+                // COMMAND REFACTOR CHECK
+                int c = command_handler(input_array, word_count, input_buffer);
+                
+                // -- EXIT --
+                if (c == -1) {
                     printf("\ngoodbye <3\n\n");
                     free(input_buffer);
                     free(clean_input);
@@ -102,75 +103,7 @@ int main (void) {
                         free(input_array[i]);
                     }
                     return 0;
-                } 
-                // list of commands
-                else if ((strcmp(input_array[0], "help") == 0 || strcmp(input_array[0], "h") == 0) && word_count == 1) {
-                    print_commands(input_array, word_count);
                 }
-                // print cheech wizard
-                else if (strcmp(input_array[0], "wizard") == 0 && word_count == 1) {
-                    print_wizard();
-                } 
-                // list project info
-                else if ((strcmp(input_array[0], "info") == 0 || strcmp(input_array[0], "i") == 0) && word_count <= 2) {
-                    print_info(input_array, word_count);
-                } 
-                // clear terminal
-                else if ((strcmp(input_array[0], "clear") == 0 || strcmp(input_array[0], "c") == 0) && word_count <= 2) {
-                    clear_term(input_array, word_count);
-                } 
-                // get request
-                else if ((strcmp(input_array[0], "fetch") == 0 || strcmp(input_array[0], "f") == 0) && word_count <= 2) {
-                    fetch(input_array, word_count);
-                }
-                // print current directory
-                else if (strcmp(input_array[0], "dir") == 0 && word_count <= 2) {
-                    print_current_dir_path(input_array, word_count);
-                } 
-                // list files in current directory
-                else if (strcmp(input_array[0], "ls") == 0 && word_count <= 2) {
-                    list_current_dir(input_array, word_count);
-                } 
-                // change directories
-                else if (strcmp(input_array[0], "cd") == 0 && word_count <= 2) {
-                    change_dir(input_array, word_count);
-                } 
-                // create file
-                else if (strcmp(input_array[0], "mkdir") == 0 && word_count <= 2) {
-                    create_dir(input_array, word_count);
-                } 
-                // create folder
-                else if (strcmp(input_array[0], "mk") == 0 && word_count <= 2) {
-                    create_file(input_array, word_count);
-                } 
-                // move a file
-                else if ((strcmp(input_array[0], "move") == 0 || strcmp(input_array[0], "mv") == 0) && word_count <= 3) {
-                    move_file(input_array, word_count);
-                }
-                // remove file
-                else if (strcmp(input_array[0], "rmf")== 0 && word_count <= 2) {
-                    remove_file(input_array, word_count);
-                } 
-                // remove folder
-                else if (strcmp(input_array[0], "rmdir") == 0 && word_count <= 2) {
-                    remove_dir(input_array, word_count);
-                } 
-                // write to file
-                else if ((strcmp(input_array[0], "write") == 0 || strcmp(input_array[0], "w") == 0)) {
-                    write_to_file(input_array, word_count);
-                } 
-                // read file
-                else if ((strcmp(input_array[0], "read") == 0 || strcmp(input_array[0], "r") == 0) && word_count <= 2) {
-                    read_file(input_array, word_count);
-                }
-                // open file with Vim 
-                else if ((strcmp(input_array[0], "vim") == 0 || strcmp(input_array[0], "v") == 0) && word_count <= 2) {
-                    open_file_with_vim(input_array, word_count);
-                }
-                else {
-                    print_invalid_cmd(input_buffer);
-                }
-
             } else {
                 print_invalid_cmd(input_buffer);
             }

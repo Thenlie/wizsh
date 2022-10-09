@@ -31,7 +31,7 @@ void print_logo(void)
     // https://ascii.co.uk/
 }
 
-void print_info(char** input, int word_count) {
+int print_info(char** input, int word_count) {
     if (word_count == 1) {
         printf("\033[1;34m");
         printf("                         --  Info --\n");
@@ -41,16 +41,10 @@ void print_info(char** input, int word_count) {
         printf("Written in C, this was a final project for the Harvard CS50 course.\n");
         printf("  This project was built to gain a better understanding of the C\n");
         printf("programming language and how shells like bash and zsh might work.\n");
-    } else if (word_count == 2 && (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0)) {
-        printf("\033[1;34m                                  -- %s --\n\n", input[0]); // <- first command
-        printf("\033[0mThe \033[1;33minfo\033[0m command is used to display info about this shell and its contributors.\n\n");
-        printf("\033[1;35m                                   Usage\n\n"); 
-        printf("\033[0m ~> \033[1;33minfo        \033[0m| The main usage of the command\n");
-        printf("\033[0m ~> \033[1;33minfo -h     \033[0m| Help with the command\n");
-        printf("\033[0m ~> \033[1;33minfo --help \033[0m| Help with the command\n\n");
     } else {
         print_invalid_use_cmd("info");
     }
+    return 0;
 }
 
 void print_invalid_cmd(char *cmd) {
@@ -70,19 +64,13 @@ void print_invalid_use_cmd(char *cmd) {
     printf("Use %s --help or -h for help using this command.\n", cmd);
 }
 
-void clear_term(char** input, int word_count) {
+int clear_term(char** input, int word_count) {
     if (word_count == 1) {
         printf("\e[1;1H\e[2J");
-    } else if (word_count == 2 && (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0)) {
-        printf("\033[1;34m                                  -- %s --\n\n", input[0]); // <- first command
-        printf("\033[0mThe \033[1;33mclear\033[0m command is used to clear the terminal of all input.\n\n");
-        printf("\033[1;35m                                   Usage\n\n"); 
-        printf("\033[0m ~> \033[1;33mclear        \033[0m| The main usage of the command\n");
-        printf("\033[0m ~> \033[1;33mclear -h     \033[0m| Help with the command\n");
-        printf("\033[0m ~> \033[1;33mclear --help \033[0m| Help with the command\n\n");
     } else {
         print_invalid_use_cmd("clear");
     }
+    return 0;
 }
 
 int print_commands(char** input, int word_count) {
@@ -103,7 +91,7 @@ int print_commands(char** input, int word_count) {
     return 0;
 }
 
-void print_wizard(void) {
+int print_wizard(char **input, int word_count) {
     printf("\n");
     printf("\n");
     printf("                                            \033[48:5:166m&&&&BBBBBBB#&\033[m\n");
@@ -141,4 +129,5 @@ void print_wizard(void) {
     printf("                          \033[48:2:180:5:5m#G5YYYYYYYYY5G&\033[m                             \033[48:2:180:5:5m&GP55555555PB&\033[m\n");
     printf("                            \033[48:2:180:5:5m&#GGGGGGB#&\033[m                                  \033[48:2:180:5:5m&##BBB#&\033[m\n");
     printf("\n");
+    return 0;
 }
