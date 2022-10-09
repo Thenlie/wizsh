@@ -11,6 +11,7 @@
 
 int get_input(char *buffer);
 void parse_input(char *input, char** input_array, int char_count);
+void trim_input(char *input_buffer, char *clean_input, int *word_count, int *char_count);
 
 int main (void) {
 
@@ -27,39 +28,15 @@ int main (void) {
         printf("~> ");
         printf("\033[0m ");
 
-        // accept user input
         int char_count = 0, word_count = 1, clean_count = 0;
         char prev_char;
+        // accept user input
         if (get_input(input_buffer) == 1) {
             continue;
         } else {
-            /*
-                * loop through input buffer if it has characters
-                * ignore trailing and leading whitespace
-                * ignore consecutive spaces
-            */
             if (input_buffer[0] != '\n') {
-                for (int i = 0; input_buffer[i]; i++) {
-                    if (i == 0 && input_buffer[i] == ' ') {
-                        prev_char = ' ';
-                        continue;
-                    }
-                    if (input_buffer[i] == ' ' && prev_char != ' ') {
-                        word_count++;
-                    }
-                    if (!(input_buffer[i] == ' ' && prev_char == ' ') && input_buffer[i] != '\n') {
-                        char_count++;
-                        clean_input[clean_count] = input_buffer[i];
-                        clean_count++;
-                    }
-                    if (input_buffer[i] != '\n') {
-                        prev_char = input_buffer[i];
-                    }
-                }
-                if (prev_char == ' ') {
-                    word_count--;
-                    clean_input[clean_count-1] = 0;
-                }
+                // remove extra whitespace from input
+                trim_input(input_buffer, clean_input, &word_count, &char_count);
             } else {
                 // nothing was entered
                 free(clean_input);
@@ -67,12 +44,15 @@ int main (void) {
                 continue;
             }
 
+            // convert input to array of words
             char* input_array[word_count];
+
             for (int i = 0; i < word_count; i++) {
                 input_array[i] = malloc(64);
             }
             parse_input(clean_input, input_array, char_count);
 
+            // -- TESTING, REMOVE BEFORE FINAL --
             // printf("Words: %i\n", word_count);
             // printf("Chars: %i\n", char_count);
 
@@ -82,12 +62,13 @@ int main (void) {
             
 
             if (word_count > 0) {
+                
                 // lowercase the first cmd 
                 for (int i = 0; input_array[0][i]; i++) {
                     input_array[0][i] = tolower(input_array[0][i]);
                 }
 
-                // COMMAND REFACTOR CHECK
+                // COMMAND CHECK
                 int c = command_handler(input_array, word_count, input_buffer);
                 
                 // -- EXIT --
@@ -154,3 +135,30 @@ void parse_input(char *input, char** input_array, int char_count) {
     strcpy(input_array[arr_count], string_buffer);
     free(string_buffer);
 }
+
+void trim_input(char *input_buffer, char *clean_input, int *word_count, int *char_count) {
+    // ignore trailing and leading whitespace, ignore consecutive spaces
+    int clean_count = 0;
+    char prev_char;
+    for (int i = 0; input_buffer[i]; i++) {
+        if (i == 0 && input_buffer[i] == ' ') {
+            prev_char = ' ';
+            continue;
+        }
+        if (input_buffer[i] == ' ' && prev_char != ' ') {
+            (*word_count)++;
+        }
+        if (!(input_buffer[i] == ' ' && prev_char == ' ') && input_buffer[i] != '\n') {
+            (*char_count)++;
+            clean_input[clean_count] = input_buffer[i];
+            clean_count++;
+        }
+        if (input_buffer[i] != '\n') {
+            prev_char = input_buffer[i];
+        }
+    }
+    if (prev_char == ' ') {
+        (*word_count)--;
+        clean_input[clean_count-1] = 0;
+    }
+}   
