@@ -28,10 +28,8 @@ int main (void) {
         printf("\033[0m ");
 
         // accept user input
-        int char_count = 0;
-        int word_count = 1;
+        int char_count = 0, word_count = 1, clean_count = 0;
         char prev_char;
-        int clean_count = 0;
         if (get_input(input_buffer) == 1) {
             continue;
         } else {
@@ -63,11 +61,11 @@ int main (void) {
                     clean_input[clean_count-1] = 0;
                 }
             } else {
-            // nothing was entered
-                word_count = 0;
+                // nothing was entered
+                free(clean_input);
+                free(input_buffer);
                 continue;
             }
-
 
             char* input_array[word_count];
             for (int i = 0; i < word_count; i++) {
@@ -81,7 +79,6 @@ int main (void) {
             // for (int i = 0; i < word_count; i++) {
             //     printf("Parse: %s\n", input_array[i]);
             // }
-
             
 
             if (word_count > 0) {
@@ -104,9 +101,8 @@ int main (void) {
                     }
                     return 0;
                 }
-            } else {
-                print_invalid_cmd(input_buffer);
             }
+
             // free input array
             for (int i = 0; i < word_count; i++) {
                 free(input_array[i]);
@@ -128,9 +124,7 @@ int get_input(char *buffer) {
 }
 
 void parse_input(char *input, char** input_array, int char_count) {
-    int str_count = 0;
-    int arr_count = 0;
-    int chr_count = 0;
+    int str_count = 0, arr_count = 0, chr_count = 0;
     char* string_buffer = malloc(128);
     for (int i = 0; input[i]; i++) {
         chr_count++;
