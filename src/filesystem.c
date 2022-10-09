@@ -74,6 +74,7 @@ int list_current_dir(char** input, int word_count) {
             printf("\033[0m");
         }
         closedir(directory);    
+        printf("\033[0m\n");
         return 0;
         // https://www.geeksforgeeks.org/c-program-list-files-sub-directories-directory/
 

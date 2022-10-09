@@ -40,7 +40,7 @@ int print_info(char** input, int word_count) {
         printf("\033[0m");
         printf("Written in C, this was a final project for the Harvard CS50 course.\n");
         printf("  This project was built to gain a better understanding of the C\n");
-        printf("programming language and how shells like bash and zsh might work.\n");
+        printf("programming language and how shells like bash and zsh might work.\n\n");
     } else {
         print_invalid_use_cmd("info");
     }
@@ -89,6 +89,15 @@ int print_commands(char** input, int word_count) {
     printf("\033[0m ~> \033[1;33mfetch, f \033[0m| Execute a simple HTTP GET request\n");
     printf("\033[0m ~> \033[1;33mvim, v   \033[0m| Open a file in Vim\n\n");
     return 0;
+}
+
+void print_command_help(char *name, char *description, char **usage_list) {
+    printf("\033[1;34m                                  -- %s --\n\n", name);
+    printf("\033[0mThe \033[1;33m%s\033[0m command is used to display the path to the current directory.\n\n", name);
+    printf("\033[1;35m                                   Usage\n\n");
+    for (int i = 0; usage_list[i]; i++) {
+        printf("\033[0m ~> \033[1;33m%s", usage_list[i]);
+    } 
 }
 
 int print_wizard(char **input, int word_count) {
