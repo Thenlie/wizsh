@@ -8,7 +8,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-void print_current_dir_path(char **input, int word_count) {
+int print_current_dir_path(char **input, int word_count) {
     if (word_count == 1) {
         char cwd[256];
         if (getcwd(cwd, sizeof(cwd)) != NULL) {
@@ -16,21 +16,15 @@ void print_current_dir_path(char **input, int word_count) {
             printf("Current dir: ");
             printf("\033[0m");
             printf("%s\n", cwd);
+            return 0;
         } else {
             perror("Error while getting dir! 256 char limit.");
+            return 1;
         }
-        return;
     // check for help flag
-    } else if (word_count == 2 && (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0)) {
-        printf("\033[1;34m                                  -- %s --\n\n", input[0]); // <- first command
-        printf("\033[0mThe \033[1;33m%s\033[0m command is used to display the path to the current directory.\n\n", input[0]);
-        printf("\033[1;35m                                   Usage\n\n"); 
-        printf("\033[0m ~> \033[1;33m%s        \033[0m| The main usage of the command\n", input[0]);
-        printf("\033[0m ~> \033[1;33m%s -h     \033[0m| Help with the command\n", input[0]);
-        printf("\033[0m ~> \033[1;33m%s --help \033[0m| Help with the command\n\n", input[0]);
     } else {
         print_invalid_use_cmd("dir");
-        return;
+        return 1;
     }
 }
 
@@ -56,10 +50,11 @@ void print_current_dir(void) {
         return;
     } else {
         perror("Error while getting dir! 256 char limit.");
+        return;
     }
 }
 
-void list_current_dir(char** input, int word_count) {
+int list_current_dir(char** input, int word_count) {
     if (word_count == 1) {
         struct dirent *dir_entry; // Pointer for directory entry
         DIR *directory = opendir("."); // opendir() returns a pointer of DIR type. 
@@ -67,7 +62,7 @@ void list_current_dir(char** input, int word_count) {
         if (directory == NULL) 
         {
             perror("Unable to open current directory" );
-            return;
+            return 1;
         }
 
         while ((dir_entry = readdir(directory)) != NULL) {
@@ -79,82 +74,54 @@ void list_current_dir(char** input, int word_count) {
             printf("\033[0m");
         }
         closedir(directory);    
-        return;
+        return 0;
         // https://www.geeksforgeeks.org/c-program-list-files-sub-directories-directory/
 
     // check for help flag
-    } else if (word_count == 2 && (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0)) {
-        printf("\033[1;34m                                  -- %s --\n\n", input[0]); // <- first command
-        printf("\033[0mThe \033[1;33m%s\033[0m command is used to display contents of the current directory.\nFolders will be blue and file will be white.\n\n", input[0]);
-        printf("\033[1;35m                                   Usage\n\n");
-        printf("\033[0m ~> \033[1;33m%s        \033[0m| The main usage of the command\n", input[0]);
-        printf("\033[0m ~> \033[1;33m%s -h     \033[0m| Help with the command\n", input[0]);
-        printf("\033[0m ~> \033[1;33m%s --help \033[0m| Help with the command\n\n", input[0]);
     } else {
         print_invalid_use_cmd("ls");
-        return;
+        return 1;
     }
+    return 0;
 }
 
-void change_dir(char **input, int word_count) {
+int change_dir(char **input, int word_count) {
     if (word_count == 2) {
-        // check for help flag
-        if (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0) {
-            printf("\033[1;34m                                  -- %s --\n\n", input[0]); // <- first command
-            printf("\033[0mThe \033[1;33m%s\033[0m command is used to change the current directory. When provided with a file path as a second argument, the command will move the shell to that location.\n\n", input[0]);
-            printf("\033[1;35m                                   Usage\n\n");
-            printf("\033[0m ~> \033[1;33m%s <file_path> \033[0m| The main usage of the command. Navigate to \033[1;33mfile_path\033[0m.\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s ..          \033[0m| Navigate \'up\' one directory (to the parent).\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s -h          \033[0m| Help with the command\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s --help      \033[0m| Help with the command\n\n", input[0]);
-        } else {
-            char *path = input[1];
+        char *path = input[1];
 
-            // change dir if possible
-            if (chdir(path) == -1) {
-                perror("Unable to change directories!");
+        // change dir if possible
+        if (chdir(path) == -1) {
+            perror("Unable to change directories!");
+        } else {
+            char cwd[256];
+            if (getcwd(cwd, sizeof(cwd)) != NULL) {
+                printf("%s\n", cwd);
             } else {
-                char cwd[256];
-                if (getcwd(cwd, sizeof(cwd)) != NULL) {
-                    printf("%s\n", cwd);
-                } else {
-                    perror("Error while getting dir! 256 char limit.");
-                }
+                perror("Error while getting dir! 256 char limit.");
             }
-            return;
         }
+        return 0;
     } else {
         print_invalid_use_cmd(input[0]);
-        return;
+        return 0;
     }
 }
 
 int create_file(char **input, int word_count) {
     if (word_count == 2) {
-        // check for help flag
-        if (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0) {
-            printf("\033[1;34m                                  -- %s --\n\n", input[0]); // <- first command
-            printf("\033[0mThe \033[1;33m%s\033[0m command is used to create a file. When provided with a file name as a second argument, the command will create a file in the current directory. If a file with that name already exists in the current directory, nothing will happen.\n\n", input[0]);
-            printf("\033[1;35m                                   Usage\n\n"); 
-            printf("\033[0m ~> \033[1;33m%s <file_name> \033[0m| The main usage of the command. Create a directory called \033[1;33<file_name>\033[0m.\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s -h          \033[0m| Help with the command\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s --help      \033[0m| Help with the command\n\n", input[0]);
-            return 0;
-        } else {
-            FILE *f;
-            char *file_name = input[1];
+        FILE *f;
+        char *file_name = input[1];
 
-            // create file if it does not exist
-            f = fopen(file_name, "a");
-            if (f == NULL) {
-                perror("Unable to create file!");
-                fclose(f);
-                free(file_name);
-                return 1;
-            }
+        // create file if it does not exist
+        f = fopen(file_name, "a");
+        if (f == NULL) {
+            perror("Unable to create file!");
             fclose(f);
-            return 0; 
+            free(file_name);
+            return 1;
         }
+        fclose(f);
+        return 0; 
     } else {
         print_invalid_use_cmd(input[0]);
         return 1;
@@ -163,23 +130,12 @@ int create_file(char **input, int word_count) {
 
 int create_dir(char **input, int word_count) {
     if (word_count == 2) {
-        // check for help flag
-        if (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0) {
-            printf("\033[1;34m                                  -- %s --\n\n", input[0]); // <- first command
-            printf("\033[0mThe \033[1;33m%s\033[0m command is used to create a directory. When provided with a directory name as a second argument, the command will create a directory in the current directory. If a directory with that name already exists in the current directory, nothing will happen.\n\n", input[0]);
-            printf("\033[1;35m                                   Usage\n\n"); 
-            printf("\033[0m ~> \033[1;33m%s <directory_name> \033[0m| The main usage of the command. Create a directory called \033[1;33<directory_name>\033[0m.\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s -h               \033[0m| Help with the command\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s --help           \033[0m| Help with the command\n\n", input[0]);
-            return 0;
-        } else {
-            char *dir_name = input[1];
-            if (mkdir(dir_name, 0777) == -1) {
-                perror("Unable to create directory!");
-                return 1;
-            }
-            return 0;
+        char *dir_name = input[1];
+        if (mkdir(dir_name, 0777) == -1) {
+            perror("Unable to create directory!");
+            return 1;
         }
+        return 0;
     } else {
         print_invalid_use_cmd(input[0]);
         return 1;
@@ -188,23 +144,12 @@ int create_dir(char **input, int word_count) {
 
 int remove_file(char **input, int word_count) {
     if (word_count == 2) {
-        // check for help flag
-        if (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0) {
-            printf("\033[1;34m                                  -- %s --\n\n", input[0]); // <- first command
-            printf("\033[0mThe \033[1;33m%s\033[0m command is used to remove a file. When provided with a file name as a second argument, the command will remove the file in the current directory with the same name.\n\n", input[0]);
-            printf("\033[1;35m                                   Usage\n\n"); 
-            printf("\033[0m ~> \033[1;33m%s <file_name> \033[0m| The main usage of the command. Remove a file called \033[1;33<file_name>\033[0m.\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s -h          \033[0m| Help with the command\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s --help      \033[0m| Help with the command\n\n", input[0]);
-            return 0;
-        } else {
-            char *file_name = input[1];
-            if (remove(file_name) == -1) {
-                perror("Unable to remove file!");
-                return 1;
-            }
-            return 0;
+        char *file_name = input[1];
+        if (remove(file_name) == -1) {
+            perror("Unable to remove file!");
+            return 1;
         }
+        return 0;
     } else {
         print_invalid_use_cmd(input[0]);
         return 1;
@@ -213,23 +158,12 @@ int remove_file(char **input, int word_count) {
 
 int remove_dir(char **input, int word_count) {
     if (word_count == 2) {
-        // check for help flag
-        if (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0) {
-            printf("\033[1;34m                                  -- %s --\n\n", input[0]); // <- first command
-            printf("\033[0mThe \033[1;33m%s\033[0m command is used to remove an empty directory. When provided with a directory name as a second argument, the command will remove the directory in the current directory with the same name as long as it is empty.\n\n", input[0]);
-            printf("\033[1;35m                                   Usage\n\n"); 
-            printf("\033[0m ~> \033[1;33m%s <directory_name> \033[0m| The main usage of the command. Remove a directory called \033[1;33<directory_name>\033[0m.\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s -h               \033[0m| Help with the command\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s --help           \033[0m| Help with the command\n\n", input[0]);
-            return 0;
-        } else {
-            char *file_name = input[1];
-            if (rmdir(file_name) == -1) {
-                perror("Unable to remove directory!");
-                return 1;
-            }
-            return 0;
+        char *file_name = input[1];
+        if (rmdir(file_name) == -1) {
+            perror("Unable to remove directory!");
+            return 1;
         }
+        return 0;
     } else {
         print_invalid_use_cmd(input[0]);
         return 1;
@@ -266,24 +200,6 @@ int write_to_file(char **input, int word_count) {
         fclose(f);
 
         return 0;
-    } else if (word_count == 2) {
-        // check for help flag
-        if (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0) {
-            printf("\033[1;34m                                  -- %s --\n\n", input[0]); // <- first command
-            printf("\033[0mThe \033[1;33m%s\033[0m command is used to write to a file. When provided a file name as a second argument and a string of text, the string of text will be written to the file. If the file does not already exist, the file will be created.\nBy default, the command is set to \033[1;33moverwrite\033[0m mode. You can change this with the \033[1;33m--append\033[0m or \033[1;33m-a\033[0m flag.\n\n", input[0]);
-            printf("\033[1;35m                                   Usage\n\n"); 
-            printf("\033[0m ~> \033[1;33m%s <file_name> <input>              \033[0m| The main usage of the command. Write \033[1;33m<input>\033[0m to \033[1;33m<file_name>\033[0m\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s <file_name> -a <input>           \033[0m| Write \033[1;33m<input>\033[0m to \033[1;33m<file_name>\033[0m in append mode.\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s <file_name> --append <input>     \033[0m| Write \033[1;33m<input>\033[0m to \033[1;33m<file_name>\033[0m in append mode.\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s <file_name> -o <input>           \033[0m| Write \033[1;33m<input>\033[0m to \033[1;33m<file_name>\033[0m in overwrite mode.\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s <file_name> -- overwrite <input> \033[0m| Write \033[1;33m<input>\033[0m to \033[1;33m<file_name>\033[0m in overwrite mode.\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s -h                               \033[0m| Help with the command\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s --help                           \033[0m| Help with the command\n\n", input[0]);
-            return 0;
-        } else {
-            print_invalid_use_cmd(input[0]);
-            return 1;
-        }
     } else {
         print_invalid_use_cmd(input[0]);
         return 1;
@@ -292,40 +208,29 @@ int write_to_file(char **input, int word_count) {
 
 int read_file(char **input, int word_count) {
     if (word_count == 2) {
-        // check for help flag
-        if (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0) {
-            printf("\033[1;34m                                  -- %s --\n\n", input[0]); // <- first command
-            printf("\033[0mThe \033[1;33m%s\033[0m command is used to read a file. When provided with a file name as a second argument, the command will print the file to the standard output.\n\n", input[0]);
-            printf("\033[1;35m                                   Usage\n\n"); 
-            printf("\033[0m ~> \033[1;33m%s <file_name> \033[0m| The main usage of the command. Read a file called \033[1;33<file_name>\033[0m.\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s -h          \033[0m| Help with the command\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s --help      \033[0m| Help with the command\n\n", input[0]);
-            return 0;
-        } else {
-            FILE *f;
+        FILE *f;
 
-            f = fopen(input[1], "r");
-            if (f == NULL) {
-                perror("Unable to create file!");
-                fclose(f);
-                return 1;
-            }
-
-            while(1) {
-                int c = fgetc(f);
-                if (feof(f)) {
-                    printf("\n");
-                    break;
-                } else if (ferror(f)) {
-                    perror("Error reading file!");
-                    break;
-                }
-                printf("%c", c);
-            }
-
+        f = fopen(input[1], "r");
+        if (f == NULL) {
+            perror("Unable to create file!");
             fclose(f);
-            return 0; 
+            return 1;
         }
+
+        while(1) {
+            int c = fgetc(f);
+            if (feof(f)) {
+                printf("\n");
+                break;
+            } else if (ferror(f)) {
+                perror("Error reading file!");
+                break;
+            }
+            printf("%c", c);
+        }
+        // make sure to close file!
+        fclose(f);
+        return 0; 
     } else {
         print_invalid_use_cmd(input[0]);
         return 1;
@@ -333,21 +238,7 @@ int read_file(char **input, int word_count) {
 }
 
 int move_file(char **input, int word_count) {
-    if (word_count == 2) {
-        // check for help flag
-        if (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0) {
-            printf("\033[1;34m                                  -- %s --\n\n", input[0]); // <- first command
-            printf("\033[0mThe \033[1;33m%s\033[0m command is used to move a file. When provided with a file path as a second argument and a new file path as a third argument, the command will move the file to the new file path. This does not remove the contents of the file.\n\n", input[0]);
-            printf("\033[1;35m                                   Usage\n\n"); 
-            printf("\033[0m ~> \033[1;33m%s <old_path> <new_path> \033[0m| The main usage of the command. move a file called \033[1;33<old_path>\033[0m to \033[1;33<new_path>\033[0m.\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s -h                    \033[0m| Help with the command\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s --help                \033[0m| Help with the command\n\n", input[0]);
-            return 0;
-        } else {
-            print_invalid_use_cmd(input[0]);
-            return 1;
-        }
-    } else if (word_count == 3) {
+    if (word_count == 3) {
         int r = rename(input[1], input[2]);
         if (r == -1) {
             perror("Error renaming file!");
@@ -363,50 +254,43 @@ int move_file(char **input, int word_count) {
 
 int open_file_with_vim(char **input, int word_count) {
     if (word_count == 2) {
-        // check for help flag
-        if (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0) {
-            printf("\033[1;34m                                  -- %s --\n\n", input[0]); // <- first command
-            printf("\033[0mThe \033[1;33m%s\033[0m command is used to open a file in Vim, the ubiquitous text editor. When provided with a file path as a second argument, that file will be opened with vim in a child process of the shell.\n\n", input[0]);
-            printf("\033[1;35m                                   Usage\n\n"); 
-            printf("\033[0m ~> \033[1;33m%s <file_path> \033[0m| The main usage of the command. Open \033[1;33m<file_name>\033[0m with Vim.\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s -h          \033[0m| Help with the command\n", input[0]);
-            printf("\033[0m ~> \033[1;33m%s --help      \033[0m| Help with the command\n\n", input[0]);
-            return 0;
-        } else {
-            // create a fork of the current process
-            pid_t pid = fork();
+        // create a fork of the current process
+        pid_t pid = fork();
 
-            if (pid < 0) {
-                perror("Error forking process!");
-                return 1;
-            } else if (pid == 0) {
-                // child process
-                FILE *f;
-                f = fopen(input[1], "a");
-                // open vim
-                if (f == NULL) {
-                    char *exec_args[] = {"vim", NULL};
-                    int e = execv("/usr/bin/vim", exec_args);
-                    if (e == -1) {
-                        perror("Error opening Vim!");
-                    }
+        if (pid < 0) {
+            perror("Error forking process!");
+            return 1;
+        } else if (pid == 0) {
+            // child process
+            FILE *f;
+            f = fopen(input[1], "a");
+            // open vim
+            if (f == NULL) {
+                char *exec_args[] = {"vim", NULL};
+                int e = execv("/usr/bin/vim", exec_args);
+                if (e == -1) {
+                    perror("Error opening Vim!");
                 }
-                else {
-                    char *exec_args[] = {"vim", input[1], NULL};
-                    int e = execv("/usr/bin/vim", exec_args);
-                    if (e == -1) {
-                        perror("Error opening Vim!");
-                    }
-                }
-            } else {
-                // parent process
-                wait(NULL);
             }
-            // https://www.section.io/engineering-education/fork-in-c-programming-language/
-            return 0;
-        } 
+            else {
+                char *exec_args[] = {"vim", input[1], NULL};
+                int e = execv("/usr/bin/vim", exec_args);
+                if (e == -1) {
+                    perror("Error opening Vim!");
+                }
+            }
+        } else {
+            // parent process
+            wait(NULL);
+        }
+        // https://www.section.io/engineering-education/fork-in-c-programming-language/
+        return 0;
     } else {
         print_invalid_use_cmd(input[0]);
         return 1;
     }
+}
+
+int dummy_exit(char **input, int word_count) {
+    return -1;
 }
