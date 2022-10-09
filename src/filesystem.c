@@ -96,7 +96,7 @@ void list_current_dir(char** input, int word_count) {
     }
 }
 
-void change_dir(char **input, int word_count) {
+int change_dir(char **input, int word_count) {
     if (word_count == 2) {
         // check for help flag
         if (strcmp(input[1], "-h") == 0 || strcmp(input[1], "--help") == 0) {
@@ -107,6 +107,7 @@ void change_dir(char **input, int word_count) {
             printf("\033[0m ~> \033[1;33m%s ..          \033[0m| Navigate \'up\' one directory (to the parent).\n", input[0]);
             printf("\033[0m ~> \033[1;33m%s -h          \033[0m| Help with the command\n", input[0]);
             printf("\033[0m ~> \033[1;33m%s --help      \033[0m| Help with the command\n\n", input[0]);
+            return 0;
         } else {
             char *path = input[1];
 
@@ -121,11 +122,11 @@ void change_dir(char **input, int word_count) {
                     perror("Error while getting dir! 256 char limit.");
                 }
             }
-            return;
+            return 0;
         }
     } else {
         print_invalid_use_cmd(input[0]);
-        return;
+        return 0;
     }
 }
 

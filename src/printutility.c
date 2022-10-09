@@ -85,7 +85,7 @@ void clear_term(char** input, int word_count) {
     }
 }
 
-void print_commands(void) {
+int print_commands(char** input, int word_count) {
     printf("\033[1;34m                - Commands --\n\n");
     printf("\033[0m ~> \033[1;33mhelp, h  \033[0m| List of available commands\n");
     printf("\033[0m ~> \033[1;33minfo, i  \033[0m| Information about the wizsh project\n");
@@ -100,7 +100,7 @@ void print_commands(void) {
     printf("\033[0m ~> \033[1;33mwrite, w \033[0m| Write to a file\n");
     printf("\033[0m ~> \033[1;33mfetch, f \033[0m| Execute a simple HTTP GET request\n");
     printf("\033[0m ~> \033[1;33mvim, v   \033[0m| Open a file in Vim\n\n");
-
+    return 0;
 }
 
 void print_wizard(void) {

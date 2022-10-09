@@ -7,6 +7,7 @@
 #include "printutility.h"
 #include "filesystem.h"
 #include "requests.h"
+#include "commands.h"
 
 int get_input(char *buffer);
 void parse_input(char *input, char** input_array, int char_count);
@@ -81,6 +82,10 @@ int main (void) {
             //     printf("Parse: %s\n", input_array[i]);
             // }
 
+            // COMMAND REFACTOR CHECK
+            command_handler(input_array, word_count);
+            
+
             if (word_count > 0) {
                 // lowercase the first cmd 
                 for (int i = 0; input_array[0][i]; i++) {
@@ -100,7 +105,7 @@ int main (void) {
                 } 
                 // list of commands
                 else if ((strcmp(input_array[0], "help") == 0 || strcmp(input_array[0], "h") == 0) && word_count == 1) {
-                    print_commands();
+                    print_commands(input_array, word_count);
                 }
                 // print cheech wizard
                 else if (strcmp(input_array[0], "wizard") == 0 && word_count == 1) {

@@ -5,7 +5,7 @@ OBJ = obj/
 CC = clang
 CFLAGS = -Wall -g
 LDFLAGS = -lcurl
-OBJFILES = $(OBJ)main.o $(OBJ)filesystem.o $(OBJ)printutility.o $(OBJ)requests.o
+OBJFILES = $(OBJ)main.o $(OBJ)filesystem.o $(OBJ)printutility.o $(OBJ)requests.o $(OBJ)commands.o
 TARGET = bin/wizsh
 
 all: $(TARGET)
@@ -24,6 +24,9 @@ $(OBJ)printutility.o: $(SRC)printutility.c
 
 $(OBJ)requests.o: $(SRC)requests.c
 	$(CC) -c $(SRC)requests.c -o $(OBJ)requests.o
+
+$(OBJ)commands.o: $(SRC)commands.c
+	$(CC) -c $(SRC)commands.c -o $(OBJ)commands.o
 
 clean:
 	rm -f $(OBJFILES) $(TARGET) *~

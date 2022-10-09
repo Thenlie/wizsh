@@ -1,26 +1,8 @@
-const char* COMMANDS = { 
-    "help", 
-    "h", 
-    "info",
-    "i",
-    "clear",
-    "c",
-    "dir",
-    "ls",
-    "cd",
-    "mkdir",
-    "mk",
-    "move",
-    "mv",
-    "read",
-    "r",
-    "write",
-    "w",
-    "fetch",
-    "f",
-    "vim",
-    "v"
-};
+#include "filesystem.h"
+#include "printutility.h"
+
+#include <stdio.h>
+#include <string.h>
 
 // Define command structure
 typedef struct Command {
@@ -28,19 +10,18 @@ typedef struct Command {
     char *name_short;
     char *description;
     char *usage_list[10]; 
-    // TODO function pointer
     int (*run)(char **input, int word_count);
 } Command;
 
 // Create a global array of commands
-Command cmd_arr = {
+Command cmd_arr[] = {
     // -- HELP --
     {
         "help",
         "h",
         "This command prints a complete list of commands available on wizsh.",
         { "\0" },
-        
+        print_commands
     },
     // -- READ --
     {
@@ -51,7 +32,8 @@ Command cmd_arr = {
             "\033[0m ~> \033[1;33mread <file_name> \033[0m| The main usage of the command. Read a file called \033[1;33<file_name>\033[0m.\n",
             "\033[0m ~> \033[1;33mread -h          \033[0m| Help with the command\n",
             "\033[0m ~> \033[1;33mread --help      \033[0m| Help with the command\n\n",
-        }
+        },
+        read_file
     },
     // -- CHANGE DIR --
     {
@@ -63,6 +45,22 @@ Command cmd_arr = {
                 "\033[0m ~> \033[1;33mcd ..          \033[0m| Navigate \'up\' one directory (to the parent).\n", 
                 "\033[0m ~> \033[1;33mcd -h          \033[0m| Help with the command\n", 
                 "\033[0m ~> \033[1;33mcd --help      \033[0m| Help with the command\n\n", 
-        }
+        },
+        change_dir
     },
 };
+
+int command_handler(char **input, int word_count) {
+    // loop through global array of commands
+    for (int i = 0; cmd_arr[i].description; i++) {
+        // check if command matches first string of user input
+        if (strcmp(cmd_arr[i].name_verbose, input[0]) == 0 || strcmp(cmd_arr[i].name_short, input[0]) == 0) {
+            printf("Found!\n");
+            cmd_arr[i].run(input, word_count);
+            return 0;
+        }
+    }
+    // if not returned, input is not a valid command
+    printf("Not found!\n");
+    return 1;
+}
