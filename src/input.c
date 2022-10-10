@@ -67,7 +67,7 @@ void trim_input(char *input_buffer, char *clean_input, int *word_count, int *cha
             prev_char = input_buffer[i];
         }
     }
-    if (prev_char == ' ') {
+    if (prev_char == 32) {
         (*word_count)--;
         clean_input[clean_count-1] = 0;
     }

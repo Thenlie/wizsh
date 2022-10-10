@@ -1,6 +1,6 @@
-#include "filesystem.h"
-#include "printutility.h"
-#include "requests.h"
+#include "handlers/filesystem.h"
+#include "handlers/printutility.h"
+#include "handlers/requests.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -22,9 +22,9 @@ Command cmd_arr[] = {
         "e",
         "The \033[1;33exit\033[0m command quits wizsh.",
         {
-            "exit        \033[0m| The main usage of the command. Exit wizsh.\n"
-            "exit -h     \033[0m| Help with the command\n"
-            "exit --help \033[0m| Help with the command\n\n"
+            "exit        \033[0m| The main usage of the command. Exit wizsh.\n",
+            "exit -h     \033[0m| Help with the command\n",
+            "exit --help \033[0m| Help with the command\n\n",
         },
         dummy_exit
     },
@@ -34,9 +34,10 @@ Command cmd_arr[] = {
         "h",
         "The \033[1;33mhelp\033[0m command prints a complete list of commands available on wizsh.\n",
         { 
-            "help        \033[0m| The main usage of the command. Print a list of all commands.\n"
-            "help -h     \033[0m| Help with the command\n"
-            "help --help \033[0m| Help with the command\n\n" },
+            "help        \033[0m| The main usage of the command. Print a list of all commands.\n",
+            "help -h     \033[0m| Help with the command\n",
+            "help --help \033[0m| Help with the command\n\n" ,
+        },
         print_commands
     },
     // -- INFO -- 
@@ -45,9 +46,9 @@ Command cmd_arr[] = {
         "i",
         "The \033[1;33minfo\033[0m command is used to display info about this shell and its contributors.\n",
         {
-            "info        \033[0m| The main usage of the command. Print info about wizsh.\n"
-            "info -h     \033[0m| Help with the command\n"
-            "info --help \033[0m| Help with the command\n\n"
+            "info        \033[0m| The main usage of the command. Print info about wizsh.\n",
+            "info -h     \033[0m| Help with the command\n",
+            "info --help \033[0m| Help with the command\n\n",
         },
         print_info
     },
@@ -94,9 +95,9 @@ Command cmd_arr[] = {
         "f",
         "The \033[1;33m%s\033[0m command is used to rename a file. When provided with a file name as a second argument and a new file name as a third argument, the command will rename the file to the new file name. This does not remove the contents of the file.\n",
         {
-            "%s <old_name> <new_name> \033[0m| The main usage of the command. Rename a file called \033[1;33<old_name>\033[0m to \033[1;33<new_name>\033[0m.\n",
-            "%s -h                    \033[0m| Help with the command\n",
-            "%s --help                \033[0m| Help with the command\n\n",
+            "fetch <old_name> <new_name> \033[0m| The main usage of the command. Rename a file called \033[1;33<old_name>\033[0m to \033[1;33<new_name>\033[0m.\n",
+            "fetch -h                    \033[0m| Help with the command\n",
+            "fetch --help                \033[0m| Help with the command\n\n",
         },
         fetch
     },
