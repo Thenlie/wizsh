@@ -227,6 +227,18 @@ Command cmd_arr[] = {
         },
         open_file_with_vim
     },
+    // -- COPY FILE
+    {
+        "copy",
+        "cp",
+        "The \033[1;33mcopy\033[0m command is used to copy a file from one location to another. When provided with a file path as a second argument and another file path as a third argument, the file from the first argument will be copied to the second.",
+        {
+            "copy <file_path> <copy_path> \033[0m| The main usage of the command. Copy \033[1;33m<file_path>\033[0m to \033[1;33m<copy_path>\033[0m.\n",
+            "copy -h          \033[0m| Help with the command\n",
+            "copy --help      \033[0m| Help with the command\n\n",
+        },
+        copy_file
+    }
 
 };
 

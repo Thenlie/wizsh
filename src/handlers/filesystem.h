@@ -14,5 +14,6 @@ int read_file(char **input, int word_count);
 int move_file(char **input, int word_count);
 int open_file_with_vim(char **input, int word_count);
 int dummy_exit(char **input, int word_count);
+int copy_file(char **input, int word_count) ;
 
 #endif

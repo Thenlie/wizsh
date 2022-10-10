@@ -295,3 +295,8 @@ int open_file_with_vim(char **input, int word_count) {
 int dummy_exit(char **input, int word_count) {
     return -1;
 }
+
+int copy_file(char **input, int word_count) {
+    
+    return 0;
+}
