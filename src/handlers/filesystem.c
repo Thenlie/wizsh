@@ -297,7 +297,7 @@ int dummy_exit(char **input, int word_count) {
 }
 
 int copy_file(char **input, int word_count) {
-    if (word_count >= 3) {
+    if (word_count == 3 || word_count == 4) {
         FILE *rf;
         FILE *wf;
 
