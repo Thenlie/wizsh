@@ -13,11 +13,9 @@ void print_logo(void)
         * [0;35m] = purple
         * [0;34m] = blue
     */
-    printf("\033[0;34m");
-    printf("                        Welcome to WIZSH!\n");
+    printf("\033[0;34m                        Welcome to WIZSH!\n");
     printf("                         version %s\n", VERSION_NUMBER);
-    printf("                     Created by Thenlie 2022\n");
-    printf("\n");
+    printf("                     Created by Thenlie 2022\n\n");
     printf("\033[0;35m");
     printf("                     88                      88           \n");
     printf("                     \"\"                      88           \n");
@@ -26,20 +24,15 @@ void print_logo(void)
     printf("  `8b    d88b    d8' 88      a8P\" |8[    \"\"  88P'    \"8a  \n");
     printf("   `8b  d8'`8b  d8'  88   ,d8P'     `\"Y8ba,  88       88  \n");
     printf("    `8bd8'  `8bd8'   88 ,d8\"       aa    ]8I 88       88  \n");
-    printf("      YP      YP     88 888888888  `\"YbbdP\"' 88       88  \n");
-    printf("\n");
-    printf("\033[0m"); 
+    printf("      YP      YP     88 888888888  `\"YbbdP\"' 88       88  \n\n\033[0m"); 
     // https://ascii.co.uk/
 }
 
 int print_info(char** input, int word_count) {
     if (word_count == 1) {
-        printf("\033[1;34m");
-        printf("                         --  Info --\n");
-        printf("\033[1;33m"); 
-        printf("            wizsh! Created by Leithen Crider in 2022\n");
-        printf("\033[0m");
-        printf("Written in C, this was a final project for the Harvard CS50 course.\n");
+        printf("\033[1;34m                         --  Info --\n");
+        printf("\033[1;33m            wizsh! Created by Leithen Crider in 2022\n");
+        printf("\033[0mWritten in C, this was a final project for the Harvard CS50 course.\n");
         printf("  This project was built to gain a better understanding of the C\n");
         printf("programming language and how shells like bash and zsh might work.\n\n");
     } else {
@@ -51,25 +44,17 @@ int print_info(char** input, int word_count) {
 void print_start_of_line(void) {
     printf("\033[1;105m");
     print_current_dir();
-    printf("~> ");
-    printf("\033[0m ");
+    printf("~> \033[0m ");
 }
 
 void print_invalid_cmd(char *cmd) {
-    printf("\033[0;31m");
-    printf("Invalid command! ");
-    printf("\033[4;37m");
-    printf("%s", cmd);
+    printf("\033[0;31mInvalid command! \033[4;37m%s", cmd);
     printf("\033[0m");
 }
 
 void print_invalid_use_cmd(char *cmd) {
-    printf("\033[0;31m");
-    printf("Invalid use of command! ");
-    printf("\033[4;37m");
-    printf("%s\n", cmd);
-    printf("\033[0m");
-    printf("Use %s --help or -h for help using this command.\n", cmd);
+    printf("\033[0;31mInvalid use of command! \033[4;37m%s\n", cmd);
+    printf("\033[0mUse %s --help or -h for help using this command.\n", cmd);
 }
 
 int clear_term(char** input, int word_count) {
@@ -110,8 +95,7 @@ void print_command_help(char *name, char *description, char **usage_list) {
 }
 
 int print_wizard(char **input, int word_count) {
-    printf("\n");
-    printf("\n");
+    printf("\n\n");
     printf("                                            \033[48:5:166m&&&&BBBBBBB#&\033[m\n");
     printf("                                        \033[48:5:166m#GP5Y\033[38:2:160:10:10m5BGB5\033[38:2:200:200:200mJJJJJJJYP&\033[m\n");
     printf("                                      \033[48:5:166mBYJYPPP\033[38:2:160:10:10mGGPGGGG\033[38:2:200:200:200mPPYJJJJ5&\033[m\n");
@@ -145,7 +129,6 @@ int print_wizard(char **input, int word_count) {
     printf("                       \033[48:2:180:5:5m&PYYYYYYYYYYYYYYYY#\033[m                        \033[48:2:180:5:5m#P55555555555555555P&\033[m\n");
     printf("                        \033[48:2:180:5:5m&GYYYYYYYYYYYYYY5#\033[m                          \033[48:2:180:5:5m#G5Y555555555555G#\033[m\n");
     printf("                          \033[48:2:180:5:5m#G5YYYYYYYYY5G&\033[m                             \033[48:2:180:5:5m&GP55555555PB&\033[m\n");
-    printf("                            \033[48:2:180:5:5m&#GGGGGGB#&\033[m                                  \033[48:2:180:5:5m&##BBB#&\033[m\n");
-    printf("\n");
+    printf("                            \033[48:2:180:5:5m&#GGGGGGB#&\033[m                                  \033[48:2:180:5:5m&##BBB#&\033[m\n\n");
     return 0;
 }
