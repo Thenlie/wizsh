@@ -2,25 +2,19 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#include "filesystem.h"
-#include "printutility.h"
+#include "handlers/filesystem.h"
+#include "handlers/printutility.h"
 #include "commands.h"
 #include "input.h"
 
 int main (void) {
 
     print_logo();
-    /*
-        * Main shell loop
-    */
+    // -- Main shell loop --
     while (1) {
         char *input_buffer = malloc(256);
         char *clean_input = malloc(256);
-        // print start of line marking
-        printf("\033[1;105m");
-        print_current_dir();
-        printf("~> ");
-        printf("\033[0m ");
+        print_start_of_line();
 
         int char_count = 0, word_count = 1, clean_count = 0;
         char prev_char;
@@ -40,16 +34,17 @@ int main (void) {
 
             // convert input to array of words
             char* input_array[word_count];
-
-            for (int i = 0; i < word_count; i++) {
-                input_array[i] = malloc(64);
+            if (word_count > 0) {
+                for (int i = 0; i < word_count; i++) {
+                    input_array[i] = malloc(64);
+                }
+                parse_input(clean_input, input_array, char_count);
             }
-            parse_input(clean_input, input_array, char_count);
 
+            
             // -- TESTING, REMOVE BEFORE FINAL --
             // printf("Words: %i\n", word_count);
             // printf("Chars: %i\n", char_count);
-
             // for (int i = 0; i < word_count; i++) {
             //     printf("Parse: %s\n", input_array[i]);
             // }
@@ -70,15 +65,12 @@ int main (void) {
                     printf("\ngoodbye <3\n\n");
                     free(input_buffer);
                     free(clean_input);
-                    // free input array
                     for (int i = 0; i < word_count; i++) {
                         free(input_array[i]);
                     }
                     return 0;
                 }
             }
-
-            // free input array
             for (int i = 0; i < word_count; i++) {
                 free(input_array[i]);
             }

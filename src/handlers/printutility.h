@@ -3,6 +3,7 @@
 
 void print_logo(void);
 int print_info(char **input, int word_count);
+void print_start_of_line(void);
 void print_invalid_cmd(char *cmd);
 void print_invalid_use_cmd(char *cmd);
 int clear_term(char** input, int word_count);
