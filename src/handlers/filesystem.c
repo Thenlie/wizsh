@@ -342,3 +342,13 @@ int copy_file(char **input, int word_count) {
         return 1;
     }
 }
+
+int print_dir_tree(char **input, int word_count) {
+    if (word_count == 1) {
+        
+    } else {
+        print_invalid_use_cmd(input[0]);
+        return 1;
+    }
+    return 0;
+}
