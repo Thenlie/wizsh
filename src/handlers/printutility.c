@@ -81,7 +81,8 @@ int print_commands(char** input, int word_count) {
     printf("\033[0m ~> \033[1;33mwrite, w \033[0m| Write to a file\n");
     printf("\033[0m ~> \033[1;33mfetch, f \033[0m| Execute a simple HTTP GET request\n");
     printf("\033[0m ~> \033[1;33mvim, v   \033[0m| Open a file in Vim\n");
-    printf("\033[0m ~> \033[1;33mcopy, cp \033[0m| Copy a file\n\n");
+    printf("\033[0m ~> \033[1;33mcopy, cp \033[0m| Copy a file\n");
+    printf("\033[0m ~> \033[1;33mtree, tr \033[0m| Copy a file\n\n");
     return 0;
 }
 
