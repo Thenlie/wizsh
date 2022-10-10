@@ -375,7 +375,7 @@ void print_tree(char *dir, int count) {
             for (int i = 0; i < count; i++) {
                 printf("\u2502   ");
             }
-            printf("\u251C\u2500\u2500 %s\n", dir_entry->d_name);
+            printf("\u251C\u2500\u2500 \033[0;34m%s\033[0m\n", dir_entry->d_name);
             // create path to new sub-dir
             char *new_path;
             if (asprintf(&new_path, "%s/%s", dir, dir_entry->d_name) == 0) {
