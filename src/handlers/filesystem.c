@@ -8,6 +8,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+void print_tree(char *dir, int count);
+
 int print_current_dir_path(char **input, int word_count) {
     if (word_count == 1) {
         char cwd[256];
@@ -62,6 +64,7 @@ int list_current_dir(char** input, int word_count) {
         if (directory == NULL) 
         {
             perror("Unable to open current directory" );
+            closedir(directory);
             return 1;
         }
 
@@ -341,4 +344,54 @@ int copy_file(char **input, int word_count) {
         print_invalid_use_cmd(input[0]);
         return 1;
     }
+}
+
+int print_dir_tree(char **input, int word_count) {
+    if (word_count == 1) {
+        printf(".\n");
+        print_tree(".", 0);
+        return 0;
+    } else {
+        print_invalid_use_cmd(input[0]);
+        return 1;
+    }
+}
+
+// tree helper function
+void print_tree(char *dir, int count) {
+    struct dirent *dir_entry; // Pointer for directory entry
+    DIR *directory = opendir(dir); // opendir() returns a pointer of DIR type. 
+
+    if (directory == NULL) 
+    {
+        perror("Unable to open current directory" );
+        closedir(directory);
+        return;
+    }
+
+    while ((dir_entry = readdir(directory)) != NULL) {
+        // entry is a folder
+        if (dir_entry->d_type == 4 && (strcmp(dir_entry->d_name, ".") != 0 && strcmp(dir_entry->d_name, "..") != 0) && dir_entry->d_name[0] != '.') {
+            for (int i = 0; i < count; i++) {
+                printf("\u2502   ");
+            }
+            printf("\u251C\u2500\u2500 \033[0;34m%s\033[0m\n", dir_entry->d_name);
+            // create path to new sub-dir
+            char *new_path;
+            if (asprintf(&new_path, "%s/%s", dir, dir_entry->d_name) == 0) {
+                perror("Unable to create directory path" );
+            }
+            // recursively call print tree for each sub-dir
+            print_tree(new_path, count + 1);
+            free(new_path);
+        // entry is a file, print
+        } else if (strcmp(dir_entry->d_name, ".") != 0 && strcmp(dir_entry->d_name, "..") != 0) {
+            for (int i = 0; i < count; i++) {
+                printf("\u2502   ");
+            }
+            printf("\u251C\u2500\u2500 %s\n", dir_entry->d_name);
+        }
+    }
+    closedir(directory);    
+    return;
 }
