@@ -1,4 +1,5 @@
 #include "printutility.h"
+#include "filesystem.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -45,6 +46,13 @@ int print_info(char** input, int word_count) {
         print_invalid_use_cmd("info");
     }
     return 0;
+}
+
+void print_start_of_line(void) {
+    printf("\033[1;105m");
+    print_current_dir();
+    printf("~> ");
+    printf("\033[0m ");
 }
 
 void print_invalid_cmd(char *cmd) {

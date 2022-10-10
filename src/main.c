@@ -14,11 +14,7 @@ int main (void) {
     while (1) {
         char *input_buffer = malloc(256);
         char *clean_input = malloc(256);
-        // print start of line marking
-        printf("\033[1;105m");
-        print_current_dir();
-        printf("~> ");
-        printf("\033[0m ");
+        print_start_of_line();
 
         int char_count = 0, word_count = 1, clean_count = 0;
         char prev_char;
