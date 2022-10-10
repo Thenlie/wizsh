@@ -297,6 +297,48 @@ int dummy_exit(char **input, int word_count) {
 }
 
 int copy_file(char **input, int word_count) {
-    
-    return 0;
+    if (word_count >= 3) {
+        FILE *rf;
+        FILE *wf;
+
+        rf = fopen(input[1], "r");
+        if (rf == NULL) {
+            perror("Unable to open read file to copy!");
+            fclose(rf);
+            return 1;
+        }
+        // check for append flag
+        if (strcmp(input[3], "-a") == 0 || strcmp(input[3], "--append") == 0) {
+            wf = fopen(input[2], "a");
+        // DEFAULT overwrite
+        } else {
+            wf = fopen(input[2], "w");
+        }
+        if (wf == NULL) {
+            perror("Unable to open write file to copy!");
+            fclose(wf);
+            fclose(rf);
+            return 1;
+        }
+
+        // read from rf
+        // fprintf to wf
+        while(1) {
+            int c = fgetc(rf);
+            if (feof(rf)) {
+                break;
+            } else if (ferror(rf)) {
+                perror("Error reading file!");
+                break;
+            }
+            fprintf(wf, "%c", c);
+        }
+
+        fclose(wf);
+        fclose(rf);
+        return 0;
+    } else {
+        print_invalid_use_cmd(input[0]);
+        return 1;
+    }
 }
