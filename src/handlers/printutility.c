@@ -88,7 +88,7 @@ int print_commands(char** input, int word_count) {
 
 void print_command_help(char *name, char *description, char **usage_list) {
     printf("\033[1;34m                                  -- %s --\n\n", name);
-    printf("\033[0mThe \033[1;33m%s\033[0m command is used to display the path to the current directory.\n\n", name);
+    printf("\033[0m%s", description);
     printf("\033[1;35m                                   Usage\n\n");
     for (int i = 0; usage_list[i]; i++) {
         printf("\033[0m ~> \033[1;33m%s", usage_list[i]);

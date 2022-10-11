@@ -7,7 +7,7 @@ GIT = git/
 CC = clang
 CFLAGS = -Wall -g
 LDFLAGS = -lcurl
-OBJFILES = $(OBJ)main.o $(OBJ)filesystem.o $(OBJ)printutility.o $(OBJ)requests.o $(OBJ)commands.o $(OBJ)input.o $(OBJ)git.o
+OBJFILES = $(OBJ)main.o $(OBJ)filesystem.o $(OBJ)printutility.o $(OBJ)requests.o $(OBJ)commands.o $(OBJ)input.o $(OBJ)git.o $(OBJ)git-commands.o
 TARGET = bin/wizsh
 
 all: $(TARGET)
@@ -29,6 +29,9 @@ $(OBJ)requests.o: $(SRC)$(H)requests.c
 
 $(OBJ)git.o: $(SRC)$(GIT)git.c
 	$(CC) -c $(SRC)$(GIT)git.c -o $(OBJ)git.o
+
+$(OBJ)git-commands.o: $(SRC)$(GIT)git-commands.c
+	$(CC) -c $(SRC)$(GIT)git-commands.c -o $(OBJ)git-commands.o
 
 $(OBJ)commands.o: $(SRC)commands.c
 	$(CC) -c $(SRC)commands.c -o $(OBJ)commands.o
