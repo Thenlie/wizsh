@@ -62,8 +62,7 @@ int list_current_dir(char** input, int word_count) {
         struct dirent *dir_entry; // Pointer for directory entry
         DIR *directory = opendir("."); // opendir() returns a pointer of DIR type. 
 
-        if (directory == NULL) 
-        {
+        if (directory == NULL) {
             perror("Unable to open current directory" );
             closedir(directory);
             return 1;
@@ -367,8 +366,7 @@ void print_tree(char *dir, int count, bool is_flat) {
     struct dirent *dir_entry; // Pointer for directory entry
     DIR *directory = opendir(dir); // opendir() returns a pointer of DIR type. 
 
-    if (directory == NULL) 
-    {
+    if (directory == NULL) {
         perror("Unable to open current directory" );
         closedir(directory);
         return;

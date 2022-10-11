@@ -1,9 +1,11 @@
 #include "handlers/filesystem.h"
 #include "handlers/printutility.h"
 #include "handlers/requests.h"
+#include "git/git.h"
 
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 // Define command structure
 typedef struct Command {
@@ -20,7 +22,7 @@ Command cmd_arr[] = {
     {
         "exit",
         "e",
-        "The \033[1;33exit\033[0m command quits wizsh.",
+        "The \033[1;3m3exit\033[0m command quits wizsh.",
         {
             "exit        \033[0m| The main usage of the command. Exit wizsh.\n",
             "exit -h     \033[0m| Help with the command\n",
@@ -269,6 +271,13 @@ int command_handler(char **input, int word_count, char *input_buffer) {
                     // print help usage strings
                     print_command_help(cmd_arr[i].name_verbose, cmd_arr[i].description, cmd_arr[i].usage_list);
                     return 0;
+                // check for git command
+                } else if (strcmp(input[0], "git") == 0) {
+                    bool is_git = is_git_dir(".");
+                    if (!is_git) {
+                        printf("You are not in a git enabled directory!");
+                        return 1;
+                    }
                 }
             }
             return cmd_arr[i].run(input, word_count);
