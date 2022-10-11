@@ -242,8 +242,20 @@ Command cmd_arr[] = {
             "copy --help                              \033[0m| Help with the command\n\n",
         },
         copy_file
-    }
-
+    },
+    {
+        "tree",
+        "tr",
+        "The \033[1;33mtree\033[0m command is used to copy a file from one location to another. When provided with a file path as a second argument and another file path as a third argument, the file from the first argument will be copied to the second. If the second file already exist, by default it will be overwritten.",
+        {
+            "tree        \033[0m| The main usage of the command. Print a directory tree of the current directory\n",
+            "tree -f     \033[0m| Print a directory tree of the current directory in flat view\n",
+            "tree --flat \033[0m| Print a directory tree of the current directory in flat view\n",
+            "tree -h     \033[0m| Help with the command\n",
+            "tree --help \033[0m| Help with the command\n\n",
+        },
+        print_dir_tree
+    },
 };
 
 int command_handler(char **input, int word_count, char *input_buffer) {
