@@ -7,8 +7,9 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <stdbool.h>
 
-void print_tree(char *dir, int count);
+void print_tree(char *dir, int count, bool is_flat);
 
 int print_current_dir_path(char **input, int word_count) {
     if (word_count == 1) {
@@ -349,7 +350,11 @@ int copy_file(char **input, int word_count) {
 int print_dir_tree(char **input, int word_count) {
     if (word_count == 1) {
         printf(".\n");
-        print_tree(".", 0);
+        print_tree(".", 0, false);
+        return 0;
+    } else if (word_count == 2 && (strcmp(input[1], "-f") == 0 || strcmp(input[1], "--flat") == 0)) {
+        printf(".\n");
+        print_tree(".", 0, true);
         return 0;
     } else {
         print_invalid_use_cmd(input[0]);
@@ -358,7 +363,7 @@ int print_dir_tree(char **input, int word_count) {
 }
 
 // tree helper function
-void print_tree(char *dir, int count) {
+void print_tree(char *dir, int count, bool is_flat) {
     struct dirent *dir_entry; // Pointer for directory entry
     DIR *directory = opendir(dir); // opendir() returns a pointer of DIR type. 
 
@@ -372,8 +377,10 @@ void print_tree(char *dir, int count) {
     while ((dir_entry = readdir(directory)) != NULL) {
         // entry is a folder
         if (dir_entry->d_type == 4 && (strcmp(dir_entry->d_name, ".") != 0 && strcmp(dir_entry->d_name, "..") != 0) && dir_entry->d_name[0] != '.') {
-            for (int i = 0; i < count; i++) {
-                printf("\u2502   ");
+            if (!is_flat) {
+                for (int i = 0; i < count; i++) {
+                    printf("\u2502   ");
+                }
             }
             printf("\u251C\u2500\u2500 \033[0;34m%s\033[0m\n", dir_entry->d_name);
             // create path to new sub-dir
@@ -382,12 +389,14 @@ void print_tree(char *dir, int count) {
                 perror("Unable to create directory path" );
             }
             // recursively call print tree for each sub-dir
-            print_tree(new_path, count + 1);
+            print_tree(new_path, count + 1, is_flat);
             free(new_path);
         // entry is a file, print
         } else if (strcmp(dir_entry->d_name, ".") != 0 && strcmp(dir_entry->d_name, "..") != 0) {
-            for (int i = 0; i < count; i++) {
-                printf("\u2502   ");
+            if (!is_flat) {
+                for (int i = 0; i < count; i++) {
+                    printf("\u2502   ");
+                }
             }
             printf("\u251C\u2500\u2500 %s\n", dir_entry->d_name);
         }
