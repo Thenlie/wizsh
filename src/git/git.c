@@ -26,6 +26,6 @@ bool is_git_dir(char* dir_path) {
 }
 
 int print_git_log(char **input, int word_count) {
-
-    return 0;
+    
+    return 0; 
 }

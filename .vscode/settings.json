@@ -3,6 +3,8 @@
         "stdio.h": "c",
         "commands.h": "c",
         "git.h": "c",
-        "dirent.h": "c"
+        "dirent.h": "c",
+        "filesystem.h": "c",
+        "printutility.h": "c"
     }
 }

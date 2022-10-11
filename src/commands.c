@@ -1,7 +1,7 @@
 #include "handlers/filesystem.h"
 #include "handlers/printutility.h"
 #include "handlers/requests.h"
-#include "git/git.h"
+#include "git/git-commands.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -22,7 +22,7 @@ Command cmd_arr[] = {
     {
         "exit",
         "e",
-        "The \033[1;3m3exit\033[0m command quits wizsh.",
+        "The \033[1;3mexit\033[0m command quits wizsh.",
         {
             "exit        \033[0m| The main usage of the command. Exit wizsh.\n",
             "exit -h     \033[0m| Help with the command\n",
@@ -233,7 +233,7 @@ Command cmd_arr[] = {
     {
         "copy",
         "cp",
-        "The \033[1;33mcopy\033[0m command is used to copy a file from one location to another. When provided with a file path as a second argument and another file path as a third argument, the file from the first argument will be copied to the second. If the second file already exist, by default it will be overwritten.",
+        "The \033[1;33mcopy\033[0m command is used to copy a file from one location to another. When provided with a file path as a second argument and another file path as a third argument, the file from the first argument will be copied to the second. If the second file already exist, by default it will be overwritten.\n",
         {
             "copy <file_path> <copy_path>             \033[0m| The main usage of the command. Copy \033[1;33m<file_path>\033[0m to \033[1;33m<copy_path>\033[0m.\n",
             "copy <file_path> <copy_path> -a          \033[0m| Copy \033[1;33m<file_path>\033[0m to \033[1;33m<copy_path>\033[0m in append mode.\n",
@@ -248,7 +248,7 @@ Command cmd_arr[] = {
     {
         "tree",
         "tr",
-        "The \033[1;33mtree\033[0m command is used to copy a file from one location to another. When provided with a file path as a second argument and another file path as a third argument, the file from the first argument will be copied to the second. If the second file already exist, by default it will be overwritten.",
+        "The \033[1;33mtree\033[0m command is used to copy a file from one location to another. When provided with a file path as a second argument and another file path as a third argument, the file from the first argument will be copied to the second. If the second file already exist, by default it will be overwritten.\n",
         {
             "tree        \033[0m| The main usage of the command. Print a directory tree of the current directory\n",
             "tree -f     \033[0m| Print a directory tree of the current directory in flat view\n",
@@ -271,14 +271,7 @@ int command_handler(char **input, int word_count, char *input_buffer) {
                     // print help usage strings
                     print_command_help(cmd_arr[i].name_verbose, cmd_arr[i].description, cmd_arr[i].usage_list);
                     return 0;
-                // check for git command
-                } else if (strcmp(input[0], "git") == 0) {
-                    bool is_git = is_git_dir(".");
-                    if (!is_git) {
-                        printf("You are not in a git enabled directory!");
-                        return 1;
-                    }
-                }
+                } 
             }
             return cmd_arr[i].run(input, word_count);
         }

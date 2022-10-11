@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
 
-#include "handlers/filesystem.h"
+#include "git/git-commands.h"
 #include "handlers/printutility.h"
 #include "commands.h"
 #include "input.h"
@@ -58,7 +59,12 @@ int main (void) {
                 }
 
                 // COMMAND CHECK
-                int c = command_handler(input_array, word_count, input_buffer);
+                int c;
+                if (strcmp(input_array[0], "git") == 0) {
+                    c = git_command_handler(input_array, word_count, input_buffer);
+                } else {
+                    c = command_handler(input_array, word_count, input_buffer);
+                }
                 
                 // -- EXIT --
                 if (c == -1) {
