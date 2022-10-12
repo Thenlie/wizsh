@@ -5,6 +5,9 @@
         "git.h": "c",
         "dirent.h": "c",
         "filesystem.h": "c",
-        "printutility.h": "c"
+        "printutility.h": "c",
+        "git-commands.h": "c",
+        "stdlib.h": "c",
+        "string.h": "c"
     }
 }
