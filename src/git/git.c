@@ -102,9 +102,13 @@ int print_git_log(char **input, int word_count) {
                 }  
                 if (count >= 84) {
                     count++;
-                    // start of log description
+                    // start of log type
                     if (count == 103) {
                         printf("\033[1;33m");
+                    }
+                    // end of log type, start of description
+                    if (c == ':') {
+                        printf("\033[1;32m");
                     }
                 } 
             }
