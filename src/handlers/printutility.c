@@ -1,5 +1,6 @@
 #include "printutility.h"
 #include "filesystem.h"
+#include "../git/git.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -42,9 +43,19 @@ int print_info(char** input, int word_count) {
 }
 
 void print_start_of_line(void) {
-    printf("\033[1;105m");
-    print_current_dir();
-    printf("~> \033[0m ");
+    bool is_git = is_git_dir(".");
+    if (!is_git) {
+        // printf("\033[1;105m");
+        print_current_dir();
+        printf(" ~> ");
+    } else {
+        // printf("\033[1;108m");
+        print_current_dir();
+        printf(" \033[38:2:90:50:240mgit:(\033[38:2:200:200:40m");
+        print_current_branch();
+        printf("\033[38:2:90:50:240m) \033[0m");
+        printf("~> \033[0m");
+    }
 }
 
 void print_invalid_cmd(char *cmd) {
