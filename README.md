@@ -1,6 +1,9 @@
 # wizsh [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Thenlie/wizsh/blob/main/LICENSE)
 
 [![Open Source](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://opensource.org/)
+[![Forks](https://img.shields.io/github/forks/Thenlie/wizsh)]()
+[![Open Issues](https://img.shields.io/github/issues/Thenlie/wizsh)]()
+[![Closed Issues](https://img.shields.io/github/issues-closed/thenlie/wizsh?color=yellow)]()
 
 A simple shell written in C. This shell was created as a final project for the Harvard CS50 course. As my first real dive into independent C programming, it was an amazing tool to learn the ins and outs of C, git and how shells function on a lower level. Bash and zsh were the main inspirations for the shell, the latter inspiring the name as well. 
 
