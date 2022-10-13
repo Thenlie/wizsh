@@ -24,6 +24,16 @@ Command git_cmd_arr[] = {
         },
         print_git_log
     },
+    {
+        "clone",
+        "The \033[1;33mgit clone\033[0m command clones a git repository to the current directory.\n",
+        {
+            "git clone <https_url> \033[0m| The main usage of the command. Clone a git repository at the location of \033[1;33m<https_url>\033[0m.\n",
+            "git clone -h          \033[0m| Help with the command\n",
+            "git clone --help      \033[0m| Help with the command\n\n",
+        },
+        clone_git_repo
+    },
 };
 
 int git_command_handler(char** input, int word_count, char* input_buffer) {

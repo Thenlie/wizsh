@@ -5,5 +5,6 @@
 
 int print_git_log(char **input, int word_count);
 bool is_git_dir(char* dir_path);
+int clone_git_repo(char **input, int word_count);
 
 #endif
