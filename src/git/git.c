@@ -27,6 +27,33 @@ bool is_git_dir(char* dir_path) {
     return false;
 }
 
+void print_current_branch(void) {
+    FILE *f;
+    f = fopen("./.git/HEAD", "r");
+    if (f == NULL) {
+        perror("Unable to read git file!");
+        fclose(f);
+        return;
+    }
+
+    // parse git logs
+    int count = 0;
+    while(1) {
+        int c = fgetc(f);
+        if (feof(f)) {
+            break;
+        } else if (ferror(f)) {
+            perror("Error reading file!");
+            break;
+        }
+        count++;
+        if (count > 16 && c != 10) {
+            printf("%c", c);
+        }
+    }
+    return;
+}
+
 int print_git_log(char **input, int word_count) {
     // ensure current directory is git enabled
     bool is_git = is_git_dir(".");
@@ -38,7 +65,7 @@ int print_git_log(char **input, int word_count) {
 
         f = fopen("./.git/logs/HEAD", "r");
         if (f == NULL) {
-            perror("Unable to create file!");
+            perror("Unable to read git file!");
             fclose(f);
             return 1;
         }
@@ -75,6 +102,7 @@ int print_git_log(char **input, int word_count) {
                 }  
                 if (count >= 84) {
                     count++;
+                    // start of log description
                     if (count == 103) {
                         printf("\033[1;33m");
                     }

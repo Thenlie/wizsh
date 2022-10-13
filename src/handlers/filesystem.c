@@ -49,7 +49,7 @@ void print_current_dir(void) {
                 count++;
             }
         }
-        printf(" %s ", cur_dir);
+        printf("%s", cur_dir);
         return;
     } else {
         perror("Error while getting dir! 256 char limit.");
