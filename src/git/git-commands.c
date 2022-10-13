@@ -37,11 +37,7 @@ Command git_cmd_arr[] = {
 };
 
 int git_command_handler(char** input, int word_count, char* input_buffer) {
-    bool is_git = is_git_dir(".");
-    if (!is_git) {
-        printf("You are not in a git enabled directory!");
-        return 1;
-    } else {
+    if (word_count > 1) {
         // loop through global array of commands
         for (int i = 0; git_cmd_arr[i].description; i++) {
             // check if command matches first string of user input
@@ -57,8 +53,8 @@ int git_command_handler(char** input, int word_count, char* input_buffer) {
                 return git_cmd_arr[i].run(input, word_count);
             }
         }
-        // if not returned, input is not a valid command
-        print_invalid_cmd(input_buffer);
-        return 1;
     }
+    // if not returned, input is not a valid command
+    print_invalid_cmd(input_buffer);
+    return 1;
 }
