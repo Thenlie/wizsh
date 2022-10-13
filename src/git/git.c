@@ -11,14 +11,14 @@ bool is_git_dir(char* dir_path) {
     DIR *directory = opendir(dir_path); // opendir() returns a pointer of DIR type. 
 
     if (directory == NULL) {
-        perror("Unable to open current directory" );
+        perror("Unable to open current directory");
         closedir(directory);
         return false;
     }
 
     while ((dir_entry = readdir(directory)) != NULL) {
         // check if entry is a .git
-        if (strcmp(dir_entry->d_name, ".git")) {
+        if (strcmp(dir_entry->d_name, ".git") == 0) {
             closedir(directory);
             return true;
         }
@@ -28,8 +28,63 @@ bool is_git_dir(char* dir_path) {
 }
 
 int print_git_log(char **input, int word_count) {
+    // ensure current directory is git enabled
+    bool is_git = is_git_dir(".");
+    if (!is_git) {
+        printf("You are not in a git enabled directory!\n");
+        return 1;
+    } else {
+        FILE *f;
 
-    return 0; 
+        f = fopen("./.git/logs/HEAD", "r");
+        if (f == NULL) {
+            perror("Unable to create file!");
+            fclose(f);
+            return 1;
+        }
+
+        // parse git logs
+        int count = 0;
+        while(1) {
+            int c = fgetc(f);
+            if (feof(f)) {
+                printf("\n");
+                break;
+            } else if (ferror(f)) {
+                perror("Error reading file!");
+                break;
+            }
+            if (count < 82){
+                count++;
+                continue;
+            } else if (c == '\n') {
+                count = 0;
+                printf("\033[0m%c", c);
+            } else {
+                if (c == '<' || c == '>'){
+                    count++;
+                }
+                // start of email
+                if (count == 83) {
+                    printf("\033[1;34m");
+                }  
+                printf("%c", c);
+                // end of email
+                if (count == 84) {
+                    printf("\033[0m");
+                }  
+                if (count >= 84) {
+                    count++;
+                    if (count == 103) {
+                        printf("\033[1;33m");
+                    }
+                } 
+            }
+        }
+        // make sure to close file!
+        fclose(f);
+        return 0; 
+    }
 }
 
 int clone_git_repo(char **input, int word_count) {
