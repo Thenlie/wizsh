@@ -1,4 +1,6 @@
-# wizsh
+# wizsh [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Thenlie/wizsh/blob/main/LICENSE)
+
+[![Open Source](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://opensource.org/)
 
 A simple shell written in C
 
