@@ -44,6 +44,26 @@ Command git_cmd_arr[] = {
         },
         print_git_status
     },
+    // {
+    //     "checkout",
+    //     "The \033[1;33mgit checkout\033[0m command is used to checkout to a new git branch.\n",
+    //     {
+    //         "git checkout        \033[0m| The main usage of the command. Checkout to a new git branch.\n",
+    //         "git checkout -h     \033[0m| Help with the command\n",
+    //         "git checkout --help \033[0m| Help with the command\n\n",
+    //     },
+    //     // need command
+    // }, 
+    {
+        "branch",
+        "The \033[1;33mgit branch\033[0m command is used to list all branches in the current git repository.\n",
+        {
+            "git branch        \033[0m| The main usage of the command. View all branches of the current git repository.\n",
+            "git branch -h     \033[0m| Help with the command\n",
+            "git branch --help \033[0m| Help with the command\n\n",
+        },
+        print_git_branches
+    },
 };
 
 int git_command_handler(char** input, int word_count, char* input_buffer) {
