@@ -79,21 +79,26 @@ int clear_term(char** input, int word_count) {
 
 int print_commands(char** input, int word_count) {
     printf("\033[1;34m                - Commands --\n\n");
-    printf("\033[0m ~> \033[1;33mhelp, h  \033[0m| List of available commands\n");
-    printf("\033[0m ~> \033[1;33minfo, i  \033[0m| Information about the wizsh project\n");
-    printf("\033[0m ~> \033[1;33mclear, c \033[0m| Clear the terminal\n");
-    printf("\033[0m ~> \033[1;33mdir      \033[0m| Print the current directory\n");
-    printf("\033[0m ~> \033[1;33mls       \033[0m| List the contents of the current directory\n");
-    printf("\033[0m ~> \033[1;33mcd       \033[0m| Change the current directory\n");
-    printf("\033[0m ~> \033[1;33mmkdir    \033[0m| Make a directory\n");
-    printf("\033[0m ~> \033[1;33mmk       \033[0m| Make a file\n");
-    printf("\033[0m ~> \033[1;33mmove, mv \033[0m| Move/rename a file\n");
-    printf("\033[0m ~> \033[1;33mread, r  \033[0m| Read a file\n");
-    printf("\033[0m ~> \033[1;33mwrite, w \033[0m| Write to a file\n");
-    printf("\033[0m ~> \033[1;33mfetch, f \033[0m| Execute a simple HTTP GET request\n");
-    printf("\033[0m ~> \033[1;33mvim, v   \033[0m| Open a file in Vim\n");
-    printf("\033[0m ~> \033[1;33mcopy, cp \033[0m| Copy a file\n");
-    printf("\033[0m ~> \033[1;33mtree, tr \033[0m| Copy a file\n\n");
+    printf("\033[0m ~> \033[1;33mhelp, h    \033[0m| List of available commands\n");
+    printf("\033[0m ~> \033[1;33minfo, i    \033[0m| Information about the wizsh project\n");
+    printf("\033[0m ~> \033[1;33mclear,     \033[0m| Clear the terminal\n");
+    printf("\033[0m ~> \033[1;33mdir        \033[0m| Print the current directory\n");
+    printf("\033[0m ~> \033[1;33mls         \033[0m| List the contents of the current directory\n");
+    printf("\033[0m ~> \033[1;33mc          \033[0m| Change the current directory\n");
+    printf("\033[0m ~> \033[1;33mkdir       \033[0m| Make a directory\n");
+    printf("\033[0m ~> \033[1;33mmk         \033[0m| Make a file\n");
+    printf("\033[0m ~> \033[1;33mrmf        \033[0m| Remove a file\n");
+    printf("\033[0m ~> \033[1;33mrmdir      \033[0m| Remove an empty directory\n");
+    printf("\033[0m ~> \033[1;33mmove, mv   \033[0m| Move/rename a file\n");
+    printf("\033[0m ~> \033[1;33mread, r    \033[0m| Read a file\n");
+    printf("\033[0m ~> \033[1;33mwrite, w   \033[0m| Write to a file\n");
+    printf("\033[0m ~> \033[1;33mfetch, f   \033[0m| Execute a simple HTTP GET request\n");
+    printf("\033[0m ~> \033[1;33mvim, v     \033[0m| Open a file in Vim\n");
+    printf("\033[0m ~> \033[1;33mcopy, cp   \033[0m| Copy a file\n");
+    printf("\033[0m ~> \033[1;33mtree, tr   \033[0m| Print a directory tree\n");
+    printf("\033[0m ~> \033[1;33mgit log    \033[0m| Print the log of current git directory\n");
+    printf("\033[0m ~> \033[1;33mgit status \033[0m| Print the status of the current git directory\n\n");
+    
     return 0;
 }
 
