@@ -199,7 +199,7 @@ int print_git_status(char **input, int word_count) {
 
         printf("On branch ");
         print_current_branch();
-
+        printf("\n");
         // loop through status list and print staged files
         for (i = 0; i < maxi; ++i) {
             s = git_status_byindex(status, i);
@@ -265,7 +265,7 @@ int print_git_status(char **input, int word_count) {
             }
 
             if (first_entry) {
-                printf("\nChanges staged for commit:\n");
+                printf("Changes staged for commit:\n");
                 printf("  (use \"git restore --staged <file>\" to unstage)\n\033[0;32m");
                 first_entry = false;
             }
@@ -438,7 +438,70 @@ int print_git_branches(char **input, int word_count) {
         git_branch_iterator_free(iter);
     }
     return 0;
-    // ~/Documents/code/c/wizsh/.git/refs/heads/feature 
 } 
 
-// https://stackoverflow.com/questions/46757991/checkout-branch-with-libgit2
+int checkout_git_branch(char **input, int word_count) {
+   // ensure current directory is git enabled
+    bool is_git = is_git_dir(".");
+    if (!is_git) {
+        printf("You are not in a git enabled directory!\n");
+        return 1;
+    }  else if (word_count != 3) {
+        print_invalid_use_cmd("git checkout");
+        return 1;
+    } else {
+        git_repository *repo = NULL;
+        git_reference *ref;       
+
+        int r = git_repository_open(&repo, ".");
+        // check for error opening repo
+        if (r != 0) {
+            perror(git_error_last()->message);
+            return 1;
+        }
+
+        // get branch name and validate
+        int e = git_branch_lookup(&ref, repo, input[2], GIT_BRANCH_LOCAL);
+
+        if (e != 0) {
+            printf("Invalid branch name provided!\n");
+            return 1; 
+        } else {
+            git_object *treeish = NULL;
+            git_checkout_options opts= GIT_CHECKOUT_OPTIONS_INIT;
+            opts.checkout_strategy = GIT_CHECKOUT_SAFE;
+            
+            // set treeish to an object specified by the branch name
+            int x = git_revparse_single(&treeish, repo, input[2]);
+            if (x != 0) {
+                perror(git_error_last()->message);
+                git_object_free(treeish);
+                return 1;
+            } 
+           
+            // checkout to the branch, DOES NOT MOVE HEAD
+            int y = git_checkout_tree(repo, treeish, &opts);
+            if (y != 0) {
+                perror(git_error_last()->message);
+                git_object_free(treeish); 
+                return 1;
+            } 
+
+            char path_buf[128] = "refs/heads/"; 
+            strcat(path_buf, input[2]);
+            // set HEAD to newly checked out branch
+            int z = git_repository_set_head(repo, path_buf);
+            if (z != 0) {
+                perror(git_error_last()->message);
+                git_object_free(treeish); 
+                return 1;
+            } 
+            git_object_free(treeish);
+            
+        }
+    }   
+    // https://stackoverflow.com/questions/46757991/checkout-branch-with-libgit2
+
+    return 0;
+}
+
