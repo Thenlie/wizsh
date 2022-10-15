@@ -34,6 +34,16 @@ Command git_cmd_arr[] = {
         },
         clone_git_repo
     },
+    {
+        "status",
+         "The \033[1;33mgit status\033[0m command lists the git status of the current directory.\n",
+        {
+            "git status        \033[0m| The main usage of the command. List the status of the current git directory.\n",
+            "git status -h     \033[0m| Help with the command\n",
+            "git status --help \033[0m| Help with the command\n\n",
+        },
+        print_git_status
+    },
 };
 
 int git_command_handler(char** input, int word_count, char* input_buffer) {

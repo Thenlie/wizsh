@@ -8,6 +8,7 @@
         "printutility.h": "c",
         "git-commands.h": "c",
         "stdlib.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "stdbool.h": "c"
     }
 }
