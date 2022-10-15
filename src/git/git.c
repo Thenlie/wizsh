@@ -188,10 +188,11 @@ int print_git_status(char **input, int word_count) {
     char istatus, wstatus;
     // create additional flags for submodules and file paths
     const char *extra, *a, *b, *c;
+    bool first_entry = true;
+
     printf("On branch ");
     print_current_branch();
-    printf("\nChanges staged for commit:\n");
-    printf("  (use \"git restore --staged <file>\" to unstage\n\033[0;32m");
+
     // loop through status list and print staged files
     for (i = 0; i < maxi; ++i) {
         s = git_status_byindex(status, i);
@@ -256,6 +257,12 @@ int print_git_status(char **input, int word_count) {
             }
         }
 
+        if (first_entry) {
+            printf("\nChanges staged for commit:\n");
+            printf("  (use \"git restore --staged <file>\" to unstage)\n\033[0;32m");
+            first_entry = false;
+        }
+
         // check for rename flag on index to determine file paths to print
         switch (istatus) {
             case 'R':
@@ -275,9 +282,12 @@ int print_git_status(char **input, int word_count) {
                 break;
         }
     }
+    if (first_entry) {
+        printf("No changes currently added to next commit\n");
+    }
     printf("\033[0m");
-    printf("Changes not staged for commit:\n");
-    printf("  (use \"git add <file>\" to include changes on your next commit\n\033[0;31m");
+    first_entry = true;
+
     // loop through status list again and print un-staged files
     for (i = 0; i < maxi; ++i) {
         s = git_status_byindex(status, i);
@@ -337,6 +347,12 @@ int print_git_status(char **input, int word_count) {
             }
         }
 
+        if (first_entry) {
+            printf("Changes not staged for commit:\n");
+            printf("  (use \"git add <file>\" to include changes on your next commit)\n\033[0;31m");
+            first_entry = false;
+        }
+
         // check for rename flag on index to determine file paths to print
         switch (wstatus) {
             case 'R':
@@ -354,18 +370,22 @@ int print_git_status(char **input, int word_count) {
         }
 
     }
+    first_entry = true;
     printf("\033[0m");
 
     // loop through status list again and print untracked files 
-    printf("Untracked files:\n");
-    printf("  (use \"git add <file>\" to include files on your next commit)\n\033[0;31m");
     for (i = 0; i < maxi; ++i) {
         s = git_status_byindex(status, i);
         if (s->status == GIT_STATUS_WT_NEW) {
+            if (first_entry) {
+                printf("Untracked files:\n");
+                printf("  (use \"git add <file>\" to include files on your next commit)\n\033[0;31m");
+                first_entry = false;
+            }
             printf("    %s\n", s->index_to_workdir->old_file.path);
         }
     }
-    printf("\033[0m");
+    printf("\033[0m\n");
 
     // https://libgit2.org/libgit2/ex/HEAD/status.html#git_status_foreach-6
     return 0;
