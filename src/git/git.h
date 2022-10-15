@@ -10,5 +10,6 @@ int clone_git_repo(char **input, int word_count);
 int print_git_status(char **input, int word_count);
 int print_git_branches(char **input, int word_count);
 int checkout_git_branch(char **input, int word_count);
+int create_git_branch(char **input, int word_count);
 
 #endif

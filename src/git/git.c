@@ -407,7 +407,10 @@ int print_git_branches(char **input, int word_count) {
     if (!is_git) {
         printf("You are not in a git enabled directory!\n");
         return 1;
-    }  else {
+    }  else if (word_count == 3) {
+        create_git_branch(input, word_count);
+        return 0;
+    } else if (word_count == 2) {
         git_repository *repo = NULL;
         git_branch_iterator *iter;
         
@@ -436,12 +439,14 @@ int print_git_branches(char **input, int word_count) {
             }
         }
         git_branch_iterator_free(iter);
+    } else {
+        print_invalid_use_cmd("git branch");
     }
     return 0;
 } 
 
 int checkout_git_branch(char **input, int word_count) {
-   // ensure current directory is git enabled
+    // ensure current directory is git enabled
     bool is_git = is_git_dir(".");
     if (!is_git) {
         printf("You are not in a git enabled directory!\n");
@@ -476,6 +481,8 @@ int checkout_git_branch(char **input, int word_count) {
             if (x != 0) {
                 perror(git_error_last()->message);
                 git_object_free(treeish);
+                git_reference_free(ref);
+                git_repository_free(repo);
                 return 1;
             } 
            
@@ -484,6 +491,8 @@ int checkout_git_branch(char **input, int word_count) {
             if (y != 0) {
                 perror(git_error_last()->message);
                 git_object_free(treeish); 
+                git_reference_free(ref);
+                git_repository_free(repo);
                 return 1;
             } 
 
@@ -494,14 +503,75 @@ int checkout_git_branch(char **input, int word_count) {
             if (z != 0) {
                 perror(git_error_last()->message);
                 git_object_free(treeish); 
+                git_reference_free(ref);
+                git_repository_free(repo);
                 return 1;
             } 
             git_object_free(treeish);
-            
+            git_reference_free(ref);
+            git_repository_free(repo);
         }
     }   
     // https://stackoverflow.com/questions/46757991/checkout-branch-with-libgit2
-
     return 0;
 }
 
+int create_git_branch(char **input, int word_count) {
+    git_repository *repo = NULL;
+    git_reference *ref;       
+    git_commit *commit;
+
+    int r = git_repository_open(&repo, ".");
+    // check for error opening repo
+    if (r != 0) {
+        perror(git_error_last()->message);
+        // git_reference_free(ref);
+        git_repository_free(repo);
+        // git_commit_free(commit);
+        return 1;
+    } 
+
+    // get most recent commit oid
+    FILE *f;
+    git_oid oid;
+    f = fopen("./.git/logs/HEAD", "r");
+    if (f == NULL) {
+        perror("Unable to read git file!");
+        fclose(f);
+        return 1;
+    }
+
+    char tmp[1024];
+    while (!feof(f)) {
+        fgets(tmp, 1024, f);
+    }
+    char recent_oid[42];
+    memcpy(recent_oid, &tmp[41], 40);
+    recent_oid[41] = '\0';
+
+    git_oid_fromstr(&oid, recent_oid);
+
+    // get commit from oid
+    int l = git_commit_lookup(&commit, repo, &oid);
+    if (l != 0) {
+        perror(git_error_last()->message);
+        fclose(f);
+        git_commit_free(commit);
+        git_repository_free(repo);
+        return 1;
+    }
+    fclose(f);
+    
+    // create new branch
+    int b = git_branch_create(&ref, repo, input[2], commit, 0);
+    if (b!= 0) {
+        perror(git_error_last()->message);
+        git_commit_free(commit);
+        git_repository_free(repo);
+        return 1;
+    }
+    git_reference_free(ref);
+    git_repository_free(repo);
+    git_commit_free(commit);
+    return 0;
+}
