@@ -489,7 +489,7 @@ int checkout_git_branch(char **input, int word_count) {
 
             char path_buf[128] = "refs/heads/"; 
             strcat(path_buf, input[2]);
- 
+            // set HEAD to newly checked out branch
             int z = git_repository_set_head(repo, path_buf);
             if (z != 0) {
                 perror(git_error_last()->message);
@@ -500,8 +500,8 @@ int checkout_git_branch(char **input, int word_count) {
             
         }
     }   
+    // https://stackoverflow.com/questions/46757991/checkout-branch-with-libgit2
 
     return 0;
 }
 
-// https://stackoverflow.com/questions/46757991/checkout-branch-with-libgit2
