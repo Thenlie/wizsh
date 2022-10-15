@@ -199,7 +199,7 @@ int print_git_status(char **input, int word_count) {
 
         printf("On branch ");
         print_current_branch();
-
+        printf("\n");
         // loop through status list and print staged files
         for (i = 0; i < maxi; ++i) {
             s = git_status_byindex(status, i);
@@ -265,7 +265,7 @@ int print_git_status(char **input, int word_count) {
             }
 
             if (first_entry) {
-                printf("\nChanges staged for commit:\n");
+                printf("Changes staged for commit:\n");
                 printf("  (use \"git restore --staged <file>\" to unstage)\n\033[0;32m");
                 first_entry = false;
             }
