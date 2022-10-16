@@ -77,7 +77,17 @@ Command git_cmd_arr[] = {
             "git add --help      \033[0m| Help with the command\n\n", 
         },
         git_add
-    }
+    },
+    {
+        "commit",
+        "The \033[1;33mgit commit\033[0m command is used to create a new commit using the staged files.\n",
+        {
+            "git commit        \033[0m| Create a new commit with all staged files.\n", 
+            "git commit -h     \033[0m| Help with the command\n",
+            "git commit --help \033[0m| Help with the command\n\n", 
+        },
+        create_git_commit
+    },
 };
 
 int git_command_handler(char** input, int word_count, char* input_buffer) {
