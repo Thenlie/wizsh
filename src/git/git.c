@@ -592,7 +592,6 @@ int delete_git_branch(char **input, int word_count) {
     }
 
     int l = git_branch_lookup(&ref, repo, input[3], GIT_BRANCH_LOCAL);
-
     if (l != 0) {
         perror(git_error_last()->message);
         return 1;
@@ -608,3 +607,54 @@ int delete_git_branch(char **input, int word_count) {
     git_repository_free(repo);
     return 0;
 }
+
+int git_add(char **input, int word_count) {
+    if (word_count == 3) {
+        git_index *index;
+        git_repository *repo;
+
+        int r = git_repository_open(&repo, ".");
+        // check for error opening repo
+        if (r != 0) {
+            perror(git_error_last()->message);
+            return 1;
+        }
+        // get the current index    
+        int i = git_repository_index(&index, repo);
+        if (i != 0) {
+            perror(git_error_last()->message);
+            return 1;
+        }
+
+        int a;
+        // add all files to index
+        if (strcmp(input[2], ".") == 0) {
+            git_index_add_option_t opt = GIT_INDEX_ADD_CHECK_PATHSPEC;
+            a = git_index_add_all(index, NULL, opt, NULL, NULL);
+        // add a specified file to the index
+        } else {
+            a = git_index_add_bypath(index, input[2]);
+        }
+        if (a != 0) {
+            perror(git_error_last()->message);
+            return 1;
+        }  
+
+        // write index to disk
+        int w = git_index_write(index);
+        if (w != 0) {
+            perror(git_error_last()->message);
+            return 1;
+        }  
+
+        git_index_free(index);
+        git_repository_free(repo);
+    } else {
+        print_invalid_use_cmd("git add");
+        return 1;
+    }
+    printf("Done!\n");
+    return 0;
+}
+
+// https://stackoverflow.com/questions/28149615/how-to-code-git-commit-in-libgit2

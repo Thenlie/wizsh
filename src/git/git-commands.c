@@ -67,6 +67,17 @@ Command git_cmd_arr[] = {
         },
         print_git_branches
     },
+    {
+        "add",
+        "The \033[1;33mgit add\033[0m command is used to stage a file for committing. When provided with a file path as a third argument, the command will stage that file so it will be included on the next commit.\n",
+        {
+            "git add <file_name> \033[0m| Stage a file called \033[1;33m<file_name>\033[0m to be included on the next commit.\n",
+            "git add .           \033[0m| Stage all files in the current directory to be included on the next commit.\n", 
+            "git add -h          \033[0m| Help with the command\n",
+            "git add --help      \033[0m| Help with the command\n\n", 
+        },
+        git_add
+    }
 };
 
 int git_command_handler(char** input, int word_count, char* input_buffer) {
