@@ -527,9 +527,7 @@ int create_git_branch(char **input, int word_count) {
     // check for error opening repo
     if (r != 0) {
         perror(git_error_last()->message);
-        // git_reference_free(ref);
         git_repository_free(repo);
-        // git_commit_free(commit);
         return 1;
     } 
 
@@ -653,8 +651,121 @@ int git_add(char **input, int word_count) {
         print_invalid_use_cmd("git add");
         return 1;
     }
-    printf("Done!\n");
     return 0;
+}
+
+int commit_cleanup(git_repository *repo, git_index *index, git_signature *sig, git_tree *tree, git_object *obj, git_reference *ref) {
+
+    git_repository_free(repo);
+    git_index_free(index);
+    git_signature_free(sig);
+    git_tree_free(tree);
+    git_object_free(obj);
+    git_reference_free(ref);
+
+    return 0;
+}
+
+int create_git_commit(char **input, int word_count) {
+    if (word_count >= 4 && strcmp(input[2], "-m") == 0) {
+        git_oid commit_oid, tree_oid;
+        git_tree *tree;
+        git_index *index;
+        git_object *parent = NULL;
+        git_reference *ref = NULL;
+        git_signature *signature;
+        git_repository *repo;
+        char commit_msg[256];
+        int error;
+
+        // parse commit message
+        int count = 0;
+        for (int i = 3; i < word_count; i++) {
+            size_t len = strlen(input[i]);
+            for (int j = 0; j < len; j++) {
+                commit_msg[count] = input[i][j];
+                count++;
+            }
+            if (i + 1 == word_count) {
+                commit_msg[count] = '\0';
+            } else {
+                commit_msg[count] = ' ';
+                count++;
+            }
+        }
+
+        error = git_repository_open(&repo, ".");
+        // check for error opening repo
+        if (error != 0) {
+            commit_cleanup(repo, NULL, NULL, NULL, NULL, NULL);
+            perror(git_error_last()->message);
+            return 1;
+        }       
+
+        // find object pointed to by HEAD and set it to 'parent'
+        error = git_revparse_ext(&parent, &ref, repo, "HEAD"); 
+        if (error == GIT_ENOTFOUND) {
+            printf("HEAD not found. Creating first commit...\n");
+            error = 0;
+        } else if (error != 0) {
+            perror(git_error_last()->message);
+            commit_cleanup(repo, NULL, NULL, NULL, parent, ref);
+            return 1;
+        }       
+
+        // find index (staged files)
+        error = git_repository_index(&index, repo);
+        if (error != 0) {
+            perror(git_error_last()->message);
+            commit_cleanup(repo, index, NULL, NULL, parent, ref);
+            return 1;
+        }       
+
+        // create a tree with the index and get oid
+        error = git_index_write_tree(&tree_oid, index);
+        if (error != 0) {
+            perror(git_error_last()->message);
+            commit_cleanup(repo, index, NULL, NULL, parent, ref);
+            return 1;
+        }       
+
+        // write index to disk
+        error = git_index_write(index);
+        if (error != 0) {
+            perror(git_error_last()->message);
+            commit_cleanup(repo, index, NULL, NULL, parent, ref);
+            return 1;
+        }       
+
+        // get new tree object using oid
+        error = git_tree_lookup(&tree, repo, &tree_oid);
+        if (error != 0) {
+            perror(git_error_last()->message);
+            commit_cleanup(repo, index, NULL, tree, parent, ref);
+            return 1;
+        }       
+
+        // create a signature with the default user
+        error = git_signature_default(&signature, repo);
+        if (error != 0) {
+            perror(git_error_last()->message);
+            commit_cleanup(repo, index, signature, tree, parent, ref);
+            return 1;
+        }       
+
+        error = git_commit_create_v(&commit_oid, repo, "HEAD", signature, signature, NULL, commit_msg, tree, parent ? 1 : 0, parent); 
+        if (error != 0) {
+            perror(git_error_last()->message);
+            commit_cleanup(repo, index, signature, tree, parent, ref);
+            return 1;
+        }       
+
+        commit_cleanup(repo, index, signature, tree, parent, ref);
+        return 0;
+    } else {
+        print_invalid_use_cmd("git commit");
+        return 1;
+    }
 }
 
 // https://stackoverflow.com/questions/28149615/how-to-code-git-commit-in-libgit2
