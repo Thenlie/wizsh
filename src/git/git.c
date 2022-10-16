@@ -1,4 +1,5 @@
 #include "git.h"
+#include "../handlers/filesystem.h"
 #include "../handlers/printutility.h"
 #include <stdbool.h>
 #include <stdio.h>
@@ -766,6 +767,37 @@ int create_git_commit(char **input, int word_count) {
         print_invalid_use_cmd("git commit");
         return 1;
     }
+    // https://libgit2.org/libgit2/ex/HEAD/commit.html#git_commit_create_v-1
 }
 
-// https://stackoverflow.com/questions/28149615/how-to-code-git-commit-in-libgit2
+int init_git_repo(char **input, int word_count) {
+    git_repository *repo = NULL;
+    int error;
+
+    if (word_count == 2) {
+        error = git_repository_init(&repo, ".", 0);
+    } else if (word_count == 3) {
+        error = git_repository_init(&repo, input[2], 0);
+    } else {
+        print_invalid_use_cmd("git init");
+        return 1;
+    }
+    
+    printf("hit\n");
+
+    if (error != 0) {
+        perror(git_error_last()->message);
+        return 1;
+    } else {
+        if (word_count == 2) {
+            printf("Initialized empty Git repository in the current directory.\n");
+        } else {
+            printf("Initialized empty Git repository in %s.\n", input[2]);
+        }
+    }       
+
+    printf("hit\n");
+
+    git_repository_free(repo);
+    return 0;
+}
