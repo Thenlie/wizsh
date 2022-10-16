@@ -651,7 +651,6 @@ int git_add(char **input, int word_count) {
         print_invalid_use_cmd("git add");
         return 1;
     }
-    printf("Done!\n");
     return 0;
 }
 
