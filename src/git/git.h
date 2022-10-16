@@ -12,5 +12,6 @@ int print_git_branches(char **input, int word_count);
 int checkout_git_branch(char **input, int word_count);
 int create_git_branch(char **input, int word_count);
 int delete_git_branch(char **input, int word_count);
+int git_add(char **input, int word_count);
 
 #endif
