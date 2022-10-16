@@ -80,13 +80,24 @@ Command git_cmd_arr[] = {
     },
     {
         "commit",
-        "The \033[1;33mgit commit\033[0m command is used to create a new commit using the staged files.\n",
+        "The \033[1;33mgit commit\033[0m command is used to create a new commit using the staged files. When provided with a commit message as a fourth parameter (not enclosed in quotes), a new commit will be created with that message.\n",
         {
-            "git commit        \033[0m| Create a new commit with all staged files.\n", 
-            "git commit -h     \033[0m| Help with the command\n",
-            "git commit --help \033[0m| Help with the command\n\n", 
+            "git commit -m <message> \033[0m| Create a new commit with all staged files. The commit will be created with the message of \033[1;33m<message>\033[0m. This message is a required field.\n", 
+            "git commit -h           \033[0m| Help with the command\n",
+            "git commit --help       \033[0m| Help with the command\n\n", 
         },
         create_git_commit
+    },
+    {
+        "init",
+        "The \033[1;33mgit init\033[0m command is used initialize a new repository. When provided with a path as a third argument, an empty git repository will be initialized at the paths location. If that path does not exist, it will be created. When a path is omitted the repository will be created in the current directory.\n",
+        {
+            "git init                 \033[0m| Initialize an empty git repository in the current directory.\n", 
+            "git init <direcory_path> \033[0m| Initialize an empty git repository in the \033[1;33m<directory_path>\033[0m directory.\n",
+            "git init -h              \033[0m| Help with the command\n",
+            "git init --help          \033[0m| Help with the command\n\n", 
+        },
+        init_git_repo
     },
 };
 
