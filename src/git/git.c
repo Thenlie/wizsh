@@ -410,13 +410,15 @@ int print_git_branches(char **input, int word_count) {
     }  else if (word_count == 3) {
         create_git_branch(input, word_count);
         return 0;
+    } else if (word_count == 4 && (strcmp(input[2], "-d") == 0 || strcmp(input[2], "--delete") == 0)) {
+        delete_git_branch(input, word_count);
     } else if (word_count == 2) {
         git_repository *repo = NULL;
         git_branch_iterator *iter;
         
-        int x = git_repository_open(&repo, ".");
+        int r = git_repository_open(&repo, ".");
         // check for error opening repo
-        if (x != 0) {
+        if (r != 0) {
             perror(git_error_last()->message);
             return 1;
         }
@@ -573,5 +575,36 @@ int create_git_branch(char **input, int word_count) {
     git_reference_free(ref);
     git_repository_free(repo);
     git_commit_free(commit);
+    return 0;
+}
+
+int delete_git_branch(char **input, int word_count) {
+    // lookup git branch with name of input[3]
+    // use reference to delete branch
+    git_reference *ref;
+    git_repository *repo;
+
+    int r = git_repository_open(&repo, ".");
+    // check for error opening repo
+    if (r != 0) {
+        perror(git_error_last()->message);
+        return 1;
+    }
+
+    int l = git_branch_lookup(&ref, repo, input[3], GIT_BRANCH_LOCAL);
+
+    if (l != 0) {
+        perror(git_error_last()->message);
+        return 1;
+    } 
+
+    int d = git_branch_delete(ref);
+    if (d != 0) {
+        perror(git_error_last()->message);
+        return 1;
+    } 
+
+    git_reference_free(ref);
+    git_repository_free(repo);
     return 0;
 }

@@ -18,7 +18,7 @@ Command git_cmd_arr[] = {
         "log",
         "The \033[1;33mgit log\033[0m command prints out a log of the most recent commits to your current git directory.\n",
         {
-            "git log        \033[0m| The main usage of the command. Print a log of recent git commits.\n",
+            "git log        \033[0m| Print a log of recent git commits.\n",
             "git log -h     \033[0m| Help with the command\n",
             "git log --help \033[0m| Help with the command\n\n",
         },
@@ -28,7 +28,7 @@ Command git_cmd_arr[] = {
         "clone",
         "The \033[1;33mgit clone\033[0m command clones a git repository to the current directory.\n",
         {
-            "git clone <https_url> \033[0m| The main usage of the command. Clone a git repository at the location of \033[1;33m<https_url>\033[0m.\n",
+            "git clone <https_url> \033[0m| Clone a git repository at the location of \033[1;33m<https_url>\033[0m.\n",
             "git clone -h          \033[0m| Help with the command\n",
             "git clone --help      \033[0m| Help with the command\n\n",
         },
@@ -38,7 +38,7 @@ Command git_cmd_arr[] = {
         "status",
          "The \033[1;33mgit status\033[0m command lists the git status of the current directory.\n",
         {
-            "git status        \033[0m| The main usage of the command. List the status of the current git directory.\n",
+            "git status        \033[0m| List the status of the current git directory.\n",
             "git status -h     \033[0m| Help with the command\n",
             "git status --help \033[0m| Help with the command\n\n",
         },
@@ -48,7 +48,7 @@ Command git_cmd_arr[] = {
         "checkout",
         "The \033[1;33mgit checkout\033[0m command is used to checkout to a new git branch.\n",
         {
-            "git checkout <branch> \033[0m| The main usage of the command. Checkout to a git branch named \033[1;33m<branch>\033[0m].\n",
+            "git checkout <branch> \033[0m| Checkout to a git branch named \033[1;33m<branch>\033[0m].\n",
             "git checkout -h       \033[0m| Help with the command\n",
             "git checkout --help   \033[0m| Help with the command\n\n",
         },
@@ -58,10 +58,12 @@ Command git_cmd_arr[] = {
         "branch",
         "The \033[1;33mgit branch\033[0m command is used to list all branches in the current git repository. When provided with a branch name as a third argument, the command will attempt to create a new branch with that name based off the most recent commit.\n",
         {
-            "git branch               \033[0m| The main usage of the command. View all branches of the current git repository.\n",
-            "git branch <branch_name> \033[0m| Attempt to create a new branch called \033[1;33m<branch_name>\033[0m.\n",
-            "git branch -h            \033[0m| Help with the command\n",
-            "git branch --help        \033[0m| Help with the command\n\n",
+            "git branch                        \033[0m| View all branches of the current git repository.\n",
+            "git branch <branch_name>          \033[0m| Attempt to create a new branch called \033[1;33m<branch_name>\033[0m.\n",
+            "git branch -d <branch_name>       \033[0m| Delete a git branch called \033[1;33m<branch_name>\033[0m.\n",
+            "git branch --delete <branch_name> \033[0m| Delete a git branch called \033[1;33m<branch_name>\033[0m.\n",
+            "git branch -h                     \033[0m| Help with the command\n",
+            "git branch --help                 \033[0m| Help with the command\n\n",
         },
         print_git_branches
     },
