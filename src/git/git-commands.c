@@ -66,7 +66,7 @@ Command git_cmd_arr[] = {
             "git branch -h                     \033[0m| Help with the command\n",
             "git branch --help                 \033[0m| Help with the command\n\n",
         },
-        print_git_branches
+        git_branch_command_handler
     },
     {
         "add",

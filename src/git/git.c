@@ -6,7 +6,6 @@
 #include <dirent.h>
 #include <string.h>
 #include <git2.h>
-#include <git2/common.h>
 
 // return whether or not the provided path is a valid git directory
 bool is_git_dir(char* dir_path) {
@@ -422,6 +421,36 @@ int print_git_status(char **input, int word_count) {
     }
 }
 
+int init_git_repo(char **input, int word_count) {
+    git_repository *repo = NULL;
+    int error;
+
+    // initialize repo in current dir
+    if (word_count == 2) {
+        error = git_repository_init(&repo, ".", 0);
+    // initialize repo in specified dir
+    } else if (word_count == 3) {
+        error = git_repository_init(&repo, input[2], 0);
+    } else {
+        print_invalid_use_cmd("git init");
+        return 1;
+    }
+
+    if (error != 0) {
+        perror(git_error_last()->message);
+        return 1;
+    }
+
+    if (word_count == 2) {
+        printf("Initialized empty Git repository in the current directory.\n");
+    } else {
+        printf("Initialized empty Git repository in %s.\n", input[2]);
+    }       
+
+    git_repository_free(repo);
+    return 0;
+}
+
 /* -- BRANCH COMMANDS START */
 
 int git_branch_command_handler(char** input, int word_count) {
@@ -541,7 +570,7 @@ int create_git_branch(char **input, int word_count) {
     fclose(f);
     
     // create new branch
-    error = git_branch_create(&ref, repo, input[2], commit, 0);
+    error = git_branch_create(&ref, repo, input[3], commit, 0);
     if (error != 0) {
         perror(git_error_last()->message);
         create_branch_cleanup(repo, NULL, commit);
@@ -697,7 +726,7 @@ int git_add(char **input, int word_count) {
         }
 
         // add all files to index
-        if (strcmp(input[2], ".") == 0) {
+        if ((strcmp(input[2], "-a") == 0) || strcmp(input[2], "--all") == 0) {
             git_index_add_option_t opt = GIT_INDEX_ADD_CHECK_PATHSPEC;
             error = git_index_add_all(index, NULL, opt, NULL, NULL);
         // add a specified file to the index
@@ -839,34 +868,6 @@ int create_git_commit(char **input, int word_count) {
         return 1;
     }
     // https://libgit2.org/libgit2/ex/HEAD/commit.html#git_commit_create_v-1
-}
-
-int init_git_repo(char **input, int word_count) {
-    git_repository *repo = NULL;
-    int error;
-
-    if (word_count == 2) {
-        error = git_repository_init(&repo, ".", 0);
-    } else if (word_count == 3) {
-        error = git_repository_init(&repo, input[2], 0);
-    } else {
-        print_invalid_use_cmd("git init");
-        return 1;
-    }
-    
-    if (error != 0) {
-        perror(git_error_last()->message);
-        return 1;
-    } else {
-        if (word_count == 2) {
-            printf("Initialized empty Git repository in the current directory.\n");
-        } else {
-            printf("Initialized empty Git repository in %s.\n", input[2]);
-        }
-    }       
-
-    git_repository_free(repo);
-    return 0;
 }
 
 int git_remove_cleanup(git_repository *repo, git_index *index) {

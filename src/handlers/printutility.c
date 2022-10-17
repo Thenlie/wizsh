@@ -78,13 +78,13 @@ int clear_term(char** input, int word_count) {
 }
 
 int print_commands(char** input, int word_count) {
-    printf("\033[1;34m                - Commands --\n\n");
+    printf("\033[1;34m                -- Commands --\n\n");
     printf("\033[0m ~> \033[1;33mhelp, h           \033[0m| List of available commands\n");
     printf("\033[0m ~> \033[1;33minfo, i           \033[0m| Information about the wizsh project\n");
-    printf("\033[0m ~> \033[1;33mclear,            \033[0m| Clear the terminal\n");
+    printf("\033[0m ~> \033[1;33mclear, c          \033[0m| Clear the terminal\n");
     printf("\033[0m ~> \033[1;33mdir               \033[0m| Print the current directory\n");
     printf("\033[0m ~> \033[1;33mls                \033[0m| List the contents of the current directory\n");
-    printf("\033[0m ~> \033[1;33mc                 \033[0m| Change the current directory\n");
+    printf("\033[0m ~> \033[1;33mcd                \033[0m| Change the current directory\n");
     printf("\033[0m ~> \033[1;33mkdir              \033[0m| Make a directory\n");
     printf("\033[0m ~> \033[1;33mmk                \033[0m| Make a file\n");
     printf("\033[0m ~> \033[1;33mrmf               \033[0m| Remove a file\n");
@@ -95,12 +95,24 @@ int print_commands(char** input, int word_count) {
     printf("\033[0m ~> \033[1;33mfetch, f          \033[0m| Execute a simple HTTP GET request\n");
     printf("\033[0m ~> \033[1;33mvim, v            \033[0m| Open a file in Vim\n");
     printf("\033[0m ~> \033[1;33mcopy, cp          \033[0m| Copy a file\n");
-    printf("\033[0m ~> \033[1;33mtree, tr          \033[0m| Print a directory tree\n");
-    printf("\033[0m ~> \033[1;33mgit log           \033[0m| Print the log of current git directory\n");
-    printf("\033[0m ~> \033[1;33mgit status        \033[0m| Print the status of the current git directory\n");
-    printf("\033[0m ~> \033[1;33mgit checkout      \033[0m| Checkout to an existing git branch\n");
-    printf("\033[0m ~> \033[1;33mgit branch        \033[0m| View all local git branches\n");
-    printf("\033[0m ~> \033[1;33mgit branch <name> \033[0m| Create a new git branch called \033[1;33m<name>\033[0m\n\n");
+    printf("\033[0m ~> \033[1;33mtree, tr          \033[0m| Print a directory tree\n\n");
+
+    printf("\033[1;34m               -- Git Commands --\n\n"); 
+    printf("\033[0m ~> \033[1;33mgit log                        \033[0m| Print the log of current git directory\n");
+    printf("\033[0m ~> \033[1;33mgit status                     \033[0m| Print the status of the current git directory\n");
+    printf("\033[0m ~> \033[1;33mgit init                       \033[0m| Initialize a new git repository in the current directory\n");
+    printf("\033[0m ~> \033[1;33mgit init <path_name>           \033[0m| Initialize a new git repository at \033[1;33m<path_name>\033[0m\n");
+    printf("\033[0m ~> \033[1;33mgit clone <url>                \033[0m| Clone a git repository at \033[1;33m<url>\033[0m via HTTP\n");
+    printf("\033[0m ~> \033[1;33mgit checkout                   \033[0m| Checkout to an existing git branch\n");
+    printf("\033[0m ~> \033[1;33mgit branch                     \033[0m| View all local git branches\n");
+    printf("\033[0m ~> \033[1;33mgit branch -n, --new <name>    \033[0m| Create a new git branch called \033[1;33m<name>\033[0m\n");
+    printf("\033[0m ~> \033[1;33mgit branch -d, --delete <name> \033[0m| Delete a git branch called \033[1;33m<name>\033[0m\n");
+    printf("\033[0m ~> \033[1;33mgit add <file_path>            \033[0m| Add the file at \033[1;33m<file_path>\033[0m to the git staging area\n");
+    printf("\033[0m ~> \033[1;33mgit add -a, --all              \033[0m| Add all unstaged files to the git staging area\n");
+    printf("\033[0m ~> \033[1;33mgit restore <file_path>        \033[0m| Remove the file at \033[1;33m<file_path>\033[0m from the git staging area\n");
+    printf("\033[0m ~> \033[1;33mgit restore -a, --all          \033[0m| Remove all files from the git staging area\n");
+    printf("\033[0m ~> \033[1;33mgit commit -m <message>        \033[0m| Create a new commit with all files that are currently in the git staging area\n\n");
+
     return 0;
 }
 
