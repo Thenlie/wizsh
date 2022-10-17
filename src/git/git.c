@@ -267,26 +267,27 @@ int print_git_status(char **input, int word_count) {
 
             if (first_entry) {
                 printf("Changes staged for commit:\n");
-                printf("  (use \"git restore --staged <file>\" to unstage)\n\033[0;32m");
+                printf("  (use \"git commit -m\" to commit these files)\n");
+                printf("  (use \"git restore <file>\" to unstage)\n\033[0;32m");
                 first_entry = false;
             }
 
             // check for rename flag on index to determine file paths to print
             switch (istatus) {
                 case 'R':
-                    printf("    Renamed:     %s %s %s\n", a, b, extra);
+                    printf("      Renamed:     %s %s %s\n", a, b, extra);
                     break;
                 case 'A':
-                    printf("    New:         %s %s\n", a, extra);
+                    printf("      New:         %s %s\n", a, extra);
                     break;
                 case 'M':
-                    printf("    Modified:    %s %s\n", a, extra);
+                    printf("      Modified:    %s %s\n", a, extra);
                     break;
                 case 'D': 
-                    printf("    Deleted:     %s %s\n", a, extra);
+                    printf("      Deleted:     %s %s\n", a, extra);
                     break;
                 case 'T':
-                    printf("    Typechanged: %s %s\n", a, extra);
+                    printf("      Typechanged: %s %s\n", a, extra);
                     break;
             }
         }
@@ -364,16 +365,16 @@ int print_git_status(char **input, int word_count) {
             // check for rename flag on index to determine file paths to print
             switch (wstatus) {
                 case 'R':
-                    printf("    Renamed:     %s %s %s\n", a, c, extra);
+                    printf("      Renamed:     %s %s %s\n", a, c, extra);
                     break;
                 case 'M':
-                    printf("    Modified:    %s %s\n", a, extra);
+                    printf("      Modified:    %s %s\n", a, extra);
                     break;
                 case 'D': 
-                    printf("    Deleted:     %s %s\n", a, extra);
+                    printf("      Deleted:     %s %s\n", a, extra);
                     break;
                 case 'T':
-                    printf("    Typechanged: %s %s\n", a, extra);
+                    printf("      Typechanged: %s %s\n", a, extra);
                     break;
             }
 
@@ -783,8 +784,6 @@ int init_git_repo(char **input, int word_count) {
         return 1;
     }
     
-    printf("hit\n");
-
     if (error != 0) {
         perror(git_error_last()->message);
         return 1;
@@ -796,8 +795,57 @@ int init_git_repo(char **input, int word_count) {
         }
     }       
 
-    printf("hit\n");
-
     git_repository_free(repo);
+    return 0;
+}
+
+int git_remove_from_index(char **input, int word_count) {
+    if (word_count == 3) {
+        git_repository *repo;
+        git_index *index;
+        int error;
+        
+        // open repository
+        error = git_repository_open(&repo, ".");
+        if (error != 0) {
+            commit_cleanup(repo, NULL, NULL, NULL, NULL, NULL);
+            perror(git_error_last()->message);
+            return 1;
+        }       
+        // get repo index
+        error = git_repository_index(&index, repo);
+        if (error != 0) {
+            perror(git_error_last()->message);
+            git_repository_free(repo);
+            return 1;
+        }       
+        // remove all staged files
+        if (strcmp(input[2], "-a") == 0 || strcmp(input[2], "--all") == 0) {
+            error = git_index_remove_all(index, NULL, NULL, NULL);
+        // remove file via specified path
+        } else {
+            error = git_index_remove_bypath(index, input[2]);
+        }
+        if (error != 0) {
+            perror(git_error_last()->message);
+            git_index_free(index);
+            git_repository_free(repo);
+            return 1;
+        }
+        // write index to disk
+        error = git_index_write(index); 
+        if (error != 0) {
+            perror(git_error_last()->message);
+            git_repository_free(repo);
+            git_index_free(index);
+            return 1;
+        }       
+
+        git_repository_free(repo);
+        git_index_free(index);
+    } else {
+        print_invalid_use_cmd("git restore");
+        return 1;
+    }
     return 0;
 }

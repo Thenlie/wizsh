@@ -99,6 +99,16 @@ Command git_cmd_arr[] = {
         },
         init_git_repo
     },
+    {
+        "restore",
+        "The \033[1;33mgit restore\033[0m command is used to remove files from the staging area so they will no longer be included in the next commit. When provided with a file path as a third argument, that file will be removed from the staging area.",
+        {
+            "git restore <file_path> \033[0m| Remove a file called \033[1;33m<file_name>\033[0m from the git staging area.\n", 
+            "git restore -h          \033[0m| Help with the command\n",
+            "git restore --help      \033[0m| Help with the command\n\n", 
+        },
+        git_remove_from_index
+    },
 };
 
 int git_command_handler(char** input, int word_count, char* input_buffer) {
