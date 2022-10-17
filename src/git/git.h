@@ -15,5 +15,6 @@ int delete_git_branch(char **input, int word_count);
 int git_add(char **input, int word_count);
 int create_git_commit(char **input, int word_count); 
 int init_git_repo(char **input, int word_count);
+int git_remove_from_index(char **input, int word_count);
 
 #endif
