@@ -59,13 +59,14 @@ Command git_cmd_arr[] = {
         "The \033[1;33mgit branch\033[0m command is used to list all branches in the current git repository. When provided with a branch name as a third argument, the command will attempt to create a new branch with that name based off the most recent commit.\n",
         {
             "git branch                        \033[0m| View all branches of the current git repository.\n",
-            "git branch <branch_name>          \033[0m| Attempt to create a new branch called \033[1;33m<branch_name>\033[0m.\n",
+            "git branch -n <branch_name>       \033[0m| Create a new branch called \033[1;33m<branch_name>\033[0m.\n",
+            "git branch --new <branch_name>    \033[0m| Create a new branch called \033[1;33m<branch_name>\033[0m.\n",
             "git branch -d <branch_name>       \033[0m| Delete a git branch called \033[1;33m<branch_name>\033[0m.\n",
             "git branch --delete <branch_name> \033[0m| Delete a git branch called \033[1;33m<branch_name>\033[0m.\n",
             "git branch -h                     \033[0m| Help with the command\n",
             "git branch --help                 \033[0m| Help with the command\n\n",
         },
-        print_git_branches
+        git_branch_command_handler
     },
     {
         "add",
