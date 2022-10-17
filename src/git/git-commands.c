@@ -1,6 +1,6 @@
 #include "git.h"
 #include "../handlers/printutility.h"
-
+#include "git.remote.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -110,6 +110,26 @@ Command git_cmd_arr[] = {
         },
         git_remove_from_index
     },
+    // {
+    //     "merge",
+    //     "The \033[1;33mgit merge\033[0m command is used to combine two branches into one. Given a branch name as a third argument, the command will merge that branch with the currently checked out branch.\n",
+    //     {
+    //         "git merge <branch> \033[0m| Merge a branch called \033[1;33m<branch>\033[0m into the currently checked out branch.\n", 
+    //         "git merge -h       \033[0m| Help with the command\n",
+    //         "git merge --help   \033[0m| Help with the command\n\n", 
+    //     },
+    //     merge_git_branches
+    // },
+    {
+        "remote",
+        "The \033[1;33mgit remote\033[0m commands are used to make changes to a remote repository.\n",
+        {
+            "git remote             \033[0m| View a list of remote repositories attached to the current local repository.\n", 
+            "git remote -h          \033[0m| Help with the command\n",
+            "git remote --help      \033[0m| Help with the command\n\n", 
+        },
+        git_remote_command_handler
+    }
 };
 
 int git_command_handler(char** input, int word_count, char* input_buffer) {

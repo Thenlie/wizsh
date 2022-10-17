@@ -928,3 +928,8 @@ int git_remove_from_index(char **input, int word_count) {
     }
     return 0;
 }
+
+// int merge_git_branches(char **input, int word_count) {
+
+    // return 0;
+// }
