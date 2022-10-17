@@ -7,7 +7,7 @@ GIT = git/
 CC = clang
 CFLAGS = -Wall -g $(shell pkg-config --cflags libgit2)
 LDFLAGS = -lcurl $(shell pkg-config --libs libgit2)
-OBJFILES = $(OBJ)main.o $(OBJ)filesystem.o $(OBJ)printutility.o $(OBJ)requests.o $(OBJ)commands.o $(OBJ)input.o $(OBJ)git.o $(OBJ)git-commands.o
+OBJFILES = $(OBJ)main.o $(OBJ)filesystem.o $(OBJ)printutility.o $(OBJ)requests.o $(OBJ)commands.o $(OBJ)input.o $(OBJ)git.o $(OBJ)git-commands.o $(OBJ)git.remote.o
 
 TARGET = bin/wizsh
 
@@ -41,6 +41,9 @@ $(OBJ)commands.o: $(SRC)commands.c
 
 $(OBJ)input.o: $(SRC)input.c
 	$(CC) $(CFLAGS) -c $(SRC)input.c -o $(OBJ)input.o
+
+$(OBJ)git.remote.o: $(SRC)$(GIT)git.remote.c
+	$(CC) $(CFLAGS) -c $(SRC)$(GIT)git.remote.c -o $(OBJ)git.remote.o
 
 # CLEAN
 clean:
