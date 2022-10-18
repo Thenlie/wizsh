@@ -11,9 +11,9 @@ int git_remote_command_handler(char**input, int word_count) {
         print_git_remotes(input, 1);
     } else if (word_count >= 4) {
         if (strcmp(input[2], "add") == 0 && word_count == 5) {
-            git_remote_add(input, word_count);
+            add_git_remote(input, word_count);
         } else if (strcmp(input[2], "remove") == 0 && word_count == 4) {
-            git_remote_remove(input, word_count);
+            remove_git_remote(input, word_count);
         } else if (strcmp(input[2], "rename") == 0 && word_count == 5) {
             rename_git_remote(input, word_count);
         } 
@@ -82,7 +82,7 @@ int print_git_remotes(char **input, int verbose) {
     return 0;
 }
 
-int git_remote_add(char **input, int word_count) {
+int add_git_remote(char **input, int word_count) {
     git_remote *remote = NULL;
     git_repository *repo;
     int error;
@@ -107,7 +107,7 @@ int git_remote_add(char **input, int word_count) {
     return 0;
 }
 
-int git_remote_remove(char **input, int word_count) {
+int remove_git_remote(char **input, int word_count) {
     git_repository *repo = NULL;
     int error;
 
