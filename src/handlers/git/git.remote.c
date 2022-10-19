@@ -3,8 +3,8 @@
 #include <git2.h>
 #include <string.h>
 #include <stdio.h>
-
-char *get_creds(void);
+#include <pwd.h>
+#include <unistd.h>
 
 int git_remote_command_handler(char**input, int word_count) {
     if (word_count == 2) {
@@ -168,24 +168,76 @@ int rename_git_remote(char **input, int word_count) {
     return 0;
 }
 
+// TODO: Check for invalid password, exit upon 2 invalid attempts
+int credentials_cb(git_credential **out, const char *url, const char *username_from_url, unsigned int allowed_types, void *payload) {
+    
+    // printf("%s\n", git_error_last()->message);
+    
+    const char* SSH_PUB_PATH = "/.ssh/id_ed25519.pub";
+    const char* SSH_PRIVATE_PATH = "/.ssh/id_ed25519";
+
+    const char* user = "git";
+    char tmp_pass[256], pbk[256], prk[256];
+
+    // get users home directory
+    const char *homeDir = getenv("HOME");
+    if (!homeDir) {
+        struct passwd* pwd = getpwuid(getuid());
+        if (pwd)
+           homeDir = pwd->pw_dir;
+    }
+
+    // create public key path
+    strcpy(pbk, homeDir);
+    strcat(pbk, SSH_PUB_PATH);
+
+    // create private key path
+    strcpy(prk, homeDir);
+    strcat(prk, SSH_PRIVATE_PATH);
+
+    const char *public_key = pbk;
+    const char *private_key = prk;
+
+    printf("Enter password: ");
+    if (fgets(tmp_pass, 256, stdin) == NULL) {
+        return GIT_EUSER;
+    }
+    size_t len = strlen(tmp_pass);
+    if (len > 0 && tmp_pass[len - 1] == '\n') {
+        tmp_pass[--len] = '\0';
+    }
+
+    const char *pass = tmp_pass;
+
+    return git_credential_ssh_key_new(out, user, public_key, private_key, pass);
+}
+
+void push_remotes_cleanup(git_repository *repo, git_remote *remote, git_strarray *refspec) {
+    // free memory associated with 'git push' command
+    git_remote_free(remote);
+    git_repository_free(repo);
+    git_strarray_free(&refspec);
+    return;
+}
+
 int push_git_remote(char **input, int word_count) {
     git_remote *remote = NULL;
     git_repository *repo = NULL;
     git_push_options opts;
     git_remote_callbacks callbacks = GIT_REMOTE_CALLBACKS_INIT;    
     int error;
+
     char tmp[128] = {"refs/heads/"};
     strcat(tmp, input[3]);
     char *refspec = tmp;
     const git_strarray refspecs = { &refspec, 1 };
 
-    // callbacks.credentials = ;
+    callbacks.credentials = credentials_cb;
     // https://libgit2.org/docs/guides/authentication/
 
     error = git_repository_open(&repo, ".");
     // check for error opening repo
     if (error != 0) {
-        printf("1\n");
         perror(git_error_last()->message);
         return 1;
     }
@@ -194,43 +246,35 @@ int push_git_remote(char **input, int word_count) {
     error = git_remote_lookup(&remote, repo, input[2]);
     if (error != 0) {
         perror(git_error_last()->message);
-        git_repository_free(repo);
+        push_remotes_cleanup(repo, NULL, &refspecs);
         return 1;
     }
 
     // connect to remote for push
     error = git_remote_connect(remote, GIT_DIRECTION_PUSH, &callbacks, NULL, NULL);
     if (error != 0) {
-        printf("2\n");
         perror(git_error_last()->message);
+        push_remotes_cleanup(repo, NULL, &refspecs);
         return 1;
     }
 
+    // initialize default push options
     error = git_push_options_init(&opts, GIT_PUSH_OPTIONS_VERSION);
     if (error != 0) {
-        printf("3\n");
         perror(git_error_last()->message);
-        git_repository_free(repo);
-        git_remote_free(remote);
+        push_remotes_cleanup(repo, remote, &refspecs);
         return 1;
     }
 
+    // push!
     error = git_remote_push(remote, &refspecs, &opts);
     if (error != 0) {
-        printf("4\n");
         perror(git_error_last()->message);
-        git_repository_free(repo);
-        git_remote_free(remote);
+        push_remotes_cleanup(repo, remote, &refspecs);
         return 1;
     }
 
-    git_remote_free(remote);
-    git_repository_free(repo);
+    push_remotes_cleanup(repo, remote, &refspecs);
     return 0;
-// https://libgit2.org/libgit2/ex/HEAD/push.html#git_remote_push-3
-}
-
-char *get_creds(void) {
-    printf("Whoah!\n");
-    return "It works!";
+    // https://libgit2.org/libgit2/ex/HEAD/push.html#git_remote_push-3
 }
