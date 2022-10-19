@@ -9,6 +9,7 @@
         "git-commands.h": "c",
         "stdlib.h": "c",
         "string.h": "c",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "fs.print.h": "c"
     }
 }
