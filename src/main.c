@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include "git/git-commands.h"
+#include "handlers/git/git.commands.h"
 #include "handlers/printutility.h"
 #include "commands.h"
 #include "input.h"

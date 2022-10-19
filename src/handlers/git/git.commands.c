@@ -1,6 +1,8 @@
-#include "git.h"
-#include "../handlers/printutility.h"
+#include "../printutility.h"
 #include "git.remote.h"
+#include "git.branch.h"
+#include "git.print.h"
+#include "git.local.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -77,7 +79,7 @@ Command git_cmd_arr[] = {
             "git add -h          \033[0m| Help with the command\n",
             "git add --help      \033[0m| Help with the command\n\n", 
         },
-        git_add
+        git_add_to_index
     },
     {
         "commit",
@@ -129,7 +131,18 @@ Command git_cmd_arr[] = {
             "git remote --help      \033[0m| Help with the command\n\n", 
         },
         git_remote_command_handler
-    }
+    },
+    {
+        "push",
+        "The \033[1;33mgit push\033[0m command is used to push the current commit history to a remote repository.\n",
+        {
+            "git push <remote> <branch> \033[0m| Push the branch named \033[1;33m<branch>\033[0m to the remote name \033[1;33m<remote>\033[0m.\n", 
+            "git push -h                \033[0m| Help with the command\n",
+            "git push --help            \033[0m| Help with the command\n\n", 
+ 
+        },
+        git_remote_command_handler
+    },
 };
 
 int git_command_handler(char** input, int word_count, char* input_buffer) {

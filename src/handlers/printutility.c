@@ -1,6 +1,7 @@
 #include "printutility.h"
-#include "filesystem.h"
-#include "../git/git.h"
+#include "filesystem/fs.print.h"
+#include "git/git.utils.h"
+#include "git/git.print.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -45,11 +46,9 @@ int print_info(char** input, int word_count) {
 void print_start_of_line(void) {
     bool is_git = is_git_dir(".");
     if (!is_git) {
-        // printf("\033[1;105m");
         print_current_dir();
         printf(" ~> ");
     } else {
-        // printf("\033[1;108m");
         print_current_dir();
         printf(" \033[38:2:90:50:240mgit:(\033[38:2:200:200:40m");
         print_current_branch();
@@ -66,15 +65,6 @@ void print_invalid_cmd(char *cmd) {
 void print_invalid_use_cmd(char *cmd) {
     printf("\033[0;31mInvalid use of command! \033[4;37m%s\n", cmd);
     printf("\033[0mUse %s --help or -h for help using this command.\n", cmd);
-}
-
-int clear_term(char** input, int word_count) {
-    if (word_count == 1) {
-        printf("\e[1;1H\e[2J");
-    } else {
-        print_invalid_use_cmd("clear");
-    }
-    return 0;
 }
 
 int print_commands(char** input, int word_count) {

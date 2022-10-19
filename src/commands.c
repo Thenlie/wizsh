@@ -1,8 +1,10 @@
-#include "handlers/filesystem.h"
+#include "handlers/filesystem/fs.directory.h"
+#include "handlers/filesystem/fs.file.h"
+#include "handlers/filesystem/fs.print.h"
 #include "handlers/printutility.h"
 #include "handlers/requests.h"
-#include "git/git-commands.h"
-
+#include "handlers/git/git.commands.h"
+#include "handlers/shell.utils.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>

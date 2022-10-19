@@ -1,8 +1,10 @@
 #include "git.remote.h"
-#include "git2.h"
-#include "../handlers/printutility.h"
+#include "../printutility.h"
+#include <git2.h>
 #include <string.h>
 #include <stdio.h>
+
+char *get_creds(void);
 
 int git_remote_command_handler(char**input, int word_count) {
     if (word_count == 2) {
@@ -16,7 +18,11 @@ int git_remote_command_handler(char**input, int word_count) {
             remove_git_remote(input, word_count);
         } else if (strcmp(input[2], "rename") == 0 && word_count == 5) {
             rename_git_remote(input, word_count);
-        } 
+        } else if (strcmp(input[1], "push") == 0 && word_count == 4) {
+            push_git_remote(input, word_count);
+        } else if (strcmp(input[1], "push") == 0) {
+            print_invalid_use_cmd("git push");
+        }
     } else {
         print_invalid_use_cmd("git remote");
         return 1;
@@ -160,4 +166,71 @@ int rename_git_remote(char **input, int word_count) {
     git_strarray_dispose(&problems);
     git_repository_free(repo);
     return 0;
+}
+
+int push_git_remote(char **input, int word_count) {
+    git_remote *remote = NULL;
+    git_repository *repo = NULL;
+    git_push_options opts;
+    git_remote_callbacks callbacks = GIT_REMOTE_CALLBACKS_INIT;    
+    int error;
+    char tmp[128] = {"refs/heads/"};
+    strcat(tmp, input[3]);
+    char *refspec = tmp;
+    const git_strarray refspecs = { &refspec, 1 };
+
+    // callbacks.credentials = ;
+    // https://libgit2.org/docs/guides/authentication/
+
+    error = git_repository_open(&repo, ".");
+    // check for error opening repo
+    if (error != 0) {
+        printf("1\n");
+        perror(git_error_last()->message);
+        return 1;
+    }
+
+    // find remote
+    error = git_remote_lookup(&remote, repo, input[2]);
+    if (error != 0) {
+        perror(git_error_last()->message);
+        git_repository_free(repo);
+        return 1;
+    }
+
+    // connect to remote for push
+    error = git_remote_connect(remote, GIT_DIRECTION_PUSH, &callbacks, NULL, NULL);
+    if (error != 0) {
+        printf("2\n");
+        perror(git_error_last()->message);
+        return 1;
+    }
+
+    error = git_push_options_init(&opts, GIT_PUSH_OPTIONS_VERSION);
+    if (error != 0) {
+        printf("3\n");
+        perror(git_error_last()->message);
+        git_repository_free(repo);
+        git_remote_free(remote);
+        return 1;
+    }
+
+    error = git_remote_push(remote, &refspecs, &opts);
+    if (error != 0) {
+        printf("4\n");
+        perror(git_error_last()->message);
+        git_repository_free(repo);
+        git_remote_free(remote);
+        return 1;
+    }
+
+    git_remote_free(remote);
+    git_repository_free(repo);
+    return 0;
+// https://libgit2.org/libgit2/ex/HEAD/push.html#git_remote_push-3
+}
+
+char *get_creds(void) {
+    printf("Whoah!\n");
+    return "It works!";
 }
