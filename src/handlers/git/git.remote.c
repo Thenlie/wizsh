@@ -168,6 +168,66 @@ int rename_git_remote(char **input, int word_count) {
     return 0;
 }
 
+// int ask_git_creds(const char *user, const char *pass, const char *url, const char *username_from_url, unsigned int allowed_types) {
+//     // get username and password from user
+//     printf("Enter git username: ");
+//     if (fgets(user, 256, stdin) == NULL) {
+//         return GIT_EUSER;
+//     }
+//     // size_t len = strlen(user);
+//     // if (len > 0 && user[len - 1] == '\n') {
+//     //     user[--len] = '\0';
+//     // }
+
+//     printf("Enter git password: ");
+//     if (fgets(pass, 256, stdin) == NULL) {
+//         return GIT_EUSER;
+//     }
+//     // len = strlen(pass);
+//     // if (len > 0 && pass[len - 1] == '\n') {
+//     //     pass[--len] = '\0';
+//     // }
+// }
+
+int credentials_cb(git_credential **out, const char *url, const char *username_from_url, unsigned int allowed_types, void *payload) {
+    // char user[256];
+    // char pass[256];
+
+    const char* user = "Thenlie";
+    const char* pass = "1qaz@WSX3edc$RFV";
+
+    printf("%u\n", allowed_types);
+
+    if (allowed_types == 70) {
+        printf("hit\n");
+        return git_cred_username_new(out, user);
+    }
+
+
+    // get username and password from user
+    // printf("Enter git username: ");
+    // if (fgets(user, 256, stdin) == NULL) {
+    //     return GIT_EUSER;
+    // }
+    // size_t len = strlen(user);
+    // if (len > 0 && user[len - 1] == '\n') {
+    //     user[--len] = '\0';
+    // }
+
+    // printf("Enter git password: ");
+    // if (fgets(pass, 256, stdin) == NULL) {
+    //     return GIT_EUSER;
+    // }
+    // len = strlen(pass);
+    // if (len > 0 && pass[len - 1] == '\n') {
+    //     pass[--len] = '\0';
+    // }
+
+    printf("%s %s\n", user, pass);
+
+    return git_cred_userpass_plaintext_new(out, user, pass);
+}
+
 int push_git_remote(char **input, int word_count) {
     git_remote *remote = NULL;
     git_repository *repo = NULL;
@@ -179,7 +239,7 @@ int push_git_remote(char **input, int word_count) {
     char *refspec = tmp;
     const git_strarray refspecs = { &refspec, 1 };
 
-    // callbacks.credentials = ;
+    callbacks.credentials = credentials_cb;
     // https://libgit2.org/docs/guides/authentication/
 
     error = git_repository_open(&repo, ".");
@@ -228,9 +288,4 @@ int push_git_remote(char **input, int word_count) {
     git_repository_free(repo);
     return 0;
 // https://libgit2.org/libgit2/ex/HEAD/push.html#git_remote_push-3
-}
-
-char *get_creds(void) {
-    printf("Whoah!\n");
-    return "It works!";
 }
