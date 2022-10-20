@@ -1,6 +1,16 @@
 {
     "files.associations": {
         "stdio.h": "c",
-        "commands.h": "c"
+        "commands.h": "c",
+        "git.h": "c",
+        "dirent.h": "c",
+        "filesystem.h": "c",
+        "printutility.h": "c",
+        "git-commands.h": "c",
+        "stdlib.h": "c",
+        "string.h": "c",
+        "stdbool.h": "c",
+        "fs.print.h": "c",
+        "unistd.h": "c"
     }
 }

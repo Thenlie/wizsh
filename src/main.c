@@ -1,14 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-
-#include "handlers/filesystem.h"
+#include <string.h>
+#include "handlers/git/git.commands.h"
 #include "handlers/printutility.h"
 #include "commands.h"
 #include "input.h"
+#include <git2.h>
 
 int main (void) {
-
+    git_libgit2_init();
     print_logo();
     // -- Main shell loop --
     while (1) {
@@ -16,8 +17,7 @@ int main (void) {
         char *clean_input = malloc(256);
         print_start_of_line();
 
-        int char_count = 0, word_count = 1, clean_count = 0;
-        char prev_char;
+        int char_count = 0, word_count = 1;
         // accept user input
         if (get_input(input_buffer) == 1) {
             continue;
@@ -58,7 +58,12 @@ int main (void) {
                 }
 
                 // COMMAND CHECK
-                int c = command_handler(input_array, word_count, input_buffer);
+                int c;
+                if (strcmp(input_array[0], "git") == 0) {
+                    c = git_command_handler(input_array, word_count, input_buffer);
+                } else {
+                    c = command_handler(input_array, word_count, input_buffer);
+                }
                 
                 // -- EXIT --
                 if (c == -1) {
@@ -78,4 +83,5 @@ int main (void) {
         free(clean_input);
         free(input_buffer);
     }
+    git_libgit2_shutdown();
 }                            
