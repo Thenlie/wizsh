@@ -10,6 +10,7 @@
         "stdlib.h": "c",
         "string.h": "c",
         "stdbool.h": "c",
-        "fs.print.h": "c"
+        "fs.print.h": "c",
+        "unistd.h": "c"
     }
 }

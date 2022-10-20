@@ -82,7 +82,7 @@ int read_file(char **input, int word_count) {
 
         f = fopen(input[1], "r");
         if (f == NULL) {
-            perror("Unable to create file!");
+            perror("Unable to read file!");
             return 1;
         }
 
