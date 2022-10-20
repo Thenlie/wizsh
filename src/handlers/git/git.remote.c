@@ -212,11 +212,11 @@ int credentials_cb(git_credential **out, const char *url, const char *username_f
     return git_credential_ssh_key_new(out, user, public_key, private_key, pass);
 }
 
-void push_remotes_cleanup(git_repository *repo, git_remote *remote, git_strarray *refspec) {
+void push_remotes_cleanup(git_repository *repo, git_remote *remote, const git_strarray refspec) {
     // free memory associated with 'git push' command
     git_remote_free(remote);
     git_repository_free(repo);
-    git_strarray_free(&refspec);
+    git_strarray_dispose((git_strarray*)&refspec);
     return;
 }
 
@@ -246,7 +246,7 @@ int push_git_remote(char **input, int word_count) {
     error = git_remote_lookup(&remote, repo, input[2]);
     if (error != 0) {
         perror(git_error_last()->message);
-        push_remotes_cleanup(repo, NULL, &refspecs);
+        push_remotes_cleanup(repo, NULL, refspecs);
         return 1;
     }
 
@@ -254,7 +254,7 @@ int push_git_remote(char **input, int word_count) {
     error = git_remote_connect(remote, GIT_DIRECTION_PUSH, &callbacks, NULL, NULL);
     if (error != 0) {
         perror(git_error_last()->message);
-        push_remotes_cleanup(repo, NULL, &refspecs);
+        push_remotes_cleanup(repo, NULL, refspecs);
         return 1;
     }
 
@@ -262,7 +262,7 @@ int push_git_remote(char **input, int word_count) {
     error = git_push_options_init(&opts, GIT_PUSH_OPTIONS_VERSION);
     if (error != 0) {
         perror(git_error_last()->message);
-        push_remotes_cleanup(repo, remote, &refspecs);
+        push_remotes_cleanup(repo, remote, refspecs);
         return 1;
     }
 
@@ -270,11 +270,11 @@ int push_git_remote(char **input, int word_count) {
     error = git_remote_push(remote, &refspecs, &opts);
     if (error != 0) {
         perror(git_error_last()->message);
-        push_remotes_cleanup(repo, remote, &refspecs);
+        push_remotes_cleanup(repo, remote, refspecs);
         return 1;
     }
 
-    push_remotes_cleanup(repo, remote, &refspecs);
+    push_remotes_cleanup(repo, remote, refspecs);
     return 0;
     // https://libgit2.org/libgit2/ex/HEAD/push.html#git_remote_push-3
 }

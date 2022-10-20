@@ -1,4 +1,4 @@
-# wizsh [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Thenlie/wizsh/blob/main/LICENSE) [![Buy me a Coffee](https://badgen.net/badge/icon/buymeacoffee?icon=buymeacoffee&label&color=purple)]()
+# wizsh [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Thenlie/wizsh/blob/main/LICENSE) [![Buy me a Coffee](https://badgen.net/badge/icon/buymeacoffee?icon=buymeacoffee&label&color=purple)](https://www.buymeacoffee.com/leithen)
 
 [![Open Source](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://opensource.org/)
 [![Forks](https://img.shields.io/github/forks/Thenlie/wizsh)]()
@@ -9,7 +9,7 @@ A simple shell written in C. This shell was created as a final project for the H
 
 The initial goal was to create a simple command line interface that accepted specific commands and responded to them. As I progressed, I eventually wanted this to become a fully featured shell with git integration, directory navigation and more! 
 
-[![Git](https://badgen.net/badge/icon/git?icon=git&label&color=orange)]()
+[![Git](https://badgen.net/badge/icon/git?icon=git&label&color=orange)](https://git-scm.com/)
 [![Terminal](https://badgen.net/badge/icon/terminal?icon=terminal&label)]()
 
 ## 🚧 README under construction 🚧
