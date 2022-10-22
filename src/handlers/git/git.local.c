@@ -7,24 +7,29 @@
 #include <git2.h>
 
 int clone_git_repo(char **input, int word_count) {
+    git_repository *repo = NULL;
+    const char *url = input[2];
+    int error;
+
+    // clone repo to current dir or specified dir
     if (word_count == 3) {
-        git_repository *repo = NULL;
-        const char *url = input[2];
         const char *path = ".";
-        int error;
-
-        // clone repository to path at given url
         error = git_clone(&repo, url, path, NULL);
-        if (error != 0) {
-            perror(git_error_last()->message);
-        }
-
-        git_repository_free(repo);
-        return 0;
+    } else if (word_count == 4) {
+        const char *path = input[3];
+        error = git_clone(&repo, url, path, NULL);
     } else {
         print_invalid_use_cmd("git clone");
         return 1;
     }
+
+    // check for error in clone
+    if (error != 0) {
+        perror(git_error_last()->message);
+    }
+
+    git_repository_free(repo);
+    return 0;
 }
 
 int init_git_repo(char **input, int word_count) {
