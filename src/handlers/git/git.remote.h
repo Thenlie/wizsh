@@ -7,6 +7,6 @@ int add_git_remote(char **input, int word_count);
 int remove_git_remote(char **input, int word_count); 
 int rename_git_remote(char **input, int word_count);
 int push_git_remote(char **input, int word_count);
-int fetch_git_remote(char **input, int word_count);
+int pull_git_remote(char **input, int word_count);
 
 #endif

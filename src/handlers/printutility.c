@@ -101,7 +101,10 @@ int print_commands(char** input, int word_count) {
     printf("\033[0m ~> \033[1;33mgit add -a, --all              \033[0m| Add all unstaged files to the git staging area\n");
     printf("\033[0m ~> \033[1;33mgit restore <file_path>        \033[0m| Remove the file at \033[1;33m<file_path>\033[0m from the git staging area\n");
     printf("\033[0m ~> \033[1;33mgit restore -a, --all          \033[0m| Remove all files from the git staging area\n");
-    printf("\033[0m ~> \033[1;33mgit commit -m <message>        \033[0m| Create a new commit with all files that are currently in the git staging area\n\n");
+    printf("\033[0m ~> \033[1;33mgit commit -m <message>        \033[0m| Create a new commit with all files that are currently in the git staging area\n");
+    printf("\033[0m ~> \033[1;33mgit remote -v, --verbose       \033[0m| List all of the remotes connected to the current repository.\n");
+    printf("\033[0m ~> \033[1;33mgit push <remote> <branch>     \033[0m| Push the current commit history to the remote named \033[1;33m<remote>\033[0m on the branch \033[1;33m<branch>\033[0m.\n");
+    printf("\033[0m ~> \033[1;33mgit pull <remote> <branch>     \033[0m| Pull the commit history from the remote named \033[1;33m<remote>\033[0m on the branch \033[1;33m<branch>\033[0m. Merge it with HEAD.\n\n");
 
     return 0;
 }

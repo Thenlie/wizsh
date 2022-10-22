@@ -24,10 +24,10 @@ int git_remote_command_handler(char**input, int word_count) {
             push_git_remote(input, word_count);
         } else if (strcmp(input[1], "push") == 0) {
             print_invalid_use_cmd("git push");
-        } else if (strcmp(input[1], "fetch") == 0 && word_count == 4) {
-            fetch_git_remote(input, word_count);
-        } else if (strcmp(input[1], "fetch") == 0) {
-            print_invalid_use_cmd("git push");
+        } else if (strcmp(input[1], "pull") == 0 && word_count == 4) {
+            pull_git_remote(input, word_count);
+        } else if (strcmp(input[1], "pull") == 0) {
+            print_invalid_use_cmd("git pull");
         }
     } else {
         print_invalid_use_cmd("git remote");
@@ -284,14 +284,14 @@ int push_git_remote(char **input, int word_count) {
     // https://libgit2.org/libgit2/ex/HEAD/push.html#git_remote_push-3
 }
 
-void fetch_remotes_cleanup(git_repository *repo, git_remote *remote) {
+void pull_remotes_cleanup(git_repository *repo, git_remote *remote) {
     // free memory associated with 'git fetch' command
     git_remote_free(remote);
     git_repository_free(repo);
     return;
 }
 
-int fetch_git_remote(char **input, int word_count) {
+int pull_git_remote(char **input, int word_count) {
     git_remote *remote;
     git_repository *repo;
     git_oid head_oid, fetchhead_oid;
@@ -317,7 +317,7 @@ int fetch_git_remote(char **input, int word_count) {
     error = git_remote_lookup(&remote, repo, input[2]);
     if (error != 0) {
         perror(git_error_last()->message);
-        fetch_remotes_cleanup(repo, NULL);
+        pull_remotes_cleanup(repo, NULL);
         return 1;
     }
 
@@ -325,7 +325,7 @@ int fetch_git_remote(char **input, int word_count) {
     error = git_remote_fetch(remote, &refspecs, &f_opts, NULL); 
     if (error != 0) {
         perror(git_error_last()->message);
-        fetch_remotes_cleanup(repo, remote);
+        pull_remotes_cleanup(repo, remote);
         return 1;
     }
 
@@ -352,7 +352,7 @@ int fetch_git_remote(char **input, int word_count) {
         merge_git_commit_to_head(repo, remote, &fetchhead_oid);
     }
 
-    fetch_remotes_cleanup(repo, remote);
+    pull_remotes_cleanup(repo, remote);
     return 0;
     // https://stackoverflow.com/questions/57791388/how-to-write-a-proper-git-pull-with-libgit2
 }

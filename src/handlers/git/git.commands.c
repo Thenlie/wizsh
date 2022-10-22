@@ -144,12 +144,12 @@ Command git_cmd_arr[] = {
         git_remote_command_handler
     },
     {
-        "fetch",
-         "The \033[1;33mgit fetch\033[0m command is used to fetch the current commit history to a remote repository.\n",
+        "pull",
+        "The \033[1;33mgit pull\033[0m command is used to pull the current commit history from a remote repository and merge it with main if there are differences.\n",
         {
-            "git fetch <remote> <branch> \033[0m| Fetch the branch named \033[1;33m<branch>\033[0m to the remote named \033[1;33m<remote>\033[0m.\n", 
-            "git fetch -h                \033[0m| Help with the command\n",
-            "git fetch --help            \033[0m| Help with the command\n\n", 
+            "git pull <remote> <branch> \033[0m| pull the branch named \033[1;33m<branch>\033[0m from the remote named \033[1;33m<remote>\033[0m.\n", 
+            "git pull -h                \033[0m| Help with the command\n",
+            "git pull --help            \033[0m| Help with the command\n\n", 
  
         },
         git_remote_command_handler
