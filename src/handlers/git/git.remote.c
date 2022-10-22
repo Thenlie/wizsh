@@ -22,6 +22,10 @@ int git_remote_command_handler(char**input, int word_count) {
             push_git_remote(input, word_count);
         } else if (strcmp(input[1], "push") == 0) {
             print_invalid_use_cmd("git push");
+        } else if (strcmp(input[1], "fetch") == 0 && word_count == 4) {
+            fetch_git_remote(input, word_count);
+        } else if (strcmp(input[1], "fetch") == 0) {
+            print_invalid_use_cmd("git push");
         }
     } else {
         print_invalid_use_cmd("git remote");
@@ -212,11 +216,10 @@ int credentials_cb(git_credential **out, const char *url, const char *username_f
     return git_credential_ssh_key_new(out, user, public_key, private_key, pass);
 }
 
-void push_remotes_cleanup(git_repository *repo, git_remote *remote, const git_strarray refspec) {
+void push_remotes_cleanup(git_repository *repo, git_remote *remote) {
     // free memory associated with 'git push' command
     git_remote_free(remote);
     git_repository_free(repo);
-    git_strarray_dispose((git_strarray*)&refspec);
     return;
 }
 
@@ -246,7 +249,7 @@ int push_git_remote(char **input, int word_count) {
     error = git_remote_lookup(&remote, repo, input[2]);
     if (error != 0) {
         perror(git_error_last()->message);
-        push_remotes_cleanup(repo, NULL, refspecs);
+        push_remotes_cleanup(repo, NULL);
         return 1;
     }
 
@@ -254,7 +257,7 @@ int push_git_remote(char **input, int word_count) {
     error = git_remote_connect(remote, GIT_DIRECTION_PUSH, &callbacks, NULL, NULL);
     if (error != 0) {
         perror(git_error_last()->message);
-        push_remotes_cleanup(repo, NULL, refspecs);
+        push_remotes_cleanup(repo, NULL);
         return 1;
     }
 
@@ -262,7 +265,7 @@ int push_git_remote(char **input, int word_count) {
     error = git_push_options_init(&opts, GIT_PUSH_OPTIONS_VERSION);
     if (error != 0) {
         perror(git_error_last()->message);
-        push_remotes_cleanup(repo, remote, refspecs);
+        push_remotes_cleanup(repo, remote);
         return 1;
     }
 
@@ -270,11 +273,109 @@ int push_git_remote(char **input, int word_count) {
     error = git_remote_push(remote, &refspecs, &opts);
     if (error != 0) {
         perror(git_error_last()->message);
-        push_remotes_cleanup(repo, remote, refspecs);
+        push_remotes_cleanup(repo, remote);
         return 1;
     }
 
-    push_remotes_cleanup(repo, remote, refspecs);
+    push_remotes_cleanup(repo, remote);
     return 0;
     // https://libgit2.org/libgit2/ex/HEAD/push.html#git_remote_push-3
+}
+
+void fetch_remotes_cleanup(git_repository *repo, git_remote *remote) {
+    // free memory associated with 'git fetch' command
+    git_remote_free(remote);
+    git_repository_free(repo);
+    return;
+}
+
+int fetch_git_remote(char **input, int word_count) {
+    git_remote *remote;
+    git_repository *repo;
+    git_fetch_options f_opts = GIT_FETCH_OPTIONS_INIT;
+    const git_indexer_progress *stats;
+    int error;
+
+    char tmp[128] = {"refs/heads/"};
+    strcat(tmp, input[3]);
+    char *refspec = tmp;
+    const git_strarray refspecs = { &refspec, 1 };
+
+    f_opts.callbacks.credentials = credentials_cb;
+
+    error = git_repository_open(&repo, ".");
+    // check for error opening repo
+    if (error != 0) {
+        perror(git_error_last()->message);
+        return 1;
+    }
+
+    // find remote
+    error = git_remote_lookup(&remote, repo, input[2]);
+    if (error != 0) {
+        perror(git_error_last()->message);
+        fetch_remotes_cleanup(repo, NULL);
+        return 1;
+    }
+
+    // fetch!
+    error = git_remote_fetch(remote, &refspecs, &f_opts, NULL); 
+    if (error != 0) {
+        perror(git_error_last()->message);
+        fetch_remotes_cleanup(repo, remote);
+        return 1;
+    }
+
+    // print content of fetch
+
+    stats = git_remote_stats(remote);
+    if (stats->local_objects > 0) {
+        printf("\rReceived %u/%u objects in %lu bytes (used %u local objects)\n",
+           stats->indexed_objects, stats->total_objects, stats->received_bytes, stats->local_objects);
+    } else{
+        printf("\rReceived %u/%u objects in %lu bytes\n",
+            stats->indexed_objects, stats->total_objects, stats->received_bytes);
+    }
+
+    // begin merging of fetch
+    git_oid head_oid;
+    git_oid fetchhead_oid;
+    git_annotated_commit *commit;
+    git_merge_options m_opts = GIT_MERGE_OPTIONS_INIT;
+    git_checkout_options c_opts = GIT_CHECKOUT_OPTIONS_INIT;
+
+    // get oid for HEAD and FETCH_HEAD
+    git_reference_name_to_id(&head_oid, repo, "HEAD");
+    git_reference_name_to_id(&fetchhead_oid, repo, "FETCH_HEAD");
+    
+    // check to see if they are equal
+    int equal = git_oid_equal(&head_oid, &fetchhead_oid);
+    printf("Merge Analysis: %i\n", equal);
+    
+    // if equal, no need to merge
+    if (equal) {
+        fetch_remotes_cleanup(repo, remote);
+        return 0;
+    }
+
+    // get commit from fetch head for merge
+    error = git_annotated_commit_lookup(&commit, repo, &fetchhead_oid);
+    if (error != 0) {
+        perror(git_error_last()->message);
+        fetch_remotes_cleanup(repo, remote);
+        return 1;
+    }
+
+    // merge!
+    error = git_merge(repo, (const git_annotated_commit **)&commit, 1, &m_opts, &c_opts);
+    if (error != 0) {
+        perror(git_error_last()->message);
+        fetch_remotes_cleanup(repo, remote);
+        return 1;
+    }
+
+    fetch_remotes_cleanup(repo, remote);
+
+    return 0;
+    // https://stackoverflow.com/questions/57791388/how-to-write-a-proper-git-pull-with-libgit2
 }
