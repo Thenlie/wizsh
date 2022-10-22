@@ -6,6 +6,8 @@
 #include <pwd.h>
 #include <unistd.h>
 
+int merge_git_commit_to_head(git_repository *repo, git_remote *remote, const git_oid *oid);
+
 int git_remote_command_handler(char**input, int word_count) {
     if (word_count == 2) {
         print_git_remotes(input, 0);
@@ -292,6 +294,7 @@ void fetch_remotes_cleanup(git_repository *repo, git_remote *remote) {
 int fetch_git_remote(char **input, int word_count) {
     git_remote *remote;
     git_repository *repo;
+    git_oid head_oid, fetchhead_oid;
     git_fetch_options f_opts = GIT_FETCH_OPTIONS_INIT;
     const git_indexer_progress *stats;
     int error;
@@ -326,8 +329,7 @@ int fetch_git_remote(char **input, int word_count) {
         return 1;
     }
 
-    // print content of fetch
-
+    // print byte info of fetch
     stats = git_remote_stats(remote);
     if (stats->local_objects > 0) {
         printf("\rReceived %u/%u objects in %lu bytes (used %u local objects)\n",
@@ -336,14 +338,7 @@ int fetch_git_remote(char **input, int word_count) {
         printf("\rReceived %u/%u objects in %lu bytes\n",
             stats->indexed_objects, stats->total_objects, stats->received_bytes);
     }
-
-    // begin merging of fetch
-    git_oid head_oid;
-    git_oid fetchhead_oid;
-    git_annotated_commit *commit;
-    git_merge_options m_opts = GIT_MERGE_OPTIONS_INIT;
-    git_checkout_options c_opts = GIT_CHECKOUT_OPTIONS_INIT;
-
+    
     // get oid for HEAD and FETCH_HEAD
     git_reference_name_to_id(&head_oid, repo, "HEAD");
     git_reference_name_to_id(&fetchhead_oid, repo, "FETCH_HEAD");
@@ -353,16 +348,25 @@ int fetch_git_remote(char **input, int word_count) {
     printf("Merge Analysis: %i\n", equal);
     
     // if equal, no need to merge
-    if (equal) {
-        fetch_remotes_cleanup(repo, remote);
-        return 0;
+    if (!equal) {
+        merge_git_commit_to_head(repo, remote, &fetchhead_oid);
     }
 
-    // get commit from fetch head for merge
-    error = git_annotated_commit_lookup(&commit, repo, &fetchhead_oid);
+    fetch_remotes_cleanup(repo, remote);
+    return 0;
+    // https://stackoverflow.com/questions/57791388/how-to-write-a-proper-git-pull-with-libgit2
+}
+
+int merge_git_commit_to_head(git_repository *repo, git_remote *remote, const git_oid *oid) {
+    git_annotated_commit *commit;
+    git_merge_options m_opts = GIT_MERGE_OPTIONS_INIT;
+    git_checkout_options c_opts = GIT_CHECKOUT_OPTIONS_INIT;
+    int error;
+
+    // get annotated commit from commit oid
+    error = git_annotated_commit_lookup(&commit, repo, oid);
     if (error != 0) {
         perror(git_error_last()->message);
-        fetch_remotes_cleanup(repo, remote);
         return 1;
     }
 
@@ -370,12 +374,12 @@ int fetch_git_remote(char **input, int word_count) {
     error = git_merge(repo, (const git_annotated_commit **)&commit, 1, &m_opts, &c_opts);
     if (error != 0) {
         perror(git_error_last()->message);
-        fetch_remotes_cleanup(repo, remote);
+        git_annotated_commit_free(commit);
         return 1;
     }
 
-    fetch_remotes_cleanup(repo, remote);
+    git_annotated_commit_free(commit);
+    git_repository_state_cleanup(repo);
 
     return 0;
-    // https://stackoverflow.com/questions/57791388/how-to-write-a-proper-git-pull-with-libgit2
 }
