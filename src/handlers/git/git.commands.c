@@ -136,13 +136,24 @@ Command git_cmd_arr[] = {
         "push",
         "The \033[1;33mgit push\033[0m command is used to push the current commit history to a remote repository.\n",
         {
-            "git push <remote> <branch> \033[0m| Push the branch named \033[1;33m<branch>\033[0m to the remote name \033[1;33m<remote>\033[0m.\n", 
+            "git push <remote> <branch> \033[0m| Push the branch named \033[1;33m<branch>\033[0m to the remote named \033[1;33m<remote>\033[0m.\n", 
             "git push -h                \033[0m| Help with the command\n",
             "git push --help            \033[0m| Help with the command\n\n", 
  
         },
         git_remote_command_handler
     },
+    {
+        "fetch",
+         "The \033[1;33mgit fetch\033[0m command is used to fetch the current commit history to a remote repository.\n",
+        {
+            "git fetch <remote> <branch> \033[0m| Fetch the branch named \033[1;33m<branch>\033[0m to the remote named \033[1;33m<remote>\033[0m.\n", 
+            "git fetch -h                \033[0m| Help with the command\n",
+            "git fetch --help            \033[0m| Help with the command\n\n", 
+ 
+        },
+        git_remote_command_handler
+    }
 };
 
 int git_command_handler(char** input, int word_count, char* input_buffer) {
