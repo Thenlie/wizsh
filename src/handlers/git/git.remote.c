@@ -6,62 +6,68 @@
 #include <pwd.h>
 #include <unistd.h>
 
+int print_git_remotes(char **input, int verbose, git_repository *repo);
 int merge_git_commit_to_head(git_repository *repo, git_remote *remote, const git_oid *oid);
+int add_git_remote(char **input, git_repository *repo);
+int remove_git_remote(char **input, git_repository *repo);
+int rename_git_remote(char **input, git_repository *repo);
+int pull_git_remote(char **input, git_repository *repo);
+int push_git_remote(char **input, git_repository *repo);
 
-int git_remote_command_handler(char**input, int word_count) {
+int git_remote_command_handler(char **input, int word_count) {
+    // open repository in current directory
+    git_repository *repo = NULL;
+    int error = git_repository_open(&repo, ".");
+    if (error != 0) {
+        perror(git_error_last()->message);
+        return 1;
+    }
+
+    // handle command
     if (word_count == 2) {
-        print_git_remotes(input, 0);
+        print_git_remotes(input, 0, repo);
     } else if (word_count == 3 && (strcmp(input[2], "-v") == 0 || strcmp(input[2], "--verbose") == 0)) {
-        print_git_remotes(input, 1);
+        print_git_remotes(input, 1, repo);
     } else if (word_count >= 4) {
         if (strcmp(input[2], "add") == 0 && word_count == 5) {
-            add_git_remote(input, word_count);
+            add_git_remote(input, repo);
         } else if (strcmp(input[2], "remove") == 0 && word_count == 4) {
-            remove_git_remote(input, word_count);
+            remove_git_remote(input, repo);
         } else if (strcmp(input[2], "rename") == 0 && word_count == 5) {
-            rename_git_remote(input, word_count);
+            rename_git_remote(input, repo);
         } else if (strcmp(input[1], "push") == 0 && word_count == 4) {
-            push_git_remote(input, word_count);
+            push_git_remote(input, repo);
         } else if (strcmp(input[1], "push") == 0) {
             print_invalid_use_cmd("git push");
         } else if (strcmp(input[1], "pull") == 0 && word_count == 4) {
-            pull_git_remote(input, word_count);
+            pull_git_remote(input, repo);
         } else if (strcmp(input[1], "pull") == 0) {
             print_invalid_use_cmd("git pull");
         }
     } else {
         print_invalid_use_cmd("git remote");
+        git_repository_free(repo);
         return 1;
     }
+
+    git_repository_free(repo);
     return 0;  
 }
 
-int print_remotes_cleanup(git_repository *repo, git_remote *remote, git_strarray *remotes) {
+void print_remotes_cleanup(git_remote *remote, git_strarray *remotes) {
     // free memory from 'git remote' command
-    git_repository_free(repo);
     git_remote_free(remote);
     git_strarray_dispose(remotes);
-
-    return 0; 
+    return;
 }
 
-int print_git_remotes(char **input, int verbose) {
+int print_git_remotes(char **input, int verbose, git_repository *repo) {
     git_strarray remotes = {0};
     git_remote *remote = NULL;
-    git_repository *repo = NULL;    
-    int error;
 
-    error = git_repository_open(&repo, ".");
-    // check for error opening repo
+    int error = git_remote_list(&remotes, repo);
     if (error != 0) {
         perror(git_error_last()->message);
-        return 1;
-    }
-
-    error = git_remote_list(&remotes, repo);
-    if (error != 0) {
-        perror(git_error_last()->message);
-        print_remotes_cleanup(repo, NULL, NULL);
         return 1;
     }
 
@@ -74,7 +80,7 @@ int print_git_remotes(char **input, int verbose) {
             error = git_remote_lookup(&remote, repo, name);
             if (error != 0) {
                 perror(git_error_last()->message);
-                print_remotes_cleanup(repo, NULL, &remotes);
+                print_remotes_cleanup(NULL, &remotes);
                 return 1;
             }
             const char *fetch = git_remote_url(remote);
@@ -90,74 +96,41 @@ int print_git_remotes(char **input, int verbose) {
         }
     } 
 
-    print_remotes_cleanup(repo, remote, &remotes);
+    print_remotes_cleanup(remote, &remotes);
     return 0;
 }
 
-int add_git_remote(char **input, int word_count) {
+int add_git_remote(char **input, git_repository *repo) {
     git_remote *remote = NULL;
-    git_repository *repo;
-    int error;
-
-    error = git_repository_open(&repo, ".");
-    // check for error opening repo
-    if (error != 0) {
-        perror(git_error_last()->message);
-        return 1;
-    }
 
     // create a new remote for the current repo
-    error = git_remote_create(&remote, repo, input[3], input[4]);
+    int error = git_remote_create(&remote, repo, input[3], input[4]);
     if (error != 0) {
         perror(git_error_last()->message);
-        git_repository_free(repo);
         return 1;
     }
 
-    git_repository_free(repo);
     git_remote_free(remote);
     return 0;
 }
 
-int remove_git_remote(char **input, int word_count) {
-    git_repository *repo = NULL;
-    int error;
-
-    error = git_repository_open(&repo, ".");
-    // check for error opening repo
-    if (error != 0) {
-        perror(git_error_last()->message);
-        return 1;
-    }
-
+int remove_git_remote(char **input, git_repository *repo) {
     // delete remote from current repo
-    error = git_remote_delete(repo ,input[3]);
+    int error = git_remote_delete(repo ,input[3]);
     if (error != 0) {
         perror(git_error_last()->message);
-        git_repository_free(repo);
         return 1;
     }
 
-    git_repository_free(repo);
     return 0;    
 }
 
-int rename_git_remote(char **input, int word_count) {
-    git_repository *repo;
+int rename_git_remote(char **input, git_repository *repo) {
     git_strarray problems = {0};
-    int error;
-
     char *old = input[3];
     char *new = input[4];
     
-    error = git_repository_open(&repo, ".");
-    // check for error opening repo
-    if (error != 0) {
-        perror(git_error_last()->message);
-        return 1;
-    }
-    
-    error = git_remote_rename(&problems, repo, old, new);
+    int error = git_remote_rename(&problems, repo, old, new);
     // check for problem with rename, print if they exist
     if (error) {
         for (int i = 0; i < (int)problems.count; i++) {
@@ -165,20 +138,15 @@ int rename_git_remote(char **input, int word_count) {
         }
 
         git_strarray_dispose(&problems);
-        git_repository_free(repo);
         return 1;
     }
 
     git_strarray_dispose(&problems);
-    git_repository_free(repo);
     return 0;
 }
 
 // TODO: Check for invalid password, exit upon 2 invalid attempts
 int credentials_cb(git_credential **out, const char *url, const char *username_from_url, unsigned int allowed_types, void *payload) {
-    
-    // printf("%s\n", git_error_last()->message);
-    
     const char* SSH_PUB_PATH = "/.ssh/id_ed25519.pub";
     const char* SSH_PRIVATE_PATH = "/.ssh/id_ed25519";
 
@@ -203,7 +171,8 @@ int credentials_cb(git_credential **out, const char *url, const char *username_f
 
     const char *public_key = pbk;
     const char *private_key = prk;
-
+    
+    // accept input from user
     printf("Enter password: ");
     if (fgets(tmp_pass, 256, stdin) == NULL) {
         return GIT_EUSER;
@@ -218,16 +187,8 @@ int credentials_cb(git_credential **out, const char *url, const char *username_f
     return git_credential_ssh_key_new(out, user, public_key, private_key, pass);
 }
 
-void push_remotes_cleanup(git_repository *repo, git_remote *remote) {
-    // free memory associated with 'git push' command
-    git_remote_free(remote);
-    git_repository_free(repo);
-    return;
-}
-
-int push_git_remote(char **input, int word_count) {
+int push_git_remote(char **input, git_repository *repo) {
     git_remote *remote = NULL;
-    git_repository *repo = NULL;
     git_push_options opts;
     git_remote_callbacks callbacks = GIT_REMOTE_CALLBACKS_INIT;    
     int error;
@@ -240,18 +201,10 @@ int push_git_remote(char **input, int word_count) {
     callbacks.credentials = credentials_cb;
     // https://libgit2.org/docs/guides/authentication/
 
-    error = git_repository_open(&repo, ".");
-    // check for error opening repo
-    if (error != 0) {
-        perror(git_error_last()->message);
-        return 1;
-    }
-
     // find remote
     error = git_remote_lookup(&remote, repo, input[2]);
     if (error != 0) {
         perror(git_error_last()->message);
-        push_remotes_cleanup(repo, NULL);
         return 1;
     }
 
@@ -259,7 +212,6 @@ int push_git_remote(char **input, int word_count) {
     error = git_remote_connect(remote, GIT_DIRECTION_PUSH, &callbacks, NULL, NULL);
     if (error != 0) {
         perror(git_error_last()->message);
-        push_remotes_cleanup(repo, NULL);
         return 1;
     }
 
@@ -267,7 +219,7 @@ int push_git_remote(char **input, int word_count) {
     error = git_push_options_init(&opts, GIT_PUSH_OPTIONS_VERSION);
     if (error != 0) {
         perror(git_error_last()->message);
-        push_remotes_cleanup(repo, remote);
+        git_remote_free(remote);
         return 1;
     }
 
@@ -275,25 +227,17 @@ int push_git_remote(char **input, int word_count) {
     error = git_remote_push(remote, &refspecs, &opts);
     if (error != 0) {
         perror(git_error_last()->message);
-        push_remotes_cleanup(repo, remote);
+        git_remote_free(remote);
         return 1;
     }
 
-    push_remotes_cleanup(repo, remote);
+    git_remote_free(remote);
     return 0;
     // https://libgit2.org/libgit2/ex/HEAD/push.html#git_remote_push-3
 }
 
-void pull_remotes_cleanup(git_repository *repo, git_remote *remote) {
-    // free memory associated with 'git fetch' command
-    git_remote_free(remote);
-    git_repository_free(repo);
-    return;
-}
-
-int pull_git_remote(char **input, int word_count) {
+int pull_git_remote(char **input, git_repository *repo) {
     git_remote *remote;
-    git_repository *repo;
     git_oid head_oid, fetchhead_oid;
     git_fetch_options f_opts = GIT_FETCH_OPTIONS_INIT;
     const git_indexer_progress *stats;
@@ -306,18 +250,10 @@ int pull_git_remote(char **input, int word_count) {
 
     f_opts.callbacks.credentials = credentials_cb;
 
-    error = git_repository_open(&repo, ".");
-    // check for error opening repo
-    if (error != 0) {
-        perror(git_error_last()->message);
-        return 1;
-    }
-
     // find remote
     error = git_remote_lookup(&remote, repo, input[2]);
     if (error != 0) {
         perror(git_error_last()->message);
-        pull_remotes_cleanup(repo, NULL);
         return 1;
     }
 
@@ -325,7 +261,7 @@ int pull_git_remote(char **input, int word_count) {
     error = git_remote_fetch(remote, &refspecs, &f_opts, NULL); 
     if (error != 0) {
         perror(git_error_last()->message);
-        pull_remotes_cleanup(repo, remote);
+        git_remote_free(remote);
         return 1;
     }
 
@@ -352,7 +288,7 @@ int pull_git_remote(char **input, int word_count) {
         merge_git_commit_to_head(repo, remote, &fetchhead_oid);
     }
 
-    pull_remotes_cleanup(repo, remote);
+    git_remote_free(remote);
     return 0;
     // https://stackoverflow.com/questions/57791388/how-to-write-a-proper-git-pull-with-libgit2
 }
@@ -380,6 +316,5 @@ int merge_git_commit_to_head(git_repository *repo, git_remote *remote, const git
 
     git_annotated_commit_free(commit);
     git_repository_state_cleanup(repo);
-
     return 0;
 }
