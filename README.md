@@ -11,6 +11,8 @@ A simple shell written in C. This shell was created as a final project for the H
 
 The initial goal was to create a simple command line interface that accepted specific commands and responded to them. As I progressed, I eventually wanted this to become a fully featured shell with git integration, directory navigation and more! 
 
+In the v1.0.0 release, wizsh is capable of most common directory navigation commands as well as file and directory modification. It also contains a number of git commands, enough to maintain a small repository. Be sure to check out the wiki for a full list of commands.
+
 [![Git](https://badgen.net/badge/icon/git?icon=git&label&color=orange)](https://git-scm.com/)
 [![Terminal](https://badgen.net/badge/icon/terminal?icon=terminal&label)]()
 
