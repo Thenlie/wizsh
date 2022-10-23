@@ -1,9 +1,11 @@
 # wizsh [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Thenlie/wizsh/blob/main/LICENSE) [![Buy me a Coffee](https://badgen.net/badge/icon/buymeacoffee?icon=buymeacoffee&label&color=purple)](https://www.buymeacoffee.com/leithen)
 
+
 [![Open Source](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://opensource.org/)
+[![Builds badge](https://github.com/thenlie/wizsh/actions/workflows/makefile.yml/badge.svg)](https://github.com/Thenlie/wizsh/actions/)
 [![Forks](https://img.shields.io/github/forks/Thenlie/wizsh)]()
-[![Open Issues](https://img.shields.io/github/issues/Thenlie/wizsh)]()
-[![Closed Issues](https://img.shields.io/github/issues-closed/thenlie/wizsh?color=yellow)]()
+[![Open Issues](https://img.shields.io/github/issues/Thenlie/wizsh)](https://github.com/Thenlie/wizsh/issues?q=is%3Aopen+is%3Aissue)
+[![Closed Issues](https://img.shields.io/github/issues-closed/thenlie/wizsh?color=yellow)](https://github.com/Thenlie/wizsh/issues?q=is%3Aissue+is%3Aclosed)
 
 A simple shell written in C. This shell was created as a final project for the Harvard CS50 course. As my first real dive into independent C programming, it was an amazing tool to learn the ins and outs of C, git and how shells function on a lower level. Bash and zsh were the main inspirations for the shell, the latter inspiring the name as well. 
 
