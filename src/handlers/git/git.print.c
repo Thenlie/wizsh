@@ -7,6 +7,28 @@
 #include <string.h>
 #include <git2.h>
 
+int print_git_log(void);
+int print_git_status(void);
+
+int git_print_command_handler(char **input, int word_count) {
+    // ensure current directory is git enabled
+    bool is_git = is_git_dir(".");
+    if (!is_git) {
+        printf("You are not in a git enabled directory!\n");
+        return 1;
+    }
+
+    if (word_count == 2) {
+        if (strcmp(input[1], "log") == 0) {
+            print_git_log();
+        } else if (strcmp(input[1], "status") == 0) {
+            print_git_status();
+        }
+    }
+    
+    return 0;
+}
+
 void print_current_branch(void) {
     FILE *f;
     f = fopen("./.git/HEAD", "r");
@@ -36,7 +58,7 @@ void print_current_branch(void) {
     return;
 }
 
-int print_git_log(char **input, int word_count) {
+int print_git_log(void) {
     // ensure current directory is git enabled
     bool is_git = is_git_dir(".");
     if (!is_git) {
@@ -115,7 +137,7 @@ struct status_opts {
     int repeat;
 };
 
-int print_git_status(char **input, int word_count) {
+int print_git_status(void) {
     // ensure current directory is git enabled
     bool is_git = is_git_dir(".");
     if (!is_git) {

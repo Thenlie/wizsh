@@ -46,20 +46,18 @@ int git_branch_command_handler(char** input, int word_count) {
         } 
     // handle 'checkout' command
     } else if (strcmp(input[1], "checkout") == 0) {
-            if (word_count == 3) {
-                checkout_git_branch(input[2], repo);
-            } else if (word_count == 4) {
-                if ((strcmp(input[2], "-b") == 0) || strcmp(input[2], "--branch") == 0) {
-                    create_git_branch(input[3], repo);
-                    checkout_git_branch(input[3], repo);
-                } else {
-                    print_invalid_use_cmd("git checkout");
-                }  
+        if (word_count == 3) {
+            checkout_git_branch(input[2], repo);
+        } else if (word_count == 4) {
+            if ((strcmp(input[2], "-b") == 0) || strcmp(input[2], "--branch") == 0) {
+                create_git_branch(input[3], repo);
+                checkout_git_branch(input[3], repo);
             } else {
                 print_invalid_use_cmd("git checkout");
-            }   
-    } else {
-        print_invalid_use_cmd("git");
+            }  
+        } else {
+            print_invalid_use_cmd("git checkout");
+        }   
     } 
 
     git_repository_free(repo);

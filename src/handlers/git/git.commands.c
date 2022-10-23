@@ -24,7 +24,7 @@ Command git_cmd_arr[] = {
             "git log -h     \033[0m| Help with the command\n",
             "git log --help \033[0m| Help with the command\n\n",
         },
-        print_git_log
+        git_print_command_handler
     },
     {
         "clone",
@@ -45,7 +45,7 @@ Command git_cmd_arr[] = {
             "git status -h     \033[0m| Help with the command\n",
             "git status --help \033[0m| Help with the command\n\n",
         },
-        print_git_status
+        git_print_command_handler
     },
     {
         "checkout",
