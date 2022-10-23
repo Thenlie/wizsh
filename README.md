@@ -14,6 +14,10 @@ The initial goal was to create a simple command line interface that accepted spe
 [![Git](https://badgen.net/badge/icon/git?icon=git&label&color=orange)](https://git-scm.com/)
 [![Terminal](https://badgen.net/badge/icon/terminal?icon=terminal&label)]()
 
+## Demo
+
+https://drive.google.com/file/d/1PfSqTuwhpWkkiA0RY9vr3tEw6Vch2MEF/view?usp=sharing
+
 # Table of Contents
 
 1. [Installation](#installation)
