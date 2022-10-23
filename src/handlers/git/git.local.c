@@ -1,4 +1,5 @@
 #include "git.print.h"
+#include "git.credentials.h"
 #include "../filesystem/fs.print.h"
 #include "../printutility.h"
 #include <stdbool.h>
@@ -11,13 +12,18 @@ int clone_git_repo(char **input, int word_count) {
     const char *url = input[2];
     int error;
 
+    git_clone_options opts = GIT_CLONE_OPTIONS_INIT;
+
+    opts.fetch_opts.callbacks.credentials = credentials_cb;
+
+
     // clone repo to current dir or specified dir
     if (word_count == 3) {
         const char *path = ".";
-        error = git_clone(&repo, url, path, NULL);
+        error = git_clone(&repo, url, path, &opts);
     } else if (word_count == 4) {
         const char *path = input[3];
-        error = git_clone(&repo, url, path, NULL);
+        error = git_clone(&repo, url, path, &opts);
     } else {
         print_invalid_use_cmd("git clone");
         return 1;
