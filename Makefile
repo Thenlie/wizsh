@@ -8,7 +8,7 @@ FS = filesystem/
 CC = clang
 CFLAGS = -Wall -g $(shell pkg-config --cflags libgit2)
 LDFLAGS = -lcurl $(shell pkg-config --libs libgit2)
-OBJFILES = $(OBJ)main.o $(OBJ)fs.file.o $(OBJ)fs.directory.o $(OBJ)fs.print.o $(OBJ)printutility.o $(OBJ)requests.o $(OBJ)commands.o $(OBJ)input.o $(OBJ)shell.utils.o $(OBJ)git.commands.o $(OBJ)git.remote.o $(OBJ)git.branch.o $(OBJ)git.print.o $(OBJ)git.local.o $(OBJ)git.utils.o $(OBJ)git.credentials.o
+OBJFILES = $(OBJ)main.o $(OBJ)fs.file.o $(OBJ)fs.directory.o $(OBJ)fs.print.o $(OBJ)printutility.o $(OBJ)requests.o $(OBJ)commands.o $(OBJ)input.o $(OBJ)shell.utils.o $(OBJ)git.commands.o $(OBJ)git.remote.o $(OBJ)git.branch.o $(OBJ)git.print.o $(OBJ)git.local.o $(OBJ)git.utils.o
 
 TARGET = bin/wizsh
 
@@ -51,9 +51,6 @@ $(OBJ)git.branch.o: $(SRC)$(H)$(GIT)git.branch.c
 
 $(OBJ)commands.o: $(SRC)commands.c
 	$(CC) $(CFLAGS) -c $(SRC)commands.c -o $(OBJ)commands.o
-
-$(OBJ)git.credentials.o: $(SRC)$(H)$(GIT)git.credentials.c
-	$(CC) $(CFLAGS) -c $(SRC)$(H)$(GIT)git.credentials.c -o $(OBJ)git.credentials.o
 
 $(OBJ)input.o: $(SRC)input.c
 	$(CC) $(CFLAGS) -c $(SRC)input.c -o $(OBJ)input.o

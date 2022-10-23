@@ -49,13 +49,14 @@ Command git_cmd_arr[] = {
     },
     {
         "checkout",
-        "The \033[1;33mgit checkout\033[0m command is used to checkout to a new git branch.\n",
+        "The \033[1;33mgit checkout\033[0m command is used to checkout to a different git branch.\n",
         {
-            "git checkout <branch> \033[0m| Checkout to a git branch named \033[1;33m<branch>\033[0m].\n",
-            "git checkout -h       \033[0m| Help with the command\n",
-            "git checkout --help   \033[0m| Help with the command\n\n",
+            "git checkout <branch>    \033[0m| Checkout to an existing git branch named \033[1;33m<branch>\033[0m].\n",
+            "git checkout -b <branch> \033[0m| Create a new branch named \033[1;33m<branch>\033[0m] and checkout to it.\n",
+            "git checkout -h          \033[0m| Help with the command\n",
+            "git checkout --help      \033[0m| Help with the command\n\n",
         },
-        checkout_git_branch
+        git_branch_command_handler
     }, 
     {
         "branch",

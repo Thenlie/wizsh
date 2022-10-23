@@ -1,11 +1,9 @@
 #include "git.remote.h"
 #include "../printutility.h"
-#include "git.credentials.h"
+#include "git.utils.h"
 #include <git2.h>
 #include <string.h>
 #include <stdio.h>
-#include <pwd.h>
-#include <unistd.h>
 
 int print_git_remotes(char **input, int verbose, git_repository *repo);
 int merge_git_commit_to_head(git_repository *repo, git_remote *remote, const git_oid *oid);
@@ -16,6 +14,13 @@ int pull_git_remote(char **input, git_repository *repo);
 int push_git_remote(char **input, git_repository *repo);
 
 int git_remote_command_handler(char **input, int word_count) {
+    // ensure current directory is git enabled
+    bool is_git = is_git_dir(".");
+    if (!is_git) {
+        printf("You are not in a git enabled directory!\n");
+        return 1;
+    }
+
     // open repository in current directory
     git_repository *repo = NULL;
     int error = git_repository_open(&repo, ".");
