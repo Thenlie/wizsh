@@ -22,6 +22,7 @@ int main (void) {
         if (get_input(input_buffer) == 1) {
             continue;
         } else {
+            printf("Initial: %s\n", input_buffer);
             if (input_buffer[0] != '\n') {
                 // remove extra whitespace from input
                 trim_input(input_buffer, clean_input, &word_count, &char_count);
@@ -43,11 +44,11 @@ int main (void) {
 
             
             // -- TESTING, REMOVE BEFORE FINAL --
-            // printf("Words: %i\n", word_count);
-            // printf("Chars: %i\n", char_count);
-            // for (int i = 0; i < word_count; i++) {
-            //     printf("Parse: %s\n", input_array[i]);
-            // }
+            printf("Words: %i\n", word_count);
+            printf("Chars: %i\n", char_count);
+            for (int i = 0; i < word_count; i++) {
+                printf("Parse: %s\n", input_array[i]);
+            }
             
 
             if (word_count > 0) {

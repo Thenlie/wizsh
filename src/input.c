@@ -1,5 +1,4 @@
 #include "input.h"
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -90,8 +89,7 @@ static int get_key(void) {
 
 int get_input(char *buffer) {
     int c;
-    FILE *f;
-    f = fopen("tmp.txt", "a");
+    int input_count = 0;
 
     // input loop
     while (1) {
@@ -102,33 +100,30 @@ int get_input(char *buffer) {
             break;
         } else if (c == KEY_RIGHT) {
             cursorbackward(1);
+            if (input_count > 0) {
+                input_count--;
+            }
         } else if (c == KEY_LEFT) {
             cursorforward(1);
+            input_count++;
         // check for backspace
         } else if (c == KEY_BKSPC) {
-            // int size = sizeof(buffer);
-            // buffer[size - 1] = '\0';
+            for (int i = input_count; buffer[i]; i++) {
+                buffer[i] = buffer[i + 1];
+            }
+            if (input_count > 0) {
+                putchar('\b');
+                putchar(' ');
+                putchar('\b');
+                input_count--;
+            }
         } else {
             putchar(c);
-            fputc(c, f);
-            // printf("%x\n", c);
-            // strncat(buffer, (char *)&c, 1);
+            buffer[input_count] = c;
+            input_count++;
         }
     }
-
-    if (fgets(buffer, 256, f) != NULL)
-    {
-        return 0;
-    } else {
-        perror("Error while reading input! 256 char limit.");
-        fclose(f);
-        return 1;
-    }
-
-    printf("\n");
-    printf("%s\n", buffer);
-    printf("\n");
-    fclose(f);
+    putchar('\n');
     return 0;
 }
 
