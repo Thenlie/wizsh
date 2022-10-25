@@ -117,7 +117,8 @@ int get_input(char *buffer) {
                 putchar('\b');
                 input_count--;
             }
-        } else {
+        // print char as long as it is a symbol, number or letter
+        } else if (c > 31) {
             putchar(c);
             buffer[input_count] = c;
             input_count++;
