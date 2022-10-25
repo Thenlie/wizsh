@@ -8,7 +8,6 @@
 #include <sys/types.h>
 #include <stdbool.h>
 #include <sys/types.h>
-#include <sys/wait.h>
 
 void print_tree(char *dir, int count, bool is_flat);
 
