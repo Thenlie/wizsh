@@ -20,6 +20,6 @@ jobs:
     - name: Clear binaries
       run: make clean
       
-    - name: Make check
+    - name: Build
       run: make
       
