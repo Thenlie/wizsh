@@ -16,9 +16,14 @@ In the v1.0.0 release, wizsh is capable of most common directory navigation comm
 [![Git](https://badgen.net/badge/icon/git?icon=git&label&color=orange)](https://git-scm.com/)
 [![Terminal](https://badgen.net/badge/icon/terminal?icon=terminal&label)]()
 
-## Demo
+## Demo 🎥
 
-https://drive.google.com/file/d/1PfSqTuwhpWkkiA0RY9vr3tEw6Vch2MEF/view?usp=sharing
+https://youtu.be/RtaXa6_exLE
+
+## Screenshot 📸
+
+![image](https://user-images.githubusercontent.com/41388783/197922238-59cd24e7-ed90-447e-8565-64c83c485cbf.png)
+
 
 # Table of Contents
 
