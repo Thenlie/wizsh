@@ -28,9 +28,10 @@ https://youtu.be/RtaXa6_exLE
 # Table of Contents
 
 1. [Installation](#installation)
-2. [Contributing](#contributing)
-3. [Libraries](#libraries)
-4. [Questions](#questions)
+2. [Usage](#usage)
+3. [Contributing](#contributing)
+4. [Libraries](#libraries)
+5. [Questions](#questions)
 
 ## Installation
 
@@ -40,7 +41,7 @@ These instructions assume that you have installed homebrew and all other depende
 
 ### Release
 
-To use wizsh, first install the latest release(link).
+To use wizsh, first install the latest [release](https://github.com/Thenlie/wizsh/releases).
 Next, simply run the binary `wizsh` located in the `/bin` directory. 
 
 ### Local
@@ -49,6 +50,10 @@ To run wizsh locally, you will first need to [clone](https://docs.github.com/en/
 Next, navigate to the wizsh directory. Typically just `cd wizsh` from wherever the `clone` command was run.
 Use the command `make` to build to binary. 
 Run the binary by using the command `bin/wizsh`. This is the same as `cd bin && wizsh`.
+
+## Usage
+
+Be sure to check out the [wiki](https://github.com/Thenlie/wizsh/wiki) for information on commands!
 
 ## Contributing
 
