@@ -7,9 +7,11 @@
 [![Open Issues](https://img.shields.io/github/issues/Thenlie/wizsh)](https://github.com/Thenlie/wizsh/issues?q=is%3Aopen+is%3Aissue)
 [![Closed Issues](https://img.shields.io/github/issues-closed/thenlie/wizsh?color=yellow)](https://github.com/Thenlie/wizsh/issues?q=is%3Aissue+is%3Aclosed)
 
-A simple shell written in C. This shell was created as a final project for the Harvard CS50 course. As my first real dive into independent C programming, it was an amazing tool to learn the ins and outs of C, git and how shells function on a lower level. Bash and zsh were the main inspirations for the shell, the latter inspiring the name as well. 
+A simple shell written in C! 
 
-The initial goal was to create a simple command line interface that accepted specific commands and responded to them. As I progressed, I eventually wanted this to become a fully featured shell with git integration, directory navigation and more! 
+This shell was created as a final project for the Harvard CS50 course. As my first real dive into independent C programming, it was an amazing tool to learn the ins and outs of C, git and how shells function on a lower level. 
+
+Bash and zsh were the main inspirations for the shell, the latter inspiring the name as well. The initial goal was to create a simple command line interface that accepted specific commands and responded to them. As I progressed, I eventually wanted this to become a fully featured shell with git integration, directory navigation and more! 
 
 In the v1.0.0 release, wizsh is capable of most common directory navigation commands as well as file and directory modification. It also contains a number of git commands, enough to maintain a small repository. Be sure to check out the wiki for a full list of commands.
 
@@ -37,18 +39,26 @@ https://youtu.be/RtaXa6_exLE
 
 > PREFACE: Wizsh was built on an M1 Mac with no other systems in mind! This means that there are likely issues when attempting to build and run this on any x86 machine. This would be a great issue to contribute to!  
 
-These instructions assume that you have installed homebrew and all other dependencies. 
+These instructions assume that you have installed homebrew and all other dependencies. In most cases, the command below will install all the packages you will need for this app. 
+
+```
+brew install libgit2 pkg-config libssh2 openssl
+```
 
 ### Release
 
 To use wizsh, first install the latest [release](https://github.com/Thenlie/wizsh/releases).
+
 Next, simply run the binary `wizsh` located in the `/bin` directory. 
 
 ### Local
 
 To run wizsh locally, you will first need to [clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) the repository. 
+
 Next, navigate to the wizsh directory. Typically just `cd wizsh` from wherever the `clone` command was run.
-Use the command `make` to build to binary. 
+
+Use the command `make` to build to binary. It is usually best to run a `make clean` first to make sure you are starting a fresh build.
+
 Run the binary by using the command `bin/wizsh`. This is the same as `cd bin && wizsh`.
 
 ## Usage
