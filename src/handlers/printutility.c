@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define VERSION_NUMBER "0.0.0"
+#define VERSION_NUMBER "1.0.0"
 
 void print_logo(void)
 {
