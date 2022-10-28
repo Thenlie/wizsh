@@ -109,27 +109,26 @@ int get_input(char *buffer) {
             cursor++;
         // check for backspace
         } else if (c == KEY_BKSPC) {
-            for (int i = cursor; buffer[i]; i++) {
-                buffer[i] = buffer[i + 1];
-            }
             if (cursor > 0) {
+                buffer[cursor-1] = ' ';
                 putchar('\b');
                 putchar(' ');
                 putchar('\b');
                 cursor--;
-                input_count--;
             }
         // print char as long as it is a symbol, number or letter
         } else if (c > 31) {
             putchar(c);
             buffer[cursor] = c;
+            if (cursor == input_count) {
+                input_count++;
+            }
             cursor++;
-            input_count++;
         }
     }
     buffer[input_count] = '\0';
 
-    printf("Buffer: ");
+    printf("\nBuffer: ");
     for (size_t i = 0; buffer[i]; i++) {
         printf("%d, ", buffer[i]);
     }
