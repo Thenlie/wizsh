@@ -51,7 +51,7 @@ static int kb_hit(void) {
 
 static int kb_esc(void) {
     int c;
-
+    // determine which escape key was pressed
     if (!kb_hit()) return KEY_ESCAPE;
     c = get_char();
     if (c == '[') {
@@ -84,12 +84,13 @@ static int get_key(void) {
     int c;
 
     c = get_char();
+    // check if key if escape key
     return (c == KEY_ESCAPE) ? kb_esc() : c;
 }
 
 int get_input(char *buffer) {
     int c;
-    int input_count = 0;
+    int cursor = 0, input_count = 0;
 
     // input loop
     while (1) {
@@ -100,30 +101,39 @@ int get_input(char *buffer) {
             break;
         } else if (c == KEY_RIGHT) {
             cursorbackward(1);
-            if (input_count > 0) {
-                input_count--;
+            if (cursor > 0) {
+                cursor--;
             }
         } else if (c == KEY_LEFT) {
             cursorforward(1);
-            input_count++;
+            cursor++;
         // check for backspace
         } else if (c == KEY_BKSPC) {
-            for (int i = input_count; buffer[i]; i++) {
+            for (int i = cursor; buffer[i]; i++) {
                 buffer[i] = buffer[i + 1];
             }
-            if (input_count > 0) {
+            if (cursor > 0) {
                 putchar('\b');
                 putchar(' ');
                 putchar('\b');
+                cursor--;
                 input_count--;
             }
         // print char as long as it is a symbol, number or letter
         } else if (c > 31) {
             putchar(c);
-            buffer[input_count] = c;
+            buffer[cursor] = c;
+            cursor++;
             input_count++;
         }
     }
+    buffer[input_count] = '\0';
+
+    printf("Buffer: ");
+    for (size_t i = 0; buffer[i]; i++) {
+        printf("%d, ", buffer[i]);
+    }
+
     putchar('\n');
     return 0;
 }
