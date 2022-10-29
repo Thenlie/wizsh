@@ -19,7 +19,10 @@ jobs:
 
     - name: Install packages
       run: sudo apt-get install libgit2-dev libcurl4-openssl-dev
-    
+
+    - name: Create directories
+      run: make build
+
     - name: Clear binaries
       run: make clean
       
