@@ -128,10 +128,10 @@ int get_input(char *buffer) {
     }
     buffer[input_count] = '\0';
 
-    printf("\nBuffer: ");
-    for (size_t i = 0; buffer[i]; i++) {
-        printf("%d, ", buffer[i]);
-    }
+    // printf("\nBuffer: ");
+    // for (size_t i = 0; buffer[i]; i++) {
+    //     printf("%d, ", buffer[i]);
+    // }
 
     putchar('\n');
     return 0;
