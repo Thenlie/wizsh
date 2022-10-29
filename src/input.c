@@ -1,17 +1,140 @@
 #include "input.h"
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <termios.h>
+#include <unistd.h>
+
+#define cursorforward(x) printf("\033[%dC", (x))
+#define cursorbackward(x) printf("\033[%dD", (x))
+
+#define KEY_ESCAPE  0x001b
+#define KEY_ENTER   0x000a
+#define KEY_UP      0x0105
+#define KEY_DOWN    0x0106
+#define KEY_LEFT    0x0107
+#define KEY_RIGHT   0x0108
+#define KEY_BKSPC   0x007f
+
+static struct termios term, oterm;
+// https://stackoverflow.com/questions/33025599/move-the-cursor-in-a-c-program
+
+static int get_char(void) {
+    int c = 0;
+    
+    tcgetattr(0, &oterm);
+    memcpy(&term, &oterm, sizeof(term));
+    term.c_lflag &= ~(ICANON | ECHO);
+    term.c_cc[VMIN] = 1;
+    term.c_cc[VTIME] = 0;
+    tcsetattr(0, TCSANOW, &term);
+    c = getchar();
+    tcsetattr(0, TCSANOW, &oterm);
+    return c;
+}
+
+static int kb_hit(void) {
+    int c = 0;
+
+    tcgetattr(0, &oterm);
+    memcpy(&term, &oterm, sizeof(term));
+    term.c_lflag &= ~(ICANON | ECHO);
+    term.c_cc[VMIN] = 0;
+    term.c_cc[VTIME] = 1;
+    tcsetattr(0, TCSANOW, &term);
+    c = getchar();
+    tcsetattr(0, TCSANOW, &oterm);
+    if (c != -1) ungetc(c, stdin);
+    return ((c != -1) ? 1 : 0);
+}
+
+
+static int kb_esc(void) {
+    int c;
+    // determine which escape key was pressed
+    if (!kb_hit()) return KEY_ESCAPE;
+    c = get_char();
+    if (c == '[') {
+        switch (get_char()) {
+            case 'A':
+                c = KEY_UP;
+                break;
+            case 'B':
+                c = KEY_DOWN;
+                break;
+            case 'C':
+                c = KEY_LEFT;
+                break;
+            case 'D':
+                c = KEY_RIGHT;
+                break;
+            default:
+                c = 0;
+                break;
+        }
+    } else {
+        c = 0;
+    }
+
+    if (c == 0) while (kb_hit()) get_char();
+    return c;
+}
+
+static int get_key(void) {
+    int c;
+
+    c = get_char();
+    // check if key if escape key
+    return (c == KEY_ESCAPE) ? kb_esc() : c;
+}
 
 int get_input(char *buffer) {
-    if (fgets(buffer, 256, stdin) != NULL)
-    {
-        return 0;
-    } else {
-        perror("Error while reading input! 256 char limit.");
-        return 1;
+    int c;
+    int cursor = 0, input_count = 0;
+
+    // input loop
+    while (1) {
+        // get char from user
+        c = get_key();
+        // check which char was entered
+        if (c == KEY_ENTER || c == KEY_ESCAPE || c == KEY_UP || c == KEY_DOWN) {
+            break;
+        } else if (c == KEY_RIGHT) {
+            cursorbackward(1);
+            if (cursor > 0) {
+                cursor--;
+            }
+        } else if (c == KEY_LEFT) {
+            cursorforward(1);
+            cursor++;
+        // check for backspace
+        } else if (c == KEY_BKSPC) {
+            if (cursor > 0) {
+                buffer[cursor-1] = ' ';
+                putchar('\b');
+                putchar(' ');
+                putchar('\b');
+                cursor--;
+            }
+        // print char as long as it is a symbol, number or letter
+        } else if (c > 31) {
+            putchar(c);
+            buffer[cursor] = c;
+            if (cursor == input_count) {
+                input_count++;
+            }
+            cursor++;
+        }
     }
+    buffer[input_count] = '\0';
+
+    // printf("\nBuffer: ");
+    // for (size_t i = 0; buffer[i]; i++) {
+    //     printf("%d, ", buffer[i]);
+    // }
+
+    putchar('\n');
+    return 0;
 }
 
 void parse_input(char *input, char** input_array, int char_count) {

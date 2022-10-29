@@ -247,6 +247,7 @@ Command cmd_arr[] = {
         },
         copy_file
     },
+    // -- TREE --
     {
         "tree",
         "tr",

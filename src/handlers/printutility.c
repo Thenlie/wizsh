@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define VERSION_NUMBER "0.0.0"
+#define VERSION_NUMBER "1.0.0"
 
 void print_logo(void)
 {
@@ -58,8 +58,7 @@ void print_start_of_line(void) {
 }
 
 void print_invalid_cmd(char *cmd) {
-    printf("\033[0;31mInvalid command! \033[4;37m%s", cmd);
-    printf("\033[0m");
+    printf("\033[0;31mInvalid command! \033[4;37m%s\033[0m\n", cmd);
 }
 
 void print_invalid_use_cmd(char *cmd) {

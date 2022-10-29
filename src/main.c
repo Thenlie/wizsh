@@ -22,7 +22,13 @@ int main (void) {
         if (get_input(input_buffer) == 1) {
             continue;
         } else {
-            if (input_buffer[0] != '\n') {
+            
+            // printf("Initial: %s\n", input_buffer);
+            // for (int i = 0; input_buffer[i]; i++) {
+            //     printf("Initial: %d\n", input_buffer[i]);
+            // }
+
+            if (input_buffer[0]) {
                 // remove extra whitespace from input
                 trim_input(input_buffer, clean_input, &word_count, &char_count);
             } else {

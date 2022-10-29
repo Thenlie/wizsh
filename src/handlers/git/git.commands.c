@@ -26,6 +26,7 @@ Command git_cmd_arr[] = {
         },
         git_print_command_handler
     },
+    // -- CLONE --
     {
         "clone",
         "The \033[1;33mgit clone\033[0m command clones a git repository to the current directory.\n",
@@ -37,6 +38,7 @@ Command git_cmd_arr[] = {
         },
         clone_git_repo
     },
+    // -- STATUS --
     {
         "status",
          "The \033[1;33mgit status\033[0m command lists the git status of the current directory.\n",
@@ -47,6 +49,7 @@ Command git_cmd_arr[] = {
         },
         git_print_command_handler
     },
+    // -- CHECKOUT --
     {
         "checkout",
         "The \033[1;33mgit checkout\033[0m command is used to checkout to a different git branch.\n",
@@ -58,6 +61,7 @@ Command git_cmd_arr[] = {
         },
         git_branch_command_handler
     }, 
+    // -- BRANCH --
     {
         "branch",
         "The \033[1;33mgit branch\033[0m command is used to list all branches in the current git repository. When provided with a branch name as a third argument, the command will attempt to create a new branch with that name based off the most recent commit.\n",
@@ -72,27 +76,32 @@ Command git_cmd_arr[] = {
         },
         git_branch_command_handler
     },
+    // -- ADD --
     {
         "add",
         "The \033[1;33mgit add\033[0m command is used to stage a file for committing. When provided with a file path as a third argument, the command will stage that file so it will be included on the next commit.\n",
         {
             "git add <file_name> \033[0m| Stage a file called \033[1;33m<file_name>\033[0m to be included on the next commit.\n",
-            "git add .           \033[0m| Stage all files in the current directory to be included on the next commit.\n", 
+            "git add -a          \033[0m| Stage all files in the current directory to be included on the next commit.\n", 
+            "git add --all       \033[0m| Stage all files in the current directory to be included on the next commit.\n", 
             "git add -h          \033[0m| Help with the command\n",
             "git add --help      \033[0m| Help with the command\n\n", 
         },
-        git_add_to_index
+        git_local_command_handler
     },
+    // -- COMMIT --
     {
         "commit",
         "The \033[1;33mgit commit\033[0m command is used to create a new commit using the staged files. When provided with a commit message as a fourth parameter (not enclosed in quotes), a new commit will be created with that message.\n",
         {
-            "git commit -m <message> \033[0m| Create a new commit with all staged files. The commit will be created with the message of \033[1;33m<message>\033[0m. This message is a required field.\n", 
-            "git commit -h           \033[0m| Help with the command\n",
-            "git commit --help       \033[0m| Help with the command\n\n", 
+            "git commit -m <message>        \033[0m| Create a new commit with all staged files. The commit will be created with the message of \033[1;33m<message>\033[0m. This message is a required field.\n", 
+            "git commit --message <message> \033[0m| Create a new commit with all staged files. The commit will be created with the message of \033[1;33m<message>\033[0m. This message is a required field.\n", 
+            "git commit -h                  \033[0m| Help with the command\n",
+            "git commit --help              \033[0m| Help with the command\n\n", 
         },
-        create_git_commit
+        git_local_command_handler
     },
+    // -- INIT --
     {
         "init",
         "The \033[1;33mgit init\033[0m command is used initialize a new repository. When provided with a path as a third argument, an empty git repository will be initialized at the paths location. If that path does not exist, it will be created. When a path is omitted the repository will be created in the current directory.\n",
@@ -104,6 +113,7 @@ Command git_cmd_arr[] = {
         },
         init_git_repo
     },
+    // -- RESTORE --
     {
         "restore",
         "The \033[1;33mgit restore\033[0m command is used to remove files from the staging area so they will no longer be included in the next commit. When provided with a file path as a third argument, that file will be removed from the staging area.",
@@ -112,8 +122,9 @@ Command git_cmd_arr[] = {
             "git restore -h          \033[0m| Help with the command\n",
             "git restore --help      \033[0m| Help with the command\n\n", 
         },
-        git_remove_from_index
+        git_local_command_handler
     },
+    // -- MERGE --
     // {
     //     "merge",
     //     "The \033[1;33mgit merge\033[0m command is used to combine two branches into one. Given a branch name as a third argument, the command will merge that branch with the currently checked out branch.\n",
@@ -124,6 +135,7 @@ Command git_cmd_arr[] = {
     //     },
     //     merge_git_branches
     // },
+    // -- REMOTE --
     {
         "remote",
         "The \033[1;33mgit remote\033[0m commands are used to make changes to a remote repository.\n",
@@ -134,6 +146,7 @@ Command git_cmd_arr[] = {
         },
         git_remote_command_handler
     },
+    // -- PUSH --
     {
         "push",
         "The \033[1;33mgit push\033[0m command is used to push the current commit history to a remote repository.\n",
@@ -145,6 +158,7 @@ Command git_cmd_arr[] = {
         },
         git_remote_command_handler
     },
+    // -- PULL -- 
     {
         "pull",
         "The \033[1;33mgit pull\033[0m command is used to pull the current commit history from a remote repository and merge it with main if there are differences.\n",
@@ -161,7 +175,7 @@ Command git_cmd_arr[] = {
 int git_command_handler(char** input, int word_count, char* input_buffer) {
     if (word_count > 1) {
         // loop through global array of commands
-        for (int i = 0; git_cmd_arr[i].description; i++) {
+        for (int i = 0; i < (sizeof(git_cmd_arr) / sizeof(Command)); i++) {
             // check if command matches first string of user input
             if (strcmp(git_cmd_arr[i].name, input[1]) == 0) {
                 if (word_count >= 3) {

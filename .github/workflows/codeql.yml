@@ -39,7 +39,10 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-      
+       
+    - name: Update apt-get
+      run: sudo apt-get update
+
     - name: Install packages
       run: sudo apt-get install libgit2-dev libcurl4-openssl-dev
 
