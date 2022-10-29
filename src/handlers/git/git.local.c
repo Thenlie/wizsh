@@ -7,6 +7,38 @@
 #include <string.h>
 #include <git2.h>
 
+int git_add_to_index(char **input, git_repository *repo);
+int create_git_commit(char **input, int word_count, git_repository *repo);
+int git_remove_from_index(char **input, git_repository *repo);
+
+int git_local_command_handler(char **input, int word_count) {
+    // ensure current directory is git enabled
+    bool is_git = is_git_dir(".");
+    if (!is_git) {
+        printf("You are not in a git enabled directory!\n");
+        return 1;
+    }
+
+    // open repository in current directory
+    git_repository *repo = NULL;
+    int error = git_repository_open(&repo, ".");
+    if (error != 0) {
+        perror(git_error_last()->message);
+        return 1;
+    }
+
+    // handle command
+    if (strcmp(input[1], "add") == 0) {
+        word_count == 3 ? git_add_to_index(input, repo) : print_invalid_use_cmd("git add");
+    } else if (strcmp(input[1], "commit") == 0) {
+        word_count >= 4 ? create_git_commit(input, word_count, repo) : print_invalid_use_cmd("git commit");
+    } else if (strcmp(input[1], "remove") == 0) {
+        word_count == 3 ? git_remove_from_index(input, repo) : print_invalid_use_cmd("git restore");
+    }
+
+    return 0;
+}
+
 int clone_git_repo(char **input, int word_count) {
     git_repository *repo = NULL;
     const char *url = input[2];
@@ -68,86 +100,67 @@ int init_git_repo(char **input, int word_count) {
     return 0;
 }
 
-int git_add_cleanup(git_repository *repo, git_index *index) {
+void cleanup_git_add(git_index *index) {
     // free memory from 'git add' command
-    git_repository_free(repo);
     git_index_free(index);
+    return;
+}
 
+int git_add_to_index(char **input, git_repository *repo) {
+    git_index *index;
+    int error;
+
+    // get the current index    
+    error = git_repository_index(&index, repo);
+    if (error != 0) {
+        perror(git_error_last()->message);
+        return 1;
+    }
+
+    // add all files to index
+    if ((strcmp(input[2], "-a") == 0) || strcmp(input[2], "--all") == 0) {
+        git_index_add_option_t opt = GIT_INDEX_ADD_CHECK_PATHSPEC;
+        error = git_index_add_all(index, NULL, opt, NULL, NULL);
+    // add a specified file to the index
+    } else {
+        error = git_index_add_bypath(index, input[2]);
+    }
+    if (error != 0) {
+        perror(git_error_last()->message);
+        cleanup_git_add(index);
+        return 1;
+    }  
+
+    // write index to disk
+    error = git_index_write(index);
+    if (error != 0) {
+        perror(git_error_last()->message);
+        cleanup_git_add(index);
+        return 1;
+    }  
+
+    cleanup_git_add(index);
     return 0;
 }
 
-int git_add_to_index(char **input, int word_count) {
-    if (word_count == 3) {
-        git_index *index;
-        git_repository *repo;
-        int error;
-
-        error = git_repository_open(&repo, ".");
-        // check for error opening repo
-        if (error != 0) {
-            perror(git_error_last()->message);
-            return 1;
-        }
-
-        // get the current index    
-        error = git_repository_index(&index, repo);
-        if (error != 0) {
-            perror(git_error_last()->message);
-            git_add_cleanup(repo, NULL);
-            return 1;
-        }
-
-        // add all files to index
-        if ((strcmp(input[2], "-a") == 0) || strcmp(input[2], "--all") == 0) {
-            git_index_add_option_t opt = GIT_INDEX_ADD_CHECK_PATHSPEC;
-            error = git_index_add_all(index, NULL, opt, NULL, NULL);
-        // add a specified file to the index
-        } else {
-            error = git_index_add_bypath(index, input[2]);
-        }
-        if (error != 0) {
-            perror(git_error_last()->message);
-            git_add_cleanup(repo, index);
-            return 1;
-        }  
-
-        // write index to disk
-        error = git_index_write(index);
-        if (error != 0) {
-            perror(git_error_last()->message);
-            git_add_cleanup(repo, index);
-            return 1;
-        }  
-
-        git_add_cleanup(repo, index);
-        return 0;
-    } else {
-        print_invalid_use_cmd("git add");
-        return 1;
-    }
-}
-
-int commit_cleanup(git_repository *repo, git_index *index, git_signature *sig, git_tree *tree, git_object *obj, git_reference *ref) {
+void cleanup_git_commit(git_index *index, git_signature *sig, git_tree *tree, git_object *obj, git_reference *ref) {
     // free memory from 'git commit -m' command
-    git_repository_free(repo);
     git_index_free(index);
     git_signature_free(sig);
     git_tree_free(tree);
     git_object_free(obj);
     git_reference_free(ref);
-
-    return 0;
+    return;
 }
 
-int create_git_commit(char **input, int word_count) {
-    if (word_count >= 4 && strcmp(input[2], "-m") == 0) {
+int create_git_commit(char **input, int word_count, git_repository *repo) {
+    if (strcmp(input[2], "-m") == 0 || strcmp(input[2], "--message") == 0) {
         git_oid commit_oid, tree_oid;
         git_tree *tree;
         git_index *index;
         git_object *parent = NULL;
         git_reference *ref = NULL;
         git_signature *signature;
-        git_repository *repo;
         char commit_msg[256];
         int error;
 
@@ -167,14 +180,6 @@ int create_git_commit(char **input, int word_count) {
             }
         }
 
-        error = git_repository_open(&repo, ".");
-        // check for error opening repo
-        if (error != 0) {
-            commit_cleanup(repo, NULL, NULL, NULL, NULL, NULL);
-            perror(git_error_last()->message);
-            return 1;
-        }       
-
         // find object pointed to by HEAD and set it to 'parent'
         error = git_revparse_ext(&parent, &ref, repo, "HEAD"); 
         if (error == GIT_ENOTFOUND) {
@@ -182,7 +187,7 @@ int create_git_commit(char **input, int word_count) {
             error = 0;
         } else if (error != 0) {
             perror(git_error_last()->message);
-            commit_cleanup(repo, NULL, NULL, NULL, parent, ref);
+            cleanup_git_commit(NULL, NULL, NULL, parent, ref);
             return 1;
         }       
 
@@ -190,7 +195,7 @@ int create_git_commit(char **input, int word_count) {
         error = git_repository_index(&index, repo);
         if (error != 0) {
             perror(git_error_last()->message);
-            commit_cleanup(repo, index, NULL, NULL, parent, ref);
+            cleanup_git_commit(index, NULL, NULL, parent, ref);
             return 1;
         }       
 
@@ -198,7 +203,7 @@ int create_git_commit(char **input, int word_count) {
         error = git_index_write_tree(&tree_oid, index);
         if (error != 0) {
             perror(git_error_last()->message);
-            commit_cleanup(repo, index, NULL, NULL, parent, ref);
+            cleanup_git_commit(index, NULL, NULL, parent, ref);
             return 1;
         }       
 
@@ -206,7 +211,7 @@ int create_git_commit(char **input, int word_count) {
         error = git_index_write(index);
         if (error != 0) {
             perror(git_error_last()->message);
-            commit_cleanup(repo, index, NULL, NULL, parent, ref);
+            cleanup_git_commit(index, NULL, NULL, parent, ref);
             return 1;
         }       
 
@@ -214,7 +219,7 @@ int create_git_commit(char **input, int word_count) {
         error = git_tree_lookup(&tree, repo, &tree_oid);
         if (error != 0) {
             perror(git_error_last()->message);
-            commit_cleanup(repo, index, NULL, tree, parent, ref);
+            cleanup_git_commit(index, NULL, tree, parent, ref);
             return 1;
         }       
 
@@ -222,18 +227,18 @@ int create_git_commit(char **input, int word_count) {
         error = git_signature_default(&signature, repo);
         if (error != 0) {
             perror(git_error_last()->message);
-            commit_cleanup(repo, index, signature, tree, parent, ref);
+            cleanup_git_commit(index, signature, tree, parent, ref);
             return 1;
         }       
 
         error = git_commit_create_v(&commit_oid, repo, "HEAD", signature, signature, NULL, commit_msg, tree, parent ? 1 : 0, parent); 
         if (error != 0) {
             perror(git_error_last()->message);
-            commit_cleanup(repo, index, signature, tree, parent, ref);
+            cleanup_git_commit(index, signature, tree, parent, ref);
             return 1;
         }       
 
-        commit_cleanup(repo, index, signature, tree, parent, ref);
+        cleanup_git_commit(index, signature, tree, parent, ref);
         return 0;
     } else {
         print_invalid_use_cmd("git commit");
@@ -242,61 +247,44 @@ int create_git_commit(char **input, int word_count) {
     // https://libgit2.org/libgit2/ex/HEAD/commit.html#git_commit_create_v-1
 }
 
-int git_remove_cleanup(git_repository *repo, git_index *index) {
+void cleanup_git_remove_from_index(git_index *index) {
     // free memory from 'git restore' command
-    git_repository_free(repo);
     git_index_free(index);
-
-    return 0;
+    return;
 }
 
-int git_remove_from_index(char **input, int word_count) {
-    if (word_count == 3) {
-        git_repository *repo;
-        git_index *index;
-        int error;
-        
-        // open repository
-        error = git_repository_open(&repo, ".");
-        if (error != 0) {
-            commit_cleanup(repo, NULL, NULL, NULL, NULL, NULL);
-            perror(git_error_last()->message);
-            return 1;
-        } 
-              
-        // get repo index
-        error = git_repository_index(&index, repo);
-        if (error != 0) {
-            perror(git_error_last()->message);
-            git_remove_cleanup(repo, NULL);
-            return 1;
-        }     
+int git_remove_from_index(char **input, git_repository *repo) {
+    git_index *index;
+    int error;
+    
+    // get repo index
+    error = git_repository_index(&index, repo);
+    if (error != 0) {
+        perror(git_error_last()->message);
+        return 1;
+    }     
 
-        // remove all staged files
-        if (strcmp(input[2], "-a") == 0 || strcmp(input[2], "--all") == 0) {
-            error = git_index_remove_all(index, NULL, NULL, NULL);
-        // remove file via specified path
-        } else {
-            error = git_index_remove_bypath(index, input[2]);
-        }
-        if (error != 0) {
-            perror(git_error_last()->message);
-            git_remove_cleanup(repo, index);
-            return 1;
-        }
-
-        // write index to disk
-        error = git_index_write(index); 
-        if (error != 0) {
-            perror(git_error_last()->message);
-            git_remove_cleanup(repo, index);
-            return 1;
-        }       
-
-        git_remove_cleanup(repo, index);
+    // remove all staged files
+    if (strcmp(input[2], "-a") == 0 || strcmp(input[2], "--all") == 0) {
+        error = git_index_remove_all(index, NULL, NULL, NULL);
+    // remove file via specified path
     } else {
-        print_invalid_use_cmd("git restore");
+        error = git_index_remove_bypath(index, input[2]);
+    }
+    if (error != 0) {
+        perror(git_error_last()->message);
+        cleanup_git_remove_from_index(index);
         return 1;
     }
+
+    // write index to disk
+    error = git_index_write(index); 
+    if (error != 0) {
+        perror(git_error_last()->message);
+        cleanup_git_remove_from_index(index);
+        return 1;
+    }       
+
+    cleanup_git_remove_from_index(index);
     return 0;
 }

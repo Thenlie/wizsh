@@ -82,22 +82,24 @@ Command git_cmd_arr[] = {
         "The \033[1;33mgit add\033[0m command is used to stage a file for committing. When provided with a file path as a third argument, the command will stage that file so it will be included on the next commit.\n",
         {
             "git add <file_name> \033[0m| Stage a file called \033[1;33m<file_name>\033[0m to be included on the next commit.\n",
-            "git add .           \033[0m| Stage all files in the current directory to be included on the next commit.\n", 
+            "git add -a          \033[0m| Stage all files in the current directory to be included on the next commit.\n", 
+            "git add --all       \033[0m| Stage all files in the current directory to be included on the next commit.\n", 
             "git add -h          \033[0m| Help with the command\n",
             "git add --help      \033[0m| Help with the command\n\n", 
         },
-        git_add_to_index
+        git_local_command_handler
     },
     // -- COMMIT --
     {
         "commit",
         "The \033[1;33mgit commit\033[0m command is used to create a new commit using the staged files. When provided with a commit message as a fourth parameter (not enclosed in quotes), a new commit will be created with that message.\n",
         {
-            "git commit -m <message> \033[0m| Create a new commit with all staged files. The commit will be created with the message of \033[1;33m<message>\033[0m. This message is a required field.\n", 
-            "git commit -h           \033[0m| Help with the command\n",
-            "git commit --help       \033[0m| Help with the command\n\n", 
+            "git commit -m <message>        \033[0m| Create a new commit with all staged files. The commit will be created with the message of \033[1;33m<message>\033[0m. This message is a required field.\n", 
+            "git commit --message <message> \033[0m| Create a new commit with all staged files. The commit will be created with the message of \033[1;33m<message>\033[0m. This message is a required field.\n", 
+            "git commit -h                  \033[0m| Help with the command\n",
+            "git commit --help              \033[0m| Help with the command\n\n", 
         },
-        create_git_commit
+        git_local_command_handler
     },
     // -- INIT --
     {
@@ -120,7 +122,7 @@ Command git_cmd_arr[] = {
             "git restore -h          \033[0m| Help with the command\n",
             "git restore --help      \033[0m| Help with the command\n\n", 
         },
-        git_remove_from_index
+        git_local_command_handler
     },
     // -- MERGE --
     // {

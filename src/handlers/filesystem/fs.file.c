@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/wait.h>
 
 int create_file(char **input, int word_count) {
     if (word_count == 2) {

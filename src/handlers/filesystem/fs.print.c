@@ -1,3 +1,4 @@
+#define _GNU_SOURCE 
 #include "../printutility.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,6 +8,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <stdbool.h>
+#include <sys/types.h>
 
 void print_tree(char *dir, int count, bool is_flat);
 

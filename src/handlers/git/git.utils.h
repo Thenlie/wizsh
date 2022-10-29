@@ -1,8 +1,8 @@
+#include <git2.h>
 #ifndef GIT_UTILS_H_
 #define GIT_UTILS_H_ 
 
 #include <stdbool.h>
-#include <git2.h>
 
 // determine if provided directory path is git enabled
 bool is_git_dir(char* dir_path);
