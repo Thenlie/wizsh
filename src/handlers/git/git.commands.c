@@ -174,7 +174,6 @@ Command git_cmd_arr[] = {
 
 int git_command_handler(char** input, int word_count, char* input_buffer) {
     if (word_count > 1) {
-        printf("%lu\n", sizeof(git_cmd_arr) / sizeof(Command));
         // loop through global array of commands
         for (int i = 0; i < (sizeof(git_cmd_arr) / sizeof(Command)); i++) {
             // check if command matches first string of user input
