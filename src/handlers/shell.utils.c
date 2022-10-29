@@ -11,7 +11,6 @@ int clear_term(char** input, int word_count) {
     return 0;
 }
 
-// quit the program
 int dummy_exit(char **input, int word_count) {
     return -1;
 }
