@@ -57,6 +57,7 @@ To run wizsh locally, you will first need to [clone](https://docs.github.com/en/
 
 Next, navigate to the wizsh directory. Typically just `cd wizsh` from wherever the `clone` command was run.
 
+To build the binaries you will first need to run `make build`. This created the object and binary directories. 
 Use the command `make` to build to binary. It is usually best to run a `make clean` first to make sure you are starting a fresh build.
 
 Run the binary by using the command `bin/wizsh`. This is the same as `cd bin && wizsh`.

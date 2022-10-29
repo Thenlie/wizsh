@@ -1,5 +1,5 @@
 # Object files
-obj/*.o
+obj/
 
 # Binaries
 bin/

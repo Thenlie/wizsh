@@ -70,3 +70,6 @@ $(OBJ)git.utils.o: $(SRC)$(H)$(GIT)git.utils.c
 # CLEAN
 clean:
 	rm -f $(OBJFILES) $(TARGET) *~
+
+build:
+	mkdir obj bin
