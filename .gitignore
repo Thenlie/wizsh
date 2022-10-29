@@ -1,2 +1,9 @@
+# Object files
+obj/*.o
+
+# Binaries
+bin/
+
+# Misc. files
 notes.md
 .DS_Store
