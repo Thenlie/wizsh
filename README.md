@@ -68,7 +68,7 @@ Be sure to check out the [wiki](https://github.com/Thenlie/wizsh/wiki) for infor
 
 ## Contributing
 
-Wizsh is very open to contributions! If you have a feature request, or bug report, please open an issue with the applicable tag. If you would like to simply create a feature, [fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks) the repository and add in your changes. Then submit a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests) which will be reviewed and eventually mergered if it meets all contribution requirements. 
+Wizsh is very open to contributions! If you have a feature request, or bug report, please open an issue with the applicable tag. If you would like to simply create a feature, [fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks) the repository and add in your changes. Then submit a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests) which will be reviewed and eventually merged if it meets all contribution requirements. 
 
 I would be absolutely thrilled to contiue working on this with other developers. If you have noticed a long period of inactivity, feel free to reach out to me at the link below to get the current status of this project. 
 
